@@ -21,7 +21,7 @@ export function Header() {
   const isAdmin = user?.role === 'Admin';
 
   return (
-    <div className="flex items-center gap-4">
+    <>
       <div className="w-full flex-1">
         <form>
           <div className="relative">
@@ -35,10 +35,6 @@ export function Header() {
         </form>
       </div>
       
-      <Button variant="ghost" size="icon" className="rounded-full">
-        <Bell className="h-5 w-5" />
-        <span className="sr-only">Toggle notifications</span>
-      </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
@@ -63,6 +59,6 @@ export function Header() {
           <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </>
   );
 }

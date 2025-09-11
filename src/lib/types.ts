@@ -40,3 +40,11 @@ export type Project = {
     issues: number;
     members: string[]; // array of user emails
 };
+
+export type Notification = {
+    id: string;
+    title: string;
+    message: string;
+    createdAt: string;
+    read: boolean;
+};

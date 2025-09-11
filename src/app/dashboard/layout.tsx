@@ -27,6 +27,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Notifications } from '@/components/layout/notifications';
 
 export default function DashboardLayout({
   children,
@@ -108,10 +109,10 @@ export default function DashboardLayout({
             <div className="md:hidden">
               <SidebarTrigger />
             </div>
-            <div className="flex-1">
-              {/* Header content can go here if needed, or can be removed if sidebar handles all nav */}
+            <div className="flex-1 flex items-center gap-4">
+              <Header />
             </div>
-            <Header />
+            <Notifications />
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 bg-background">
             {children}

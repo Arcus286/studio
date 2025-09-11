@@ -1,4 +1,4 @@
-import type { User, Task, Role, TaskType, Priority, Project } from './types';
+import type { User, Task, Role, TaskType, Priority, Project, Notification } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', avatar: 'https://i.pravatar.cc/150?u=admin' },
@@ -152,6 +152,44 @@ export const PROJECTS: Project[] = [
         issues: 2,
         members: ['designer@taskflow.com', 'frontend@taskflow.com'],
     }
+];
+
+export const NOTIFICATIONS: Notification[] = [
+    {
+        id: '1',
+        title: 'Project Update',
+        message: 'Task "Design login page" moved to In Progress.',
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+        read: false,
+    },
+    {
+        id: '2',
+        title: 'Project Update',
+        message: 'Task "Develop user auth API" moved to In Review.',
+        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+        read: false,
+    },
+    {
+        id: '3',
+        title: 'Project Update',
+        message: 'New task "Implement frontend auth" assigned to Frontend.',
+        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+        read: false,
+    },
+    {
+        id: '4',
+        title: 'Project Update',
+        message: 'Task "Design Kanban board" due soon.',
+        createdAt: new Date(Date.now() - 9 * 60 * 60 * 1000).toISOString(),
+        read: true,
+    },
+    {
+        id: '5',
+        title: 'Project Update',
+        message: 'Task "Setup database schema" is overdue.',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        read: true,
+    },
 ];
 
 
