@@ -571,21 +571,29 @@ const SidebarMenuButton = React.forwardRef<
       </Comp>
     )
 
-    if (!tooltip && state === 'expanded') {
-      tooltip = children as string;
-    }
+    let tooltipContent: React.ReactNode = null;
 
-    if (!tooltip) {
-        return button
-    }
-
-    if (typeof tooltip === "string") {
-      tooltip = {
-        children: tooltip,
+    if (tooltip) {
+      if (typeof tooltip === "string") {
+        tooltipContent = tooltip;
+      } else {
+        tooltipContent = tooltip.children;
+      }
+    } else if (state === "expanded") {
+      const spanChild = React.Children.toArray(children).find(
+        (c) => React.isValidElement(c) && c.type === "span"
+      );
+      if (spanChild && React.isValidElement(spanChild)) {
+        tooltipContent = spanChild.props.children;
       }
     }
-    
-    const { children: tooltipChildren, ...tooltipProps } = tooltip;
+
+    if (!tooltipContent) {
+      return button;
+    }
+
+    const tooltipProps: Omit<React.ComponentProps<typeof TooltipContent>, 'children'> =
+      typeof tooltip === "object" ? (({ children, ...rest }) => rest)(tooltip) : {};
 
 
     return (
@@ -597,7 +605,7 @@ const SidebarMenuButton = React.forwardRef<
           hidden={state !== "collapsed" || isMobile}
           {...tooltipProps}
         >
-            {tooltipChildren}
+            {tooltipContent}
         </TooltipContent>
       </Tooltip>
     )
