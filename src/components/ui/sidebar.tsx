@@ -585,7 +585,7 @@ const SidebarMenuButton = React.forwardRef<
       }
     }
     
-    const { ...tooltipProps } = tooltip;
+    const { children: tooltipChildren, ...tooltipProps } = tooltip;
 
 
     return (
@@ -597,7 +597,7 @@ const SidebarMenuButton = React.forwardRef<
           hidden={state !== "collapsed" || isMobile}
           {...tooltipProps}
         >
-            {children}
+            {tooltipChildren}
         </TooltipContent>
       </Tooltip>
     )
