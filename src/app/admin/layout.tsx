@@ -1,6 +1,6 @@
 import { Header } from '@/components/layout/header';
 
-export default function DashboardLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;

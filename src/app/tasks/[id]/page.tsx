@@ -1,38 +1,40 @@
-import { getTask } from "@/lib/actions";
+// This page is not used in the new Kanban board flow,
+// but is kept for potential future use or direct task linking.
+
+import { TASKS } from "@/lib/data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { UpdateStatusForm } from "@/components/update-status-form";
-import { SuggestStatusButton } from "@/components/suggest-status-button";
-import { format } from 'date-fns';
+import { notFound } from "next/navigation";
+import { format, parseISO } from 'date-fns';
 
 export default async function TaskDetailPage({ params }: { params: { id: string } }) {
-  const task = await getTask(params.id);
+  const task = TASKS.find(t => t.id === params.id);
+
+  if (!task) {
+    notFound();
+  }
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+    <div className="flex min-h-screen w-full flex-col bg-background">
+      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6">
         <Button asChild variant="outline" size="icon" className="h-8 w-8">
-            <Link href="/dashboard" aria-label="Back to Tasks">
+            <Link href="/dashboard" aria-label="Back to Dashboard">
                 <ArrowLeft className="h-4 w-4" />
             </Link>
         </Button>
         <h1 className="flex-1 truncate text-xl font-semibold tracking-tight">
           {task.title}
         </h1>
-        <div className="flex items-center gap-2">
-            <SuggestStatusButton task={task} />
-            <UpdateStatusForm taskId={task.id} currentStatus={task.status} />
-        </div>
       </header>
       <main className="flex-1 p-4 md:p-6">
         <Card>
             <CardHeader>
                 <CardTitle className="text-2xl">{task.title}</CardTitle>
                 <CardDescription>
-                    Last updated on {format(task.updatedAt, "MMMM d, yyyy 'at' h:mm a")}
+                    Last updated on {format(parseISO(task.updatedAt), "MMMM d, yyyy 'at' h:mm a")}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -47,7 +49,15 @@ export default async function TaskDetailPage({ params }: { params: { id: string 
                     </div>
                      <div>
                         <h3 className="font-medium text-foreground">Created At</h3>
-                        <p>{format(task.createdAt, "MMMM d, yyyy")}</p>
+                        <p>{format(parseISO(task.createdAt), "MMMM d, yyyy")}</p>
+                    </div>
+                     <div>
+                        <h3 className="font-medium text-foreground">Assigned Role</h3>
+                        <p>{task.assignedRole}</p>
+                    </div>
+                     <div>
+                        <h3 className="font-medium text-foreground">Time Estimate</h3>
+                        <p>{task.estimatedHours} hours</p>
                     </div>
                 </div>
             </CardContent>

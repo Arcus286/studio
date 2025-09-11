@@ -1,3 +1,13 @@
+export type Role = 'Frontend' | 'Backend' | 'Developer' | 'Designer' | 'Project Manager' | 'Admin';
+
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+  role: Role;
+  avatar?: string;
+};
+
 export type TaskStatus = 'To Do' | 'In Progress' | 'Done';
 
 export type Task = {
@@ -5,6 +15,9 @@ export type Task = {
   title: string;
   description: string;
   status: TaskStatus;
-  createdAt: Date;
-  updatedAt: Date;
+  assignedRole: Role;
+  estimatedHours: number;
+  timeSpent: number;
+  createdAt: string;
+  updatedAt: string;
 };

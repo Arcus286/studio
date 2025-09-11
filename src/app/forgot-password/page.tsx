@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,11 +13,23 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft, Mail } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast';
 
 export default function ForgotPasswordPage() {
+    const [email, setEmail] = useState('');
+    const { toast } = useToast();
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        toast({
+            title: 'Check your email',
+            description: `If an account exists for ${email}, a password reset link has been sent.`,
+        });
+    };
+
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-muted/40 px-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
             <Link href="/login" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
                 <ArrowLeft className="h-4 w-4" />
@@ -22,28 +37,24 @@ export default function ForgotPasswordPage() {
             </Link>
           <CardTitle className="text-2xl">Reset your password</CardTitle>
           <CardDescription>
-            Enter your email and we'll send you a link to reset your password
+            Enter your email and we'll send you a link to get back into your account.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="you@example.com"
                   required
-                  className="pl-10"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
-              </div>
             </div>
-            <Button type="submit" className="w-full h-11" asChild>
-                <Link href="/reset-password">Send reset link</Link>
-            </Button>
-          </div>
+            <Button type="submit" className="w-full">Send reset link</Button>
+          </form>
         </CardContent>
       </Card>
     </div>

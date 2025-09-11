@@ -1,48 +1,35 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Lock } from 'lucide-react'
+'use client';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 export default function ResetPasswordPage() {
+  // This is a placeholder page as per requirements.
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-muted/40 px-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-md shadow-lg">
         <CardHeader>
-          <CardTitle className="text-2xl">Set a new password</CardTitle>
+          <CardTitle className="text-2xl">Password Reset</CardTitle>
           <CardDescription>
-            Please enter and confirm your new password below.
+            This is a placeholder page. In a real application, you would handle the password reset token from the URL here.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="new-password">New Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="new-password" type="password" required placeholder="Min. 8 characters" className="pl-10" />
-              </div>
-            </div>
-             <div className="grid gap-2">
-              <Label htmlFor="confirm-password">Confirm New Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input id="confirm-password" type="password" required placeholder="Re-enter password" className="pl-10" />
-              </div>
-            </div>
-            <Button type="submit" className="w-full h-11" asChild>
-              <Link href="/login">Reset Password</Link>
-            </Button>
+        <CardContent className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="new-password">New Password</Label>
+            <Input id="new-password" type="password" />
           </div>
+          <div className="grid gap-2">
+            <Label htmlFor="confirm-password">Confirm New Password</Label>
+            <Input id="confirm-password" type="password" />
+          </div>
+          <Button className="w-full" asChild>
+            <Link href="/login">Reset Password</Link>
+          </Button>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
