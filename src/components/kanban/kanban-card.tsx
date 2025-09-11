@@ -48,7 +48,8 @@ export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps)
     <>
       <Card
         className={cn(
-          'hover:shadow-lg transition-shadow bg-card/80 backdrop-blur-sm',
+          'transition-all bg-card/80 backdrop-blur-sm cursor-pointer',
+          'hover:shadow-xl hover:ring-2 hover:ring-primary/50',
           isDragging && 'shadow-xl rotate-3',
           isHighlighted && 'animate-flash'
         )}
