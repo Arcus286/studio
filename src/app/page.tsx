@@ -19,14 +19,6 @@ export default function LandingPage() {
             <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Pricing</Link>
             <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Contact</Link>
           </nav>
-          <div className="flex items-center gap-2">
-             <Button variant="ghost" asChild>
-                <Link href="/login">Sign In</Link>
-            </Button>
-            <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-            </Button>
-          </div>
         </div>
       </header>
       <main className="flex-1">
