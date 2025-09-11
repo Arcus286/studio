@@ -9,7 +9,6 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarInset,
-  SidebarFooter,
   SidebarTrigger,
   SidebarGroup,
   SidebarGroupLabel,
@@ -98,18 +97,6 @@ export default function AppLayout({
               </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter className="p-4">
-          <div className="flex items-center gap-3">
-             <Avatar className="h-10 w-10">
-                <AvatarImage src={user?.avatar} />
-                <AvatarFallback>{user?.username?.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-                <p className="font-semibold">{user?.username}</p>
-                <p className="text-xs text-muted-foreground">{user?.role}</p>
-            </div>
-          </div>
-        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <div className="flex min-h-screen w-full flex-col">
