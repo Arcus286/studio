@@ -1,29 +1,44 @@
 'use client';
 
 import { useState } from 'react';
-import type { Task, Role } from '@/lib/types';
+import type { Task } from '@/lib/types';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ROLES } from '@/lib/data';
+import { ROLES, USERS } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO } from 'date-fns';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { CalendarDays, Users } from 'lucide-react';
+import { GitCommit, GitPullRequest, CircleDot } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type TaskDetailDialogProps = {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   task: Task;
 };
+
+const TaskTypeIcon = ({ type, className }: { type: 'Epic' | 'Story' | 'Task', className?: string }) => {
+    const baseClassName = "h-5 w-5";
+    switch (type) {
+        case 'Epic':
+            return <GitCommit className={cn(baseClassName, "text-purple-400", className)} />;
+        case 'Story':
+            return <GitPullRequest className={cn(baseClassName, "text-orange-400", className)} />;
+        case 'Task':
+            return <CircleDot className={cn(baseClassName, "text-blue-400", className)} />;
+    }
+}
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialogProps) {
   const { user } = useAuth();
@@ -32,67 +47,88 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
 
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
-  const [assignedRole, setAssignedRole] = useState<Role>(task.assignedRole);
-  const [estimatedHours, setEstimatedHours] = useState(task.estimatedHours);
   
   const handleSave = () => {
     // In a real app, this would be a server action
-    console.log({ title, description, assignedRole, estimatedHours });
+    console.log({ title, description });
     toast({
         title: 'Task Updated',
         description: `"${title}" has been saved.`
     });
     onOpenChange(false);
   };
+  
+  const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
+  const assignedUser = USERS.find(u => u.role === task.assignedRole);
+
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{isAdmin ? 'Edit Task' : 'Task Details'}</DialogTitle>
-           <DialogDescription>
-             Last updated on {format(parseISO(task.updatedAt), "MMMM d, yyyy 'at' h:mm a")}
-            </DialogDescription>
+      <DialogContent className="sm:max-w-2xl p-0">
+        <DialogHeader className="p-6 pb-4">
+          <div className="flex items-center gap-3">
+             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+                <TaskTypeIcon type={task.type} className="h-6 w-6" />
+             </div>
+            <div>
+                <DialogTitle className="text-xl">{title}</DialogTitle>
+                <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="outline">{task.type}</Badge>
+                    <Badge variant="secondary">{task.status}</Badge>
+                </div>
+            </div>
+          </div>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} readOnly={!isAdmin} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} readOnly={!isAdmin} className="min-h-[100px]" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-                <Label htmlFor="role">Assigned Role</Label>
-                {isAdmin ? (
-                     <Select value={assignedRole} onValueChange={(value) => setAssignedRole(value as Role)}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {ROLES.filter(r => r !== 'Admin').map(role => (
-                                <SelectItem key={role} value={role}>{role}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                ) : (
-                    <Input value={assignedRole} readOnly />
+        
+        <div className="px-6 space-y-6 max-h-[60vh] overflow-y-auto">
+            <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
+                <p className="text-sm text-foreground">{description}</p>
+            </div>
+            
+            <Separator />
+
+            <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-3">Task Progress</h3>
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-muted-foreground">{task.timeSpent}h / {task.estimatedHours}h</span>
+                    <span className="text-sm font-semibold">{Math.round(progressPercentage)}%</span>
+                </div>
+                <Progress value={progressPercentage} className="h-2" />
+            </div>
+
+            <Separator />
+
+            <div>
+                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3">
+                    <Users className="h-4 w-4" />
+                    Team Members (1)
+                </h3>
+                 {assignedUser && (
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                        <Avatar>
+                            <AvatarImage src={assignedUser.avatar} />
+                            <AvatarFallback>{assignedUser.username.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                            <p className="font-semibold text-foreground">{assignedUser.username}</p>
+                            <p className="text-xs text-muted-foreground">{assignedUser.email}</p>
+                        </div>
+                        <Badge variant="outline">{assignedUser.role}</Badge>
+                    </div>
                 )}
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="hours">Estimated Hours</Label>
-                <Input id="hours" type="number" value={estimatedHours} onChange={(e) => setEstimatedHours(Number(e.target.value))} readOnly={!isAdmin} />
-            </div>
-          </div>
         </div>
-        {isAdmin && (
-            <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                <Button onClick={handleSave}>Save Changes</Button>
+
+        <DialogFooter className="p-6 bg-muted/30 border-t flex justify-between items-center">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <CalendarDays className="h-4 w-4" />
+                <span>Created on {format(parseISO(task.createdAt), "MMM d, yyyy")}</span>
             </div>
-        )}
+             <div className="flex items-center gap-2">
+                {isAdmin && <Button onClick={handleSave}>Save Changes</Button>}
+             </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
