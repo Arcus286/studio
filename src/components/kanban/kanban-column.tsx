@@ -18,10 +18,10 @@ const columnTitles: Record<TaskStatus, string> = {
 };
 
 const statusColors: Record<TaskStatus, string> = {
-  'To Do': 'border-blue-500/50',
-  'In Progress': 'border-yellow-500/50',
-  'In Review': 'border-purple-500/50',
-  'Done': 'border-green-500/50',
+  'To Do': 'border-blue-500',
+  'In Progress': 'border-yellow-500',
+  'In Review': 'border-purple-500',
+  'Done': 'border-green-500',
 };
 
 const titleColors: Record<TaskStatus, string> = {
@@ -33,10 +33,12 @@ const titleColors: Record<TaskStatus, string> = {
 
 
 export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnProps) {
-  const statusClassName = `status-${status.replace(' ', '-')}`;
-
   return (
-    <div className={cn("flex flex-col rounded-xl border", statusColors[status])}>
+    <div className={cn(
+      "flex flex-col rounded-xl border", 
+      statusColors[status],
+      highlightedStatus === 'all' && 'animate-flash'
+      )}>
       <div className={cn("p-3 flex items-center justify-between")}>
         <h2 className={cn("text-lg font-semibold", titleColors[status])}>
           {columnTitles[status]}
@@ -65,7 +67,7 @@ export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnP
                     <KanbanCard 
                       task={task} 
                       isDragging={snapshot.isDragging}
-                      isHighlighted={highlightedStatus === 'all' || highlightedStatus === task.status}
+                      isHighlighted={highlightedStatus === task.status}
                     />
                   </div>
                 )}
