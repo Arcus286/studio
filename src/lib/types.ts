@@ -7,6 +7,12 @@ export type User = {
   password?: string;
   role: Role;
   avatar?: string;
+  designation?: string;
+  university?: string;
+  major?: string;
+  phoneNumber?: string;
+  yearOfStudy?: string;
+  bio?: string;
 };
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'In Review' | 'Done';

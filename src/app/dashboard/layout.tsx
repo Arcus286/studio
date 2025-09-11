@@ -75,6 +75,14 @@ export default function DashboardLayout({
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/settings')}>
+                <Link href="/dashboard/settings">
+                  <Settings />
+                  Settings
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
           <SidebarGroup className="mt-4">
               <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
