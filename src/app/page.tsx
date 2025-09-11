@@ -15,10 +15,9 @@ export default function LandingPage() {
                 </svg>
                 <span className="font-bold">AgileBridge</span>
             </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center justify-center flex-1 gap-6 text-sm font-medium">
             <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Features</Link>
             <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">How it Works</Link>
-            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Pricing</Link>
             <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Contact</Link>
           </nav>
           <div className="hidden md:flex items-center gap-4">
@@ -68,21 +67,21 @@ export default function LandingPage() {
 
               <div className="relative isolate">
                 <Image
-                  src="https://picsum.photos/seed/meadow/600/400"
+                  src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop"
                   width={600}
                   height={400}
-                  alt="Misty meadow"
-                  data-ai-hint="misty meadow landscape"
+                  alt="Team collaborating around a desk"
+                  data-ai-hint="collaboration team meeting"
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center shadow-2xl"
                 />
-                 <div className="absolute -bottom-10 -left-4 md:-bottom-12 md:-left-8 z-10">
+                 <div className="absolute -bottom-10 -left-12 md:-bottom-12 md:-left-16 z-10">
                     <Badge variant="secondary" className="p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                       <span className="mr-2 h-2 w-2 rounded-full bg-green-400"></span>
                       <span className="font-medium text-foreground">Projects Completed</span>
                       <span className="ml-2 font-bold text-lg">20</span>
                     </Badge>
                 </div>
-                 <div className="absolute -top-10 -right-8 md:-top-12 md:-right-12 z-10">
+                 <div className="absolute -top-10 -right-12 md:-top-12 md:-right-16 z-10">
                     <Badge variant="secondary" className="p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                       <span className="mr-2 h-2 w-2 rounded-full bg-purple-400"></span>
                       <span className="font-medium text-foreground">Active Users</span>
