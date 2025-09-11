@@ -129,7 +129,7 @@ export default function LandingPage() {
                 </div>
 
 
-                <div className="absolute top-1/4 right-0 transform translate-x-1/4 -translate-y-1/2 transition-transform duration-300 hover:scale-110">
+                <div className="absolute top-1/4 right-0 transform translate-x-0 -translate-y-1/2 transition-transform duration-300 hover:scale-110">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2  p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
                         Active Users
