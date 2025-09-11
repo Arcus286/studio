@@ -50,9 +50,8 @@ export default function LandingPage() {
                     </Link>
                   </Button>
                   <Button variant="outline" size="lg" asChild>
-                    <Link href="#">
-                      <PlayCircle className="mr-2" />
-                      Watch Demo
+                    <Link href="/login">
+                      Sign In
                     </Link>
                   </Button>
                 </div>
