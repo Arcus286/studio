@@ -18,10 +18,10 @@ const columnTitles: Record<TaskStatus, string> = {
 };
 
 const statusColors: Record<TaskStatus, string> = {
-  'To Do': 'border-blue-500/50 bg-blue-500/10',
-  'In Progress': 'border-yellow-500/50 bg-yellow-500/10',
-  'In Review': 'border-purple-500/50 bg-purple-500/10',
-  'Done': 'border-green-500/50 bg-green-500/10',
+  'To Do': 'border-blue-500/50',
+  'In Progress': 'border-yellow-500/50',
+  'In Review': 'border-purple-500/50',
+  'Done': 'border-green-500/50',
 };
 
 const titleColors: Record<TaskStatus, string> = {
