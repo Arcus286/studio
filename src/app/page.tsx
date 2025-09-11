@@ -10,7 +10,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border/40 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-6">
         <Link href="/" className="flex items-center gap-2">
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3z"></path></svg>
-          <span className="font-bold text-lg">TaskFlow</span>
+          <span className="font-bold text-lg">AgileBridge</span>
         </Link>
         <div className="flex items-center gap-4">
           <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
@@ -40,7 +40,7 @@ export default function LandingPage() {
                     <span className="text-primary"> Workflow</span>
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    TaskFlow is the ultimate project management tool for modern teams. Track tasks, collaborate seamlessly, and ship projects faster than ever before.
+                    AgileBridge is the ultimate project management tool for modern teams. Track tasks, collaborate seamlessly, and ship projects faster than ever before.
                   </p>
                 </div>
                 <div className="flex flex-col gap-4 min-[400px]:flex-row">

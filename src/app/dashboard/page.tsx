@@ -110,9 +110,9 @@ export default async function DashboardPage() {
             <Card>
                 <CardHeader className="flex flex-row items-center">
                     <div className="grid gap-2">
-                    <CardTitle>studentira</CardTitle>
+                    <CardTitle>AgileBridge</CardTitle>
                     <CardDescription>
-                        a mock jira tool student version
+                        A simple and powerful project management tool.
                     </CardDescription>
                     </div>
                     <Badge className="ml-auto">active</Badge>
@@ -121,24 +121,24 @@ export default async function DashboardPage() {
                     <div>
                         <div className="flex justify-between text-sm text-muted-foreground mb-2">
                             <span>Progress</span>
-                            <span>0%</span>
+                            <span>{completionRate}%</span>
                         </div>
-                        <Progress value={0} />
+                        <Progress value={completionRate} />
                     </div>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                             <Circle className="h-3 w-3 fill-gray-400 text-gray-400" />
-                            0
+                            {todoIssues}
                         </div>
                          <div className="flex items-center gap-1">
                             <Clock className="h-3 w-3 fill-blue-400 text-blue-400" />
-                            0
+                            {inProgressIssues}
                         </div>
                          <div className="flex items-center gap-1">
                             <CheckCircle className="h-3 w-3 fill-green-400 text-green-400" />
-                            1
+                            {completedIssues}
                         </div>
-                        <span className="ml-auto">1 issues</span>
+                        <span className="ml-auto">{totalIssues} issues</span>
                     </div>
                 </CardContent>
             </Card>

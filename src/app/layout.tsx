@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'TaskFlow',
+  title: 'AgileBridge',
   description: 'A simplified project management and issue tracking app.',
 };
 

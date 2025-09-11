@@ -12,7 +12,7 @@ export default function LoginPage() {
             <div className="mb-4 inline-block">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-primary mx-auto"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3z"></path></svg>
             </div>
-          <CardTitle className="text-2xl">Welcome to TaskFlow</CardTitle>
+          <CardTitle className="text-2xl">Welcome to AgileBridge</CardTitle>
           <CardDescription>Sign in to continue</CardDescription>
         </CardHeader>
         <CardContent>
