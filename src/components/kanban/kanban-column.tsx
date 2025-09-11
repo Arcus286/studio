@@ -18,10 +18,10 @@ const columnTitles: Record<TaskStatus, string> = {
 };
 
 const statusColors: Record<TaskStatus, string> = {
-  'To Do': 'bg-blue-500/20 text-blue-500',
-  'In Progress': 'bg-yellow-500/20 text-yellow-500',
-  'In Review': 'bg-purple-500/20 text-purple-500',
-  'Done': 'bg-green-500/20 text-green-500',
+  'To Do': 'bg-blue-500/20 text-blue-500 border-t-blue-500',
+  'In Progress': 'bg-yellow-500/20 text-yellow-500 border-t-yellow-500',
+  'In Review': 'bg-purple-500/20 text-purple-500 border-t-purple-500',
+  'Done': 'bg-green-500/20 text-green-500 border-t-green-500',
 };
 
 
@@ -30,7 +30,7 @@ export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnP
 
   return (
     <div className="flex flex-col">
-      <div className={cn("p-3 rounded-t-lg border-b flex items-center justify-between", statusClassName)}>
+      <div className={cn("p-3 rounded-t-lg flex items-center justify-between border-t-4", statusColors[status])}>
         <h2 className="text-lg font-semibold text-foreground">
           {columnTitles[status]}
         </h2>

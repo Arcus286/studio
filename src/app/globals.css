@@ -104,4 +104,16 @@
   .bg-card-orange {
     background-color: rgba(249, 115, 22, 0.1);
   }
+  .border-t-blue-500 {
+    border-top-color: #3b82f6;
+  }
+  .border-t-yellow-500 {
+    border-top-color: #eab308;
+  }
+  .border-t-purple-500 {
+    border-top-color: #8b5cf6;
+  }
+  .border-t-green-500 {
+    border-top-color: #22c55e;
+  }
 }
