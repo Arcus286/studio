@@ -5,7 +5,7 @@ import { KanbanColumn } from './kanban-column';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { TimeLogDialog } from './time-log-dialog';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 
 type KanbanBoardProps = {
   initialTasks: Task[];

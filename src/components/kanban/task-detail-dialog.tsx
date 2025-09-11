@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ROLES } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { format, parseISO } from 'date-fns';
 
 type TaskDetailDialogProps = {

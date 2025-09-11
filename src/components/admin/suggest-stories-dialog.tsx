@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Lightbulb, Loader2 } from 'lucide-react';
 import { TASKS } from '@/lib/data';
 import { suggestUserStories } from '@/ai/flows/suggest-user-stories';
-import { useToast } from '../ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '../ui/card';
 
 export function SuggestStoriesDialog() {
