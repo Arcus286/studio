@@ -13,8 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/use-auth';
-import { NewTaskDialog } from '../new-task-dialog';
 import { Notifications } from './notifications';
+import { ThemeToggle } from './theme-toggle';
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -36,6 +36,7 @@ export function Header() {
       </div>
 
       <Notifications />
+      <ThemeToggle />
 
       {isAdmin && (
         <DropdownMenu>
