@@ -24,7 +24,6 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 262.1 83.3% 57.8%;
-    --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -105,15 +104,16 @@
     background-color: rgba(249, 115, 22, 0.1);
   }
   .border-blue-500 {
-    border-color: #3b82f6;
+    border-color: #3b82f680;
   }
   .border-yellow-500 {
-    border-color: #eab308;
+    border-color: #eab30880;
   }
   .border-purple-500 {
-    border-color: #8b5cf6;
+    border-color: #8b5cf680;
   }
   .border-green-500 {
-    border-color: #22c55e;
+    border-color: #22c55e80;
   }
 }
+
