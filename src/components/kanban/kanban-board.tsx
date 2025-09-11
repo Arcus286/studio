@@ -1,3 +1,4 @@
+
 'use client';
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from '@hello-pangea/dnd';
 import type { Task, TaskStatus } from '@/lib/types';
@@ -9,9 +10,10 @@ import { useToast } from '@/hooks/use-toast';
 
 type KanbanBoardProps = {
   initialTasks: Task[];
+  highlightedStatus?: TaskStatus | 'all' | null;
 };
 
-export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
+export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProps) {
   const { user } = useAuth();
   const [tasks, setTasks] = useState(initialTasks);
   const { toast } = useToast();
@@ -80,7 +82,7 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
     <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {(Object.keys(columns) as TaskStatus[]).map(status => (
-                <KanbanColumn key={status} status={status} tasks={columns[status]} />
+                <KanbanColumn key={status} status={status} tasks={columns[status]} highlightedStatus={highlightedStatus} />
             ))}
         </div>
         <TimeLogDialog 

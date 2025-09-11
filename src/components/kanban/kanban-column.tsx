@@ -1,3 +1,4 @@
+
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import type { Task, TaskStatus } from '@/lib/types';
 import { KanbanCard } from './kanban-card';
@@ -6,6 +7,7 @@ import { cn } from '@/lib/utils';
 type KanbanColumnProps = {
   status: TaskStatus;
   tasks: Task[];
+  highlightedStatus?: TaskStatus | 'all' | null;
 };
 
 const columnTitles: Record<TaskStatus, string> = {
@@ -23,7 +25,7 @@ const statusColors: Record<TaskStatus, string> = {
 };
 
 
-export function KanbanColumn({ status, tasks }: KanbanColumnProps) {
+export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnProps) {
   const statusClassName = `status-${status.replace(' ', '-')}`;
 
   return (
@@ -53,7 +55,11 @@ export function KanbanColumn({ status, tasks }: KanbanColumnProps) {
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                   >
-                    <KanbanCard task={task} isDragging={snapshot.isDragging} />
+                    <KanbanCard 
+                      task={task} 
+                      isDragging={snapshot.isDragging}
+                      isHighlighted={highlightedStatus === 'all' || highlightedStatus === task.status}
+                    />
                   </div>
                 )}
               </Draggable>

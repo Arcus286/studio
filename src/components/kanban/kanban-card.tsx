@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -13,6 +14,7 @@ import { USERS } from '@/lib/data';
 type KanbanCardProps = {
   task: Task;
   isDragging: boolean;
+  isHighlighted?: boolean;
 };
 
 const PriorityIcon = ({ priority }: { priority: 'Low' | 'Medium' | 'High' }) => {
@@ -40,14 +42,18 @@ const TaskTypeIcon = ({ type }: { type: 'Epic' | 'Story' | 'Task' }) => {
     }
 }
 
-export function KanbanCard({ task, isDragging }: KanbanCardProps) {
+export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const assignedUser = USERS.find(u => u.role === task.assignedRole);
 
   return (
     <>
       <Card
-        className={`hover:shadow-lg transition-shadow bg-card/80 backdrop-blur-sm ${isDragging ? 'shadow-xl rotate-3' : ''}`}
+        className={cn(
+          'hover:shadow-lg transition-shadow bg-card/80 backdrop-blur-sm',
+          isDragging && 'shadow-xl rotate-3',
+          isHighlighted && 'animate-flash'
+        )}
         onClick={() => setIsDetailOpen(true)}
       >
         <CardContent className="p-4 space-y-3">
