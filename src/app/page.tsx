@@ -1,3 +1,4 @@
+
 import { ArrowRight, Check } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -103,7 +104,7 @@ export default function LandingPage() {
                       Get Started <ArrowRight className="ml-2" />
                     </Link>
                   </Button>
-                  <Button asChild size="lg" variant="ghost">
+                  <Button asChild size="lg" variant="outline">
                     <Link href="/login">Sign In</Link>
                   </Button>
                 </div>
@@ -141,7 +142,7 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                <div className="absolute bottom-4 left-4">
+                <div className="absolute bottom-10 right-10">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                         Projects Completed
