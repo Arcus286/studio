@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, Search } from 'lucide-react';
+import { Bell, Search, Users, Eye, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,6 +15,7 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { NewTaskDialog } from '../new-task-dialog';
+import { Notifications } from './notifications';
 
 export function Header() {
   const { user, logout } = useAuth();
@@ -34,6 +35,33 @@ export function Header() {
           </div>
         </form>
       </div>
+
+      <Notifications />
+
+      {isAdmin && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <Users className="h-5 w-5" />
+              <span className="sr-only">Team & Collaboration</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Team & Collaboration</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/admin">
+                <Eye className="mr-2 h-4 w-4" />
+                View Team Members
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Invite Members
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
       
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
