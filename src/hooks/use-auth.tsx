@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { usePathname, useRouter } from 'next/navigation';
 import type { User, Role } from '@/lib/types';
 import { USERS } from '@/lib/data';
+import Loading from '@/app/loading';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -25,25 +26,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('agilebridge-user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('agilebridge-user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Failed to parse user from localStorage", error);
+      localStorage.removeItem('agilebridge-user');
+      setUser(null);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      const isAuthenticated = !!user;
-      const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-      const isAuthRoute = authRoutes.includes(pathname);
+    if (isLoading) return;
 
-      if (isProtectedRoute && !isAuthenticated) {
-        router.push('/login');
-      }
-      if (isAuthRoute && isAuthenticated) {
-        router.push('/dashboard');
-      }
+    const isAuthenticated = !!user;
+    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
+    const isAuthRoute = authRoutes.includes(pathname);
+
+    if (isProtectedRoute && !isAuthenticated) {
+      router.push('/login');
+    } else if (isAuthRoute && isAuthenticated) {
+      router.push('/dashboard');
     }
   }, [user, isLoading, pathname, router]);
 
@@ -54,7 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(foundUser);
         router.push('/dashboard');
     } else {
-        // In a real app, you'd handle this error properly
         console.error("Login failed: User not found");
         throw new Error("Invalid credentials");
     }
@@ -73,10 +79,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     isLoading
   };
+  
+  const isAuthPage = authRoutes.includes(pathname);
+  const isProtectedRoutePage = protectedRoutes.some(route => pathname.startsWith(route));
 
-  if(isLoading) {
-      return null;
+  if (isLoading && (isAuthPage || isProtectedRoutePage)) {
+    return <Loading />;
   }
+
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

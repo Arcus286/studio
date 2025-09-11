@@ -3,43 +3,14 @@ import { ArrowRight, Check } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-
-const StatCard = ({
-  icon,
-  label,
-  value,
-  className,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  className?: string;
-}) => (
-  <div
-    className={cn(
-      'inline-flex items-center rounded-full border p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm',
-      className
-    )}
-  >
-    <div className="mr-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary/20">
-      {icon}
-    </div>
-    <div>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="text-xl font-bold">{value}</div>
-    </div>
-  </div>
-);
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-dvh flex-col bg-background text-foreground">
       <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border/40 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2 text-lg font-semibold"
+          className="flex items-center gap-2 text-lg font-semibold transition-transform duration-300 hover:scale-105"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -60,23 +31,31 @@ export default function LandingPage() {
         <nav className="hidden flex-1 items-center justify-center gap-6 text-sm font-medium md:flex">
           <Link
             href="#"
-            className="text-foreground/70 transition-colors hover:text-foreground"
+            className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             Features
           </Link>
           <Link
             href="#"
-            className="text-foreground/70 transition-colors hover:text-foreground"
+            className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             How it Works
           </Link>
           <Link
             href="#"
-            className="text-foreground/70 transition-colors hover:text-foreground"
+            className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             Contact
           </Link>
         </nav>
+        <div className="flex items-center gap-4">
+           <Button asChild variant="ghost">
+                <Link href="/login">Sign In</Link>
+            </Button>
+            <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+            </Button>
+        </div>
       </header>
       <main className="flex-1">
         <section className="relative py-20 md:py-32 lg:py-40">
@@ -86,7 +65,7 @@ export default function LandingPage() {
           />
           <div className="container px-4 md:px-6">
             <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
-              <div className="flex flex-col justify-center space-y-8">
+              <div className="flex flex-col justify-center space-y-8 animate-fade-in-right">
                 <div className="space-y-4">
                   <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Streamline Your Project <br />
@@ -103,9 +82,6 @@ export default function LandingPage() {
                     <Link href="/signup">
                       Get Started <ArrowRight className="ml-2" />
                     </Link>
-                  </Button>
-                  <Button asChild size="lg" variant="outline">
-                    <Link href="/login">Sign In</Link>
                   </Button>
                 </div>
                 <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -124,7 +100,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="relative isolate flex items-center justify-center">
+              <div className="relative isolate flex items-center justify-center animate-fade-in-left">
                 <Image
                   src="https://images.unsplash.com/photo-1549492423-400259a2e574?q=80&w=800&auto=format&fit=crop"
                   width={800}
@@ -134,7 +110,7 @@ export default function LandingPage() {
                   className="mx-auto aspect-video max-w-full overflow-hidden rounded-xl object-cover object-center shadow-2xl"
                 />
 
-                <div className="absolute top-4 right-0 transform translate-x-1/4 -translate-y-1/2">
+                <div className="absolute top-4 right-0 transform translate-x-1/4 -translate-y-1/2 transition-transform duration-300 hover:scale-110">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2  p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
                         Active Users
@@ -142,7 +118,7 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                <div className="absolute bottom-10 right-10">
+                <div className="absolute bottom-10 right-10 transform translate-x-1/4 translate-y-1/4 transition-transform duration-300 hover:scale-110">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                         Projects Completed
