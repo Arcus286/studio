@@ -12,13 +12,13 @@ export default function LandingPage() {
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-primary"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3z"></path></svg>
           <span className="font-bold text-lg">AgileBridge</span>
         </Link>
-        <div className="flex items-center gap-4">
-          <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
-            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Features</Link>
-            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">How it Works</Link>
-            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Pricing</Link>
-            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Contact</Link>
-          </nav>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <nav className="hidden items-center gap-6 text-sm font-medium md:flex">
+                <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Features</Link>
+                <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">How it Works</Link>
+                <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Pricing</Link>
+                <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Contact</Link>
+            </nav>
         </div>
       </header>
       <main className="flex-1">
