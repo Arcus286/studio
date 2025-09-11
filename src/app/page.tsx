@@ -71,13 +71,13 @@ export default function LandingPage() {
                   data-ai-hint="ocean clouds"
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover"
                 />
-                 <Card className="absolute -bottom-8 right-8 w-48 shadow-lg bg-background/80 backdrop-blur-sm">
+                 <Card className="absolute -bottom-8 left-8 w-48 shadow-lg bg-background/80 backdrop-blur-sm">
                     <CardContent className="p-4">
                         <p className="text-sm font-medium text-muted-foreground flex items-center"><span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>Projects Completed</p>
                         <p className="text-3xl font-bold">20</p>
                     </CardContent>
                 </Card>
-                <Card className="absolute -top-8 left-8 w-48 shadow-lg bg-background/80 backdrop-blur-sm">
+                <Card className="absolute -top-8 right-8 w-48 shadow-lg bg-background/80 backdrop-blur-sm">
                     <CardContent className="p-4">
                         <p className="text-sm font-medium text-muted-foreground flex items-center"><span className="w-2 h-2 rounded-full bg-primary mr-2"></span>Active Users</p>
                         <p className="text-3xl font-bold">218</p>
