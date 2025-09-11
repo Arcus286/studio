@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 const StatCard = ({
   icon,
@@ -34,72 +35,54 @@ const StatCard = ({
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-center border-b border-border/40 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-6">
-        <div className="flex w-full max-w-screen-xl items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-lg font-semibold"
+      <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border/40 bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-6">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-lg font-semibold"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6 text-primary"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-6 w-6 text-primary"
-            >
-              <path d="M12 3L4 9V17H20V9L12 3Z" />
-              <path d="M8 21V15H16V21" />
-              <path d="M10 11H14" />
-            </svg>
-            <span className="font-bold">AgileBridge</span>
+            <path d="M12 3L4 9V17H20V9L12 3Z" />
+            <path d="M8 21V15H16V21" />
+            <path d="M10 11H14" />
+          </svg>
+          <span className="font-bold">AgileBridge</span>
+        </Link>
+        <nav className="hidden flex-1 items-center justify-center gap-6 text-sm font-medium md:flex">
+          <Link
+            href="#"
+            className="text-foreground/70 transition-colors hover:text-foreground"
+          >
+            Features
           </Link>
-          <nav className="hidden flex-1 items-center justify-center gap-6 text-sm font-medium md:flex">
-            <Link
-              href="#"
-              className="text-foreground/70 transition-colors hover:text-foreground"
-            >
-              Features
-            </Link>
-            <Link
-              href="#"
-              className="text-foreground/70 transition-colors hover:text-foreground"
-            >
-              How it Works
-            </Link>
-            <Link
-              href="#"
-              className="text-foreground/70 transition-colors hover:text-foreground"
-            >
-              Pricing
-            </Link>
-            <Link
-              href="#"
-              className="text-foreground/70 transition-colors hover:text-foreground"
-            >
-              Contact
-            </Link>
-          </nav>
-          <div className="hidden md:flex w-[115px] justify-end">
-            <Button variant="ghost" className="absolute bottom-4 right-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                ></path>
-              </svg>
+          <Link
+            href="#"
+            className="text-foreground/70 transition-colors hover:text-foreground"
+          >
+            How it Works
+          </Link>
+          <Link
+            href="#"
+            className="text-foreground/70 transition-colors hover:text-foreground"
+          >
+            Contact
+          </Link>
+        </nav>
+        <div className="flex items-center gap-4">
+            <Button asChild variant="ghost">
+                <Link href="/login">Sign In</Link>
             </Button>
-          </div>
+            <Button asChild>
+                <Link href="/signup">Sign Up</Link>
+            </Button>
         </div>
       </header>
       <main className="flex-1">
@@ -166,7 +149,7 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                <div className="absolute bottom-8 left-0 transform -translate-x-1/4 translate-y-1/2">
+                <div className="absolute bottom-4 left-4">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                         Projects Completed
@@ -180,12 +163,11 @@ export default function LandingPage() {
       </main>
       <footer className="flex items-center justify-center py-6 px-4 md:px-6 border-t border-border/40">
         <div className="container flex items-center justify-between">
-            <div className="flex items-center gap-2">
-                 <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold">N</div>
+            <p className="text-sm text-muted-foreground">&copy; 2024 AgileBridge. All rights reserved.</p>
+            <div className="flex items-center gap-4 text-sm">
+                <Link href="#" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link>
+                <Link href="#" className="text-muted-foreground hover:text-foreground">Terms of Service</Link>
             </div>
-             <Button variant="ghost" className="fixed bottom-6 right-6 p-3 rounded-full bg-primary text-primary-foreground shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12.0007 10.5867L16.9504 5.63696L18.3646 7.05118L13.4149 12.0009L18.3646 16.9506L16.9504 18.3648L12.0007 13.4151L7.05093 18.3648L5.63672 16.9506L10.5865 12.0009L5.63672 7.05118L7.05093 5.63696L12.0007 10.5867Z"></path></svg>
-             </Button>
         </div>
       </footer>
     </div>
