@@ -2,7 +2,7 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Building, BookOpen, Phone } from "lucide-react";
+import { Briefcase, Phone } from "lucide-react";
 
 export function ProfileCard() {
   const { user } = useAuth();
@@ -11,8 +11,6 @@ export function ProfileCard() {
 
   const infoItems = [
     { icon: Briefcase, text: user.designation, fallback: "No designation set" },
-    { icon: Building, text: user.university, fallback: "No university set" },
-    { icon: BookOpen, text: user.major, fallback: "No major set" },
     { icon: Phone, text: user.phoneNumber, fallback: "No phone number set" },
   ];
 

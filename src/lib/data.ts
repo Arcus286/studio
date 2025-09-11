@@ -1,7 +1,7 @@
 import type { User, Task, Role, TaskType, Priority, Project, Notification } from './types';
 
 export const USERS: User[] = [
-  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', designation: 'Professor', university: 'State University', major: 'Computer Science', phoneNumber: '+1 (555) 123-4567', yearOfStudy: 'Graduate', bio: 'I am the administrator for the AgileBridge platform.' },
+  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
   { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Project Manager' },
   { id: '3', username: 'Frontend Dev', email: 'frontend@taskflow.com', password: 'frontendpassword', role: 'Frontend' },
   { id: '4', username: 'Backend Dev', email: 'backend@taskflow.com', password: 'backendpassword', role: 'Backend' },
@@ -197,5 +197,3 @@ export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Project Manage
 
 export const TASK_TYPES: TaskType[] = ['Epic', 'Story', 'Task'];
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];
-
-export const YEARS_OF_STUDY = ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Graduate'];

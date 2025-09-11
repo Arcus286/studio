@@ -7,10 +7,7 @@ export type User = {
   password?: string;
   role: Role;
   designation?: string;
-  university?: string;
-  major?: string;
   phoneNumber?: string;
-  yearOfStudy?: string;
   bio?: string;
 };
 
