@@ -16,7 +16,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const protectedRoutes = ['/dashboard', '/admin'];
+const protectedRoutes = ['/dashboard', '/admin', '/board', '/projects', '/settings'];
 const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {

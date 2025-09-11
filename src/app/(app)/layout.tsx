@@ -29,7 +29,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Notifications } from '@/components/layout/notifications';
 
-export default function DashboardLayout({
+export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -76,8 +76,8 @@ export default function DashboardLayout({
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/dashboard/settings')}>
-                <Link href="/dashboard/settings">
+              <SidebarMenuButton asChild isActive={pathname.startsWith('/settings')}>
+                <Link href="/settings">
                   <Settings />
                   Settings
                 </Link>
