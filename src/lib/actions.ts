@@ -72,7 +72,7 @@ export async function createTask(prevState: CreateTaskState, formData: FormData)
 
     tasks.unshift(newTask);
 
-    revalidatePath('/');
+    revalidatePath('/dashboard');
     return { message: 'Task created successfully.' };
   } catch (error) {
     return { message: 'Database Error: Failed to Create Task.' };
@@ -103,7 +103,7 @@ export async function updateTaskStatus(id: string, status: TaskStatus) {
   tasks[taskIndex].status = status;
   tasks[taskIndex].updatedAt = new Date();
   
-  revalidatePath('/');
+  revalidatePath('/dashboard');
   revalidatePath(`/tasks/${id}`);
   return { success: true };
 }
