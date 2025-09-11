@@ -4,12 +4,11 @@ import { useState } from 'react';
 import type { Task } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { USERS } from '@/lib/data';
 import { Clock, ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
 import { GitCommit, GitPullRequest, CircleDot } from 'lucide-react';
+import { USERS } from '@/lib/data';
 
 type KanbanCardProps = {
   task: Task;
@@ -64,10 +63,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
           <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
             <div className="flex items-center gap-3">
                 {assignedUser && (
-                <Avatar className="h-6 w-6">
-                    <AvatarImage src={assignedUser.avatar} />
-                    <AvatarFallback>{assignedUser.username.charAt(0)}</AvatarFallback>
-                </Avatar>
+                    <span>{assignedUser.username}</span>
                 )}
                 <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />

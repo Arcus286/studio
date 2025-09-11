@@ -4,7 +4,6 @@ import type { Project } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Folder, Calendar, CheckCircle } from 'lucide-react';
 import { Progress } from '../ui/progress';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { USERS } from '@/lib/data';
 import { format } from 'date-fns';
 import { Badge } from '../ui/badge';
@@ -63,10 +62,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <div className="flex items-center justify-between border-t pt-4">
             <div className="flex -space-x-2">
             {projectMembers.map(member => (
-                <Avatar key={member.id} className="h-8 w-8 border-2 border-card">
-                    <AvatarImage src={member.avatar} />
-                    <AvatarFallback>{member.username.charAt(0)}</AvatarFallback>
-                </Avatar>
+                <div key={member.id} className="h-8 w-8 border-2 border-card rounded-full bg-muted flex items-center justify-center text-xs font-semibold" title={member.username}>
+                    {member.username.charAt(0)}
+                </div>
             ))}
             </div>
             <Button variant="outline" size="sm" asChild>

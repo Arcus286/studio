@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/hooks/use-auth';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { NewTaskDialog } from '../new-task-dialog';
 import { Notifications } from './notifications';
 
@@ -66,10 +65,9 @@ export function Header() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user?.avatar} alt={user?.username} />
-              <AvatarFallback>{user?.username?.charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
+             <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
+                 {user?.username?.charAt(0).toUpperCase()}
+             </div>
             <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>

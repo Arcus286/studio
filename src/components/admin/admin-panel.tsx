@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
@@ -50,10 +49,6 @@ export function AdminPanel() {
             <TableRow key={user.id}>
               <TableCell className="font-medium">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.avatar} />
-                    <AvatarFallback>{user.username.charAt(0)}</AvatarFallback>
-                  </Avatar>
                   {user.username}
                 </div>
               </TableCell>

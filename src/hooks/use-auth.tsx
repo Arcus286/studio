@@ -12,7 +12,7 @@ interface AuthContextType {
   login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
-  addUser: (user: Omit<User, 'id' | 'role' | 'avatar' | 'password'> & { password?: string }) => void;
+  addUser: (user: Omit<User, 'id' | 'role' | 'password'> & { password?: string }) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
   
-  const addUser = (newUser: Omit<User, 'id' | 'role' | 'avatar' | 'password'> & { password?: string }) => {
+  const addUser = (newUser: Omit<User, 'id' | 'role' | 'password'> & { password?: string }) => {
     const userExists = users.some(u => u.email === newUser.email || u.username === newUser.username);
     if(userExists) {
         throw new Error("User with this email or username already exists.");
@@ -83,7 +83,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...newUser,
         id: String(users.length + 1),
         role: 'Frontend', // Default role for new users
-        avatar: `https://i.pravatar.cc/150?u=${newUser.email}`
     };
     setUsers(prevUsers => {
         const newUsers = [...prevUsers, userWithDefaults];

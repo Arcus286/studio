@@ -10,14 +10,13 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { ROLES, USERS } from '@/lib/data';
+import { USERS } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { CalendarDays, Users } from 'lucide-react';
 import { GitCommit, GitPullRequest, CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -106,10 +105,6 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
                 </h3>
                  {assignedUser && (
                     <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                        <Avatar>
-                            <AvatarImage src={assignedUser.avatar} />
-                            <AvatarFallback>{assignedUser.username.charAt(0)}</AvatarFallback>
-                        </Avatar>
                         <div className="flex-1">
                             <p className="font-semibold text-foreground">{assignedUser.username}</p>
                             <p className="text-xs text-muted-foreground">{assignedUser.email}</p>
