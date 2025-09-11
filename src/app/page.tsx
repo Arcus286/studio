@@ -21,10 +21,10 @@ export default function LandingPage() {
           </nav>
           <div className="flex items-center gap-2">
              <Button variant="ghost" asChild>
-                <Link href="/dashboard">Sign In</Link>
+                <Link href="/login">Sign In</Link>
             </Button>
             <Button asChild>
-                <Link href="/dashboard">Get Started Free</Link>
+                <Link href="/signup">Sign Up</Link>
             </Button>
           </div>
         </div>
@@ -45,7 +45,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg">
-                    <Link href="/dashboard">
+                    <Link href="/signup">
                       Get Started Free
                     </Link>
                   </Button>
