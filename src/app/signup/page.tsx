@@ -13,9 +13,9 @@ export default function SignupPage() {
     <div className="flex min-h-screen w-full items-center justify-center bg-muted/40 px-4">
       <Card className="w-full max-w-md">
         <CardContent className="p-6 sm:p-8">
-            <Link href="/login" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
                 <ArrowLeft className="h-4 w-4" />
-                Back to sign in
+                Back to Home
             </Link>
           <div className="space-y-2 mb-6">
             <h1 className="text-3xl font-bold">Create your account</h1>
