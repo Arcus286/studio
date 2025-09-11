@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, Search, User, Workflow } from 'lucide-react';
+import { Bell, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -21,11 +21,7 @@ export function Header() {
   const isAdmin = user?.role === 'Admin';
 
   return (
-    <header className="flex h-16 items-center gap-4 border-b bg-card px-4 lg:px-6">
-      <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-lg">
-        <Workflow className="h-6 w-6 text-primary" />
-        <span className="">AgileBridge</span>
-      </Link>
+    <div className="flex items-center gap-4">
       <div className="w-full flex-1">
         <form>
           <div className="relative">
@@ -38,7 +34,7 @@ export function Header() {
           </div>
         </form>
       </div>
-      {isAdmin && <NewTaskDialog />}
+      
       <Button variant="ghost" size="icon" className="rounded-full">
         <Bell className="h-5 w-5" />
         <span className="sr-only">Toggle notifications</span>
@@ -67,6 +63,6 @@ export function Header() {
           <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </header>
+    </div>
   );
 }
