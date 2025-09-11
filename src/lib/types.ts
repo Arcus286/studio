@@ -13,7 +13,7 @@ export type User = {
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'In Review' | 'Done';
 export type Priority = 'Low' | 'Medium' | 'High';
-export type TaskType = 'Epic' | 'Story' | 'Task';
+export type TaskType = 'Bug' | 'Task';
 
 
 export type Task = {

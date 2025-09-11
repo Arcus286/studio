@@ -17,8 +17,8 @@ import { format, parseISO } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users } from 'lucide-react';
-import { GitCommit, GitPullRequest, CircleDot } from 'lucide-react';
+import { CalendarDays, Users, Bug } from 'lucide-react';
+import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type TaskDetailDialogProps = {
@@ -27,13 +27,11 @@ type TaskDetailDialogProps = {
   task: Task;
 };
 
-const TaskTypeIcon = ({ type, className }: { type: 'Epic' | 'Story' | 'Task', className?: string }) => {
+const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task', className?: string }) => {
     const baseClassName = "h-5 w-5";
     switch (type) {
-        case 'Epic':
-            return <GitCommit className={cn(baseClassName, "text-purple-400", className)} />;
-        case 'Story':
-            return <GitPullRequest className={cn(baseClassName, "text-orange-400", className)} />;
+        case 'Bug':
+            return <Bug className={cn(baseClassName, "text-red-500", className)} />;
         case 'Task':
             return <CircleDot className={cn(baseClassName, "text-blue-400", className)} />;
     }

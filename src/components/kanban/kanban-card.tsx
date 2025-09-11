@@ -5,10 +5,10 @@ import { useState } from 'react';
 import type { Task } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import { Clock, ArrowUp, ArrowDown, Minus, Bug } from 'lucide-react';
 import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
-import { GitCommit, GitPullRequest, CircleDot } from 'lucide-react';
+import { CircleDot } from 'lucide-react';
 import { USERS } from '@/lib/data';
 
 type KanbanCardProps = {
@@ -30,13 +30,11 @@ const PriorityIcon = ({ priority }: { priority: 'Low' | 'Medium' | 'High' }) => 
     }
 };
 
-const TaskTypeIcon = ({ type }: { type: 'Epic' | 'Story' | 'Task' }) => {
+const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' }) => {
     const className = "h-4 w-4 mr-1";
     switch (type) {
-        case 'Epic':
-            return <GitCommit className={cn(className, "text-purple-400")} />;
-        case 'Story':
-            return <GitPullRequest className={cn(className, "text-orange-400")} />;
+        case 'Bug':
+            return <Bug className={cn(className, "text-red-500")} />;
         case 'Task':
             return <CircleDot className={cn(className, "text-blue-400")} />;
     }

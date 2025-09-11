@@ -20,7 +20,7 @@ export const TASKS: Task[] = [
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
-        type: 'Story',
+        type: 'Task',
     },
     {
         id: 'TASK-2',
@@ -59,7 +59,7 @@ export const TASKS: Task[] = [
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
-        type: 'Story',
+        type: 'Task',
     },
     {
         id: 'TASK-5',
@@ -72,7 +72,7 @@ export const TASKS: Task[] = [
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
-        type: 'Epic',
+        type: 'Task',
     },
     {
         id: 'TASK-6',
@@ -85,7 +85,7 @@ export const TASKS: Task[] = [
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
-        type: 'Task',
+        type: 'Bug',
     },
     {
         id: 'TASK-7',
@@ -111,7 +111,7 @@ export const TASKS: Task[] = [
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Low',
-        type: 'Epic',
+        type: 'Task',
     },
 ];
 
@@ -195,5 +195,5 @@ export const NOTIFICATIONS: Notification[] = [
 
 export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Project Manager', 'Admin'];
 
-export const TASK_TYPES: TaskType[] = ['Epic', 'Story', 'Task'];
+export const TASK_TYPES: TaskType[] = ['Bug', 'Task'];
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

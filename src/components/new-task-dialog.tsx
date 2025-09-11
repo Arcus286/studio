@@ -50,14 +50,14 @@ export function NewTaskForm() {
       description: `"${data.title}" has been added to the board.`,
     });
     form.reset();
-    router.push('/dashboard');
+    router.push('/board');
   };
 
   return (
     <div>
-        <Link href="/dashboard" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
+        <Link href="/board" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4">
             <ArrowLeft className="h-4 w-4" />
-            Back to Dashboard
+            Back to Board
         </Link>
         <h1 className="text-3xl font-bold mb-2">Add New Task</h1>
         <p className="text-muted-foreground mb-6">Create a new assignment, project task, or reminder.</p>
@@ -129,7 +129,7 @@ export function NewTaskForm() {
                             name="type"
                             render={({ field }) => (
                                 <FormItem>
-                                <FormLabel>Type of Work</FormLabel>
+                                <FormLabel>Type of Task</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                         <SelectTrigger>
@@ -184,7 +184,7 @@ export function NewTaskForm() {
                     </div>
                    
                     <div className="flex justify-end gap-2 mt-4">
-                        <Button type="button" variant="outline" onClick={() => router.push('/dashboard')}>Cancel</Button>
+                        <Button type="button" variant="outline" onClick={() => router.push('/board')}>Cancel</Button>
                         <Button type="submit">Add Task</Button>
                     </div>
                 </form>
