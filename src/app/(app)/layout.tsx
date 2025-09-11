@@ -29,7 +29,7 @@ import Loading from '../loading';
 import { useEffect } from 'react';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -142,11 +142,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (isLoading || !user) {
     return <Loading />;
   }
-
-  // Prevent rendering auth routes here
+  
   const authRoutes = ['/login', '/signup', '/forgot-password'];
   if (authRoutes.includes(pathname)) {
-    return <Loading />;
+      return <Loading />;
   }
 
   return <AppLayoutContent>{children}</AppLayoutContent>;
