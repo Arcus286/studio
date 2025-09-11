@@ -1,11 +1,11 @@
 import type { User, Task, Role } from './types';
 
 export const USERS: User[] = [
-  { id: '1', username: 'admin', email: 'admin@taskflow.com', role: 'Admin', avatar: 'https://i.pravatar.cc/150?u=admin' },
-  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', role: 'Project Manager', avatar: 'https://i.pravatar.cc/150?u=pm' },
-  { id: '3', username: 'Frontend Dev', email: 'frontend@taskflow.com', role: 'Frontend', avatar: 'https://i.pravatar.cc/150?u=frontend' },
-  { id: '4', username: 'Backend Dev', email: 'backend@taskflow.com', role: 'Backend', avatar: 'https://i.pravatar.cc/150?u=backend' },
-  { id: '5', username: 'UI/UX Designer', email: 'designer@taskflow.com', role: 'Designer', avatar: 'https://i.pravatar.cc/150?u=designer' },
+  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'adminpassword', role: 'Admin', avatar: 'https://i.pravatar.cc/150?u=admin' },
+  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Project Manager', avatar: 'https://i.pravatar.cc/150?u=pm' },
+  { id: '3', username: 'Frontend Dev', email: 'frontend@taskflow.com', password: 'frontendpassword', role: 'Frontend', avatar: 'https://i.pravatar.cc/150?u=frontend' },
+  { id: '4', username: 'Backend Dev', email: 'backend@taskflow.com', password: 'backendpassword', role: 'Backend', avatar: 'https://i.pravatar.cc/150?u=backend' },
+  { id: '5', username: 'UI/UX Designer', email: 'designer@taskflow.com', password: 'designerpassword', role: 'Designer', avatar: 'https://i.pravatar.cc/150?u=designer' },
 ];
 
 export const TASKS: Task[] = [

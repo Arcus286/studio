@@ -20,7 +20,7 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      login(email);
+      login(email, password);
     } catch (error) {
       toast({
         variant: 'destructive',
