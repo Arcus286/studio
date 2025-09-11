@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Task } from '@/lib/types';
@@ -47,11 +48,8 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
 
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle>Recent Activity</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[calc(100vh-220px)]">
+      <CardContent className="pt-6">
+        <ScrollArea className="h-[300px]">
             <div className="space-y-6">
             {recentTasks.map((task) => {
                 const taskType = getTaskType(task.title);

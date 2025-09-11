@@ -78,4 +78,16 @@
   .status-Done {
     @apply bg-green-500/10;
   }
+  .bg-card-purple {
+    background-color: rgba(139, 92, 246, 0.1);
+  }
+  .bg-card-green {
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+  .bg-card-blue {
+    background-color: rgba(59, 130, 246, 0.1);
+  }
+  .bg-card-orange {
+    background-color: rgba(249, 115, 22, 0.1);
+  }
 }

@@ -1,20 +1,9 @@
+
 'use client';
 
 import type { Task } from '@/lib/types';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import { ListChecks, Loader, ClipboardList } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/use-auth';
 
 type DashboardAnalyticsProps = {
@@ -34,95 +23,52 @@ export function DashboardAnalytics({ tasks }: DashboardAnalyticsProps) {
   const inProgressTasks = filteredTasks.filter(
     (t) => t.status === 'In Progress'
   ).length;
-
-  const tasksByRole = tasks.reduce((acc, task) => {
-    acc[task.assignedRole] = (acc[task.assignedRole] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const chartData = Object.entries(tasksByRole).map(([role, count]) => ({
-    role,
-    tasks: count,
-  }));
-
-  const chartConfig = {
-    tasks: {
-      label: 'Tasks',
-      color: 'hsl(var(--primary))',
-    },
-  };
+  const todoTasks = filteredTasks.filter((t) => t.status === 'To Do').length;
+  
+  const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
   return (
-    <div className="mb-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <Card>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Card className="bg-card-purple border-purple-500/20">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
-          <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium text-muted-foreground">Total Issues</CardTitle>
+          <div className="h-4 w-4 rounded-sm bg-primary" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{totalTasks}</div>
-          <p className="text-xs text-muted-foreground">
-            Tasks assigned to your role
-          </p>
+          <div className="text-4xl font-bold">{totalTasks}</div>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">+12% from last week</Badge>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="bg-card-green border-green-500/20">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Completed</CardTitle>
-          <ListChecks className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
+          <div className="h-4 w-4 rounded-sm bg-green-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{doneTasks}</div>
-          <p className="text-xs text-muted-foreground">
-            Tasks that have been finished
-          </p>
+          <div className="text-4xl font-bold">{doneTasks}</div>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">{completionRate}% completion rate</Badge>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="bg-card-blue border-blue-500/20">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-          <Loader className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
+          <div className="h-4 w-4 rounded-sm bg-blue-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{inProgressTasks}</div>
-          <p className="text-xs text-muted-foreground">
-            Tasks currently being worked on
-          </p>
+          <div className="text-4xl font-bold">{inProgressTasks}</div>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">Active work</Badge>
         </CardContent>
       </Card>
-      {user?.role === 'Admin' && (
-        <Card className="sm:col-span-2 lg:col-span-3">
-          <CardHeader>
-            <CardTitle className="text-lg">Task Distribution</CardTitle>
-            <CardDescription>Tasks per role across the project</CardDescription>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <ChartContainer config={chartConfig} className="h-[120px] w-full">
-              <BarChart
-                accessibilityLayer
-                data={chartData}
-                margin={{ left: 20, top: 0, right: 20, bottom: 0 }}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="role"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  className="text-xs"
-                  interval={0}
-                />
-                <YAxis dataKey="tasks" type="number" hide />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Bar dataKey="tasks" fill="var(--color-tasks)" radius={4} />
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      )}
+       <Card className="bg-card-orange border-orange-500/20">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
+          <div className="h-4 w-4 rounded-sm bg-orange-500" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-4xl font-bold">{todoTasks}</div>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">Ready to start</Badge>
+        </CardContent>
+      </Card>
     </div>
   );
 }
