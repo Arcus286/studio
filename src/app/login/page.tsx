@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-background">
+    <div className="flex min-h-screen w-full items-center justify-center bg-muted/40">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
             <div className="mb-4 inline-block">
