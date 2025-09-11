@@ -591,9 +591,12 @@ const SidebarMenuButton = React.forwardRef<
     if (!tooltipContent) {
       return button;
     }
-
-    const tooltipProps: Omit<React.ComponentProps<typeof TooltipContent>, 'children'> =
-      typeof tooltip === "object" ? (({ children, ...rest }) => rest)(tooltip) : {};
+    
+    const tooltipProps = typeof tooltip === 'object' ? { ...tooltip } : {};
+    if (typeof tooltip === 'object' && tooltip) {
+        delete (tooltipProps as any).children;
+        delete (tooltipProps as any).key;
+    }
 
 
     return (
