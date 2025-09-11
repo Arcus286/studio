@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('taskflow-user');
+    const storedUser = localStorage.getItem('agilebridge-user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (email: string) => {
     const foundUser = USERS.find(u => u.email === email);
     if (foundUser) {
-        localStorage.setItem('taskflow-user', JSON.stringify(foundUser));
+        localStorage.setItem('agilebridge-user', JSON.stringify(foundUser));
         setUser(foundUser);
         router.push('/dashboard');
     } else {
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('taskflow-user');
+    localStorage.removeItem('agilebridge-user');
     setUser(null);
     router.push('/login');
   };

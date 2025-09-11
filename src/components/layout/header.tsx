@@ -23,7 +23,7 @@ export function Header() {
     <header className="flex h-16 items-center gap-4 border-b bg-card px-4 lg:px-6">
       <Link href="/dashboard" className="flex items-center gap-2 font-semibold text-lg">
         <Workflow className="h-6 w-6 text-primary" />
-        <span className="">TaskFlow</span>
+        <span className="">AgileBridge</span>
       </Link>
       <div className="w-full flex-1">
         <form>

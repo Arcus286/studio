@@ -41,7 +41,7 @@ export default function LoginPage() {
             <div className="mb-4 inline-block">
                 <Workflow className="h-10 w-10 text-primary mx-auto"/>
             </div>
-          <CardTitle className="text-2xl">Welcome to TaskFlow</CardTitle>
+          <CardTitle className="text-2xl">Welcome to AgileBridge</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>
         </CardHeader>
         <CardContent>

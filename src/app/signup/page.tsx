@@ -68,7 +68,7 @@ export default function SignupPage() {
                         <Workflow className="h-10 w-10 text-primary mx-auto" />
                     </div>
                     <CardTitle className="text-2xl">Create your account</CardTitle>
-                    <CardDescription>Join TaskFlow and start managing your projects.</CardDescription>
+                    <CardDescription>Join AgileBridge and start managing your projects.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="grid gap-4">
