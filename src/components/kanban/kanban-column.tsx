@@ -18,10 +18,17 @@ const columnTitles: Record<TaskStatus, string> = {
 };
 
 const statusColors: Record<TaskStatus, string> = {
-  'To Do': 'bg-blue-500/20 text-blue-500 border-t-blue-500',
-  'In Progress': 'bg-yellow-500/20 text-yellow-500 border-t-yellow-500',
-  'In Review': 'bg-purple-500/20 text-purple-500 border-t-purple-500',
-  'Done': 'bg-green-500/20 text-green-500 border-t-green-500',
+  'To Do': 'border-blue-500/50 bg-blue-500/10',
+  'In Progress': 'border-yellow-500/50 bg-yellow-500/10',
+  'In Review': 'border-purple-500/50 bg-purple-500/10',
+  'Done': 'border-green-500/50 bg-green-500/10',
+};
+
+const titleColors: Record<TaskStatus, string> = {
+    'To Do': 'text-blue-500',
+    'In Progress': 'text-yellow-500',
+    'In Review': 'text-purple-500',
+    'Done': 'text-green-500',
 };
 
 
@@ -29,12 +36,12 @@ export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnP
   const statusClassName = `status-${status.replace(' ', '-')}`;
 
   return (
-    <div className="flex flex-col">
-      <div className={cn("p-3 rounded-t-lg flex items-center justify-between border-t-4", statusColors[status])}>
-        <h2 className="text-lg font-semibold text-foreground">
+    <div className={cn("flex flex-col rounded-xl border", statusColors[status])}>
+      <div className={cn("p-3 flex items-center justify-between")}>
+        <h2 className={cn("text-lg font-semibold", titleColors[status])}>
           {columnTitles[status]}
         </h2>
-        <span className={cn("text-sm font-normal h-6 w-6 flex items-center justify-center rounded-full", statusColors[status])}>
+        <span className={cn("text-sm font-normal h-6 w-6 flex items-center justify-center rounded-full bg-background")}>
             {tasks.length}
           </span>
       </div>
@@ -43,8 +50,8 @@ export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnP
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className={cn(`p-3 space-y-4 rounded-b-lg min-h-[500px] transition-colors`, statusClassName,
-              snapshot.isDraggingOver ? 'bg-opacity-30' : 'bg-opacity-10'
+            className={cn(`p-3 space-y-4 rounded-b-lg min-h-[500px] transition-colors`, 
+              snapshot.isDraggingOver ? 'bg-black/10' : 'bg-transparent'
             )}
           >
             {tasks.map((task, index) => (
