@@ -49,7 +49,7 @@ export default function LandingPage() {
           </Link>
         </nav>
         <div className="flex items-center gap-4">
-           <Button asChild variant="ghost">
+           <Button asChild variant="outline">
                 <Link href="/login">Sign In</Link>
             </Button>
             <Button asChild>
@@ -110,7 +110,26 @@ export default function LandingPage() {
                   className="mx-auto aspect-video max-w-full overflow-hidden rounded-xl object-cover object-center shadow-2xl"
                 />
 
-                <div className="absolute top-4 right-0 transform translate-x-1/4 -translate-y-1/2 transition-transform duration-300 hover:scale-110">
+                <div className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                   <div className="inline-flex items-center rounded-lg border p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-6 w-6 text-primary/70"
+                      >
+                        <path d="M12 3L4 9V17H20V9L12 3Z" />
+                        <path d="M8 21V15H16V21" />
+                      </svg>
+                    </div>
+                </div>
+
+
+                <div className="absolute top-1/4 right-0 transform translate-x-1/4 -translate-y-1/2 transition-transform duration-300 hover:scale-110">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2  p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
                         Active Users
@@ -118,7 +137,7 @@ export default function LandingPage() {
                     </div>
                 </div>
 
-                <div className="absolute bottom-10 right-10 transform translate-x-1/4 translate-y-1/4 transition-transform duration-300 hover:scale-110">
+                <div className="absolute bottom-1/4 right-1/4 transform translate-x-1/2 translate-y-1/2 transition-transform duration-300 hover:scale-110">
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                         Projects Completed
