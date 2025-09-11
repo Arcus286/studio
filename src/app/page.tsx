@@ -75,7 +75,7 @@ export default function LandingPage() {
                   data-ai-hint="misty meadow landscape"
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center shadow-2xl"
                 />
-                 <div className="absolute -bottom-8 -left-8 md:-bottom-10 md:-left-12 z-10">
+                 <div className="absolute -bottom-8 -left-4 md:-bottom-10 md:-left-8 z-10">
                     <Badge variant="secondary" className="p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                       <span className="mr-2 h-2 w-2 rounded-full bg-green-400"></span>
                       <span className="font-medium text-foreground">Projects Completed</span>
