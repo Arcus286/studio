@@ -58,18 +58,18 @@ export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps)
           <p className="font-semibold text-foreground">{task.title}</p>
           <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>
            <div className="flex items-center gap-2">
-                <Badge variant="outline" className="flex items-center">
+                <Badge variant="outline" className="flex items-center flex-shrink-0">
                     <TaskTypeIcon type={task.type} />
                     {task.type}
                 </Badge>
-                <Badge variant="secondary">{task.assignedRole}</Badge>
+                <Badge variant="secondary" className="flex-shrink-0">{task.assignedRole}</Badge>
            </div>
           <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
             <div className="flex items-center gap-3">
                 {assignedUser && (
-                    <span>{assignedUser.username}</span>
+                    <span className="truncate">{assignedUser.username}</span>
                 )}
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-shrink-0">
                     <Clock className="h-4 w-4" />
                     <span>{task.timeSpent}/{task.estimatedHours}h</span>
                 </div>
