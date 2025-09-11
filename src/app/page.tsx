@@ -1,33 +1,46 @@
-import { ArrowRight, Star } from 'lucide-react';
+import { ArrowRight, Check, Bot } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-center border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
-        <nav className="flex items-center gap-6 text-sm font-medium">
-          <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Features</Link>
-          <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Pricing</Link>
-          <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Testimonials</Link>
-          <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Contact</Link>
-        </nav>
+        <div className="flex items-center justify-between w-full max-w-screen-xl">
+           <Link href="/" className="flex items-center gap-2 font-semibold text-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6 text-primary">
+                    <path d="M12 2L2 7V17L12 22L22 17V7L12 2ZM11 15.5V11H13V15.5H11ZM11 9V6H13V9H11Z" />
+                </svg>
+                <span className="font-bold">AgileBridge</span>
+            </Link>
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Features</Link>
+            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">How it Works</Link>
+            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Pricing</Link>
+            <Link href="#" className="text-foreground/70 transition-colors hover:text-foreground">Contact</Link>
+          </nav>
+          <div className="hidden md:flex items-center gap-4">
+             {/* Placeholder for potential future buttons */}
+          </div>
+        </div>
       </header>
       <main className="flex-1">
-        <section className="py-12 md:py-24 lg:py-32 xl:py-48">
+        <section className="py-20 md:py-32 lg:py-40">
           <div className="container px-4 md:px-6">
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-16 items-center">
-              <div className="flex flex-col justify-center space-y-4">
+            <div className="grid gap-8 lg:grid-cols-2 lg:gap-16 items-center">
+              <div className="flex flex-col justify-center space-y-6">
                 <div className="space-y-4">
-                  <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500">
-                    Collaborate, Innovate, and Succeed with AgileBridge
+                  <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                    Streamline Your Project <br/>
+                    <span className="text-primary">Workflow</span>
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    AgileBridge is the ultimate platform for modern software teams to build, ship, and maintain products.
+                    AgileBridge is the ultimate project management tool for modern teams. Track tasks, collaborate seamlessly, and ship projects faster than ever before.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg">
                     <Link href="/signup">
                       Get Started <ArrowRight className="ml-2" />
@@ -37,44 +50,53 @@ export default function LandingPage() {
                     <Link href="/login">Sign In</Link>
                   </Button>
                 </div>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4">
+                    <div className="flex items-center gap-2">
+                        <Check className="h-5 w-5 text-primary" />
+                        <span>AI-Powered Suggestions</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <Check className="h-5 w-5 text-primary" />
+                        <span>Drag & Drop Board</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <Check className="h-5 w-5 text-primary" />
+                        <span>Team Collaboration</span>
+                    </div>
+                </div>
               </div>
 
               <div className="relative isolate">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-                >
-                  <div
-                    style={{
-                      clipPath:
-                        'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
-                    }}
-                    className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-                  />
-                </div>
                 <Image
-                  src="https://picsum.photos/seed/dashboard/600/400"
+                  src="https://picsum.photos/seed/meadow/600/400"
                   width={600}
                   height={400}
-                  alt="Dashboard"
-                  data-ai-hint="dashboard application screenshot"
+                  alt="Misty meadow"
+                  data-ai-hint="misty meadow landscape"
                   className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center shadow-2xl"
                 />
-                 <div className="relative mt-8">
-                  <div className="absolute -bottom-4 -right-4 bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 shadow-lg animate-fade-in-up">
-                    <div className="text-sm font-medium text-white">Projects Completed</div>
-                    <div className="text-3xl font-bold text-white">20</div>
-                  </div>
-                  <div className="absolute -bottom-4 -left-4 bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 shadow-lg animate-fade-in-up delay-200">
-                    <div className="text-sm font-medium text-white">Active Users</div>
-                    <div className="text-3xl font-bold text-white">218</div>
-                  </div>
+                 <div className="absolute -bottom-8 -left-8 md:-bottom-10 md:-left-12 z-10">
+                    <Badge variant="secondary" className="p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
+                      <span className="mr-2 h-2 w-2 rounded-full bg-green-400"></span>
+                      <span className="font-medium text-foreground">Projects Completed</span>
+                      <span className="ml-2 font-bold text-lg">20</span>
+                    </Badge>
+                </div>
+                 <div className="absolute -top-8 -right-8 md:-top-10 md:-right-12 z-10">
+                    <Badge variant="secondary" className="p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
+                      <span className="mr-2 h-2 w-2 rounded-full bg-purple-400"></span>
+                      <span className="font-medium text-foreground">Active Users</span>
+                       <span className="ml-2 font-bold text-lg">218</span>
+                    </Badge>
                 </div>
               </div>
             </div>
           </div>
         </section>
       </main>
+      <Button variant="ghost" size="icon" className="fixed bottom-8 right-8 rounded-full h-12 w-12 bg-primary text-primary-foreground hover:bg-primary/90">
+        <Bot className="h-6 w-6"/>
+      </Button>
     </div>
   );
 }
