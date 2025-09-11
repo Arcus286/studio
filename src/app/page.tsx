@@ -30,13 +30,13 @@ export default function LandingPage() {
         </Link>
         <nav className="hidden flex-1 items-center justify-center gap-6 text-sm font-medium md:flex">
           <Link
-            href="#"
+            href="/features"
             className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             Features
           </Link>
           <Link
-            href="#"
+            href="/how-it-works"
             className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             How it Works
