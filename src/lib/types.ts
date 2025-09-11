@@ -27,3 +27,16 @@ export type Task = {
   priority: Priority;
   type: TaskType;
 };
+
+export type Project = {
+    id: string;
+    name: string;
+    key: string;
+    description: string;
+    color: string;
+    status: 'active' | 'inactive';
+    completion: number;
+    createdAt: string;
+    issues: number;
+    members: string[]; // array of user emails
+};

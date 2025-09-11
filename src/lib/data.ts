@@ -1,4 +1,4 @@
-import type { User, Task, Role, TaskType, Priority } from './types';
+import type { User, Task, Role, TaskType, Priority, Project } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', avatar: 'https://i.pravatar.cc/150?u=admin' },
@@ -114,6 +114,46 @@ export const TASKS: Task[] = [
         type: 'Epic',
     },
 ];
+
+export const PROJECTS: Project[] = [
+    {
+        id: 'PROJ-1',
+        name: 'AgileBridge Platform',
+        key: 'ABP',
+        description: 'Development of the main AgileBridge project management platform.',
+        color: 'hsl(var(--primary))',
+        status: 'active',
+        completion: 45,
+        createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        issues: 8,
+        members: ['admin@taskflow.com', 'pm@taskflow.com', 'frontend@taskflow.com', 'backend@taskflow.com', 'designer@taskflow.com'],
+    },
+    {
+        id: 'PROJ-2',
+        name: 'Mobile App Initiative',
+        key: 'MAI',
+        description: 'A new initiative to create a native mobile application for iOS and Android.',
+        color: 'hsl(var(--chart-2))',
+        status: 'active',
+        completion: 10,
+        createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        issues: 3,
+        members: ['pm@taskflow.com', 'frontend@taskflow.com', 'backend@taskflow.com'],
+    },
+    {
+        id: 'PROJ-3',
+        name: 'Website Redesign',
+        key: 'WR',
+        description: 'A complete overhaul of the public-facing marketing website.',
+        color: 'hsl(var(--chart-5))',
+        status: 'active',
+        completion: 75,
+        createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+        issues: 2,
+        members: ['designer@taskflow.com', 'frontend@taskflow.com'],
+    }
+];
+
 
 export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Project Manager', 'Admin'];
 

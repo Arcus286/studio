@@ -50,7 +50,7 @@ export default function DashboardLayout({
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith('/dashboard')}
+                isActive={pathname === '/dashboard'}
               >
                 <Link href="/dashboard">
                   <LayoutDashboard />
@@ -60,7 +60,7 @@ export default function DashboardLayout({
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname.startsWith('/board')}>
-                <Link href="/dashboard">
+                <Link href="/board">
                   <KanbanSquare />
                   Board
                 </Link>
@@ -68,7 +68,7 @@ export default function DashboardLayout({
             </SidebarMenuItem>
              <SidebarMenuItem>
               <SidebarMenuButton asChild isActive={pathname.startsWith('/projects')}>
-                <Link href="#">
+                <Link href="/projects">
                   <Folder />
                   Projects
                 </Link>
