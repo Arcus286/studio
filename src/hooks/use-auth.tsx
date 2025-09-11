@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import type { User, Role } from '@/lib/types';
+import type { User } from '@/lib/types';
 import { USERS as initialUsers } from '@/lib/data';
 import Loading from '@/app/loading';
 
@@ -12,12 +12,12 @@ interface AuthContextType {
   login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
-  addUser: (user: Omit<User, 'id' | 'role' | 'avatar'>) => void;
+  addUser: (user: Omit<User, 'id' | 'role' | 'avatar' | 'password'> & { password?: string }) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const protectedRoutes = ['/dashboard', '/admin', '/board', '/projects', '/settings'];
+const protectedRoutes = ['/dashboard', '/admin', '/board', '/projects', '/settings', '/tasks'];
 const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
   
-  const addUser = (newUser: Omit<User, 'id' | 'role' | 'avatar'>) => {
+  const addUser = (newUser: Omit<User, 'id' | 'role' | 'avatar' | 'password'> & { password?: string }) => {
     const userExists = users.some(u => u.email === newUser.email || u.username === newUser.username);
     if(userExists) {
         throw new Error("User with this email or username already exists.");
@@ -85,7 +85,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: 'Frontend', // Default role for new users
         avatar: `https://i.pravatar.cc/150?u=${newUser.email}`
     };
-    setUsers(prevUsers => [...prevUsers, userWithDefaults]);
+    setUsers(prevUsers => {
+        const newUsers = [...prevUsers, userWithDefaults];
+        console.log("Updated users list:", newUsers);
+        return newUsers;
+    });
   }
 
   const value = {
@@ -96,14 +100,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     addUser,
   };
-  
-  const isAuthPage = authRoutes.includes(pathname);
+
   const isProtectedRoutePage = protectedRoutes.some(route => pathname.startsWith(route));
 
-  if (isLoading && (isAuthPage || isProtectedRoutePage)) {
+  if (isLoading && isProtectedRoutePage) {
     return <Loading />;
   }
-
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
