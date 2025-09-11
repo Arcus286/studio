@@ -99,4 +99,4 @@ export const TASKS: Task[] = [
     },
 ];
 
-export const ROLES: Role[] = ['Frontend', 'Backend', 'Developer', 'Designer', 'Project Manager', 'Admin'];
+export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Project Manager', 'Admin'];
