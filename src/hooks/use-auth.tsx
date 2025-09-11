@@ -9,7 +9,7 @@ import Loading from '@/app/loading';
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  login: (email: string, password?: string) => void;
+  login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -54,8 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [user, isLoading, pathname, router]);
 
-  const login = (email: string, password?: string) => {
-    const foundUser = USERS.find(u => u.email === email);
+  const login = (usernameOrEmail: string, password?: string) => {
+    const foundUser = USERS.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
     if (foundUser && (!foundUser.password || foundUser.password === password)) {
         localStorage.setItem('agilebridge-user', JSON.stringify(foundUser));
         setUser(foundUser);
