@@ -53,7 +53,7 @@ export function DashboardAnalytics({ tasks }: DashboardAnalyticsProps) {
   };
 
   return (
-    <div className="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <div className="mb-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
@@ -62,7 +62,7 @@ export function DashboardAnalytics({ tasks }: DashboardAnalyticsProps) {
         <CardContent>
           <div className="text-2xl font-bold">{totalTasks}</div>
           <p className="text-xs text-muted-foreground">
-            All tasks in the project
+            Tasks assigned to your role
           </p>
         </CardContent>
       </Card>
@@ -91,30 +91,28 @@ export function DashboardAnalytics({ tasks }: DashboardAnalyticsProps) {
         </CardContent>
       </Card>
       {user?.role === 'Admin' && (
-        <Card className="md:col-span-2 lg:col-span-1">
+        <Card className="sm:col-span-2 lg:col-span-3">
           <CardHeader>
             <CardTitle className="text-lg">Task Distribution</CardTitle>
-            <CardDescription>Tasks per role</CardDescription>
+            <CardDescription>Tasks per role across the project</CardDescription>
           </CardHeader>
           <CardContent className="pl-2">
             <ChartContainer config={chartConfig} className="h-[120px] w-full">
               <BarChart
                 accessibilityLayer
                 data={chartData}
-                layout="vertical"
-                margin={{ left: 0, top: 0, right: 20, bottom: 0 }}
+                margin={{ left: 20, top: 0, right: 20, bottom: 0 }}
               >
-                <CartesianGrid horizontal={false} />
-                <YAxis
+                <CartesianGrid vertical={false} />
+                <XAxis
                   dataKey="role"
-                  type="category"
                   tickLine={false}
                   tickMargin={10}
                   axisLine={false}
                   className="text-xs"
                   interval={0}
                 />
-                <XAxis dataKey="tasks" type="number" hide />
+                <YAxis dataKey="tasks" type="number" hide />
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
