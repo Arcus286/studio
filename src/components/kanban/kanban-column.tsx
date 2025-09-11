@@ -1,6 +1,7 @@
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import type { Task, TaskStatus } from '@/lib/types';
 import { KanbanCard } from './kanban-card';
+import { cn } from '@/lib/utils';
 
 type KanbanColumnProps = {
   status: TaskStatus;
@@ -10,28 +11,39 @@ type KanbanColumnProps = {
 const columnTitles: Record<TaskStatus, string> = {
   'To Do': 'To Do',
   'In Progress': 'In Progress',
+  'In Review': 'In Review',
   'Done': 'Done',
 };
 
+const statusColors: Record<TaskStatus, string> = {
+  'To Do': 'bg-blue-500/20 text-blue-500',
+  'In Progress': 'bg-yellow-500/20 text-yellow-500',
+  'In Review': 'bg-purple-500/20 text-purple-500',
+  'Done': 'bg-green-500/20 text-green-500',
+};
+
+
 export function KanbanColumn({ status, tasks }: KanbanColumnProps) {
+  const statusClassName = `status-${status.replace(' ', '-')}`;
+
   return (
     <div className="flex flex-col">
-      <div className="p-3 bg-muted rounded-t-lg border-b">
-        <h2 className="text-lg font-semibold flex items-center justify-between">
+      <div className={cn("p-3 rounded-t-lg border-b flex items-center justify-between", statusClassName)}>
+        <h2 className="text-lg font-semibold text-foreground">
           {columnTitles[status]}
-          <span className="text-sm font-normal bg-primary/20 text-primary-foreground h-6 w-6 flex items-center justify-center rounded-full">
+        </h2>
+        <span className={cn("text-sm font-normal h-6 w-6 flex items-center justify-center rounded-full", statusColors[status])}>
             {tasks.length}
           </span>
-        </h2>
       </div>
       <Droppable droppableId={status}>
         {(provided, snapshot) => (
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
-            className={`p-3 space-y-4 rounded-b-lg bg-muted/50 min-h-[500px] transition-colors ${
-              snapshot.isDraggingOver ? 'bg-primary/10' : ''
-            }`}
+            className={cn(`p-3 space-y-4 rounded-b-lg min-h-[500px] transition-colors`, statusClassName,
+              snapshot.isDraggingOver ? 'bg-opacity-30' : 'bg-opacity-10'
+            )}
           >
             {tasks.map((task, index) => (
               <Draggable key={task.id} draggableId={task.id} index={index}>

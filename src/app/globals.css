@@ -64,3 +64,18 @@
     font-family: 'Inter', sans-serif;
   }
 }
+
+@layer components {
+  .status-To-Do {
+    @apply bg-blue-500/10;
+  }
+  .status-In-Progress {
+    @apply bg-yellow-500/10;
+  }
+  .status-In-Review {
+    @apply bg-purple-500/10;
+  }
+  .status-Done {
+    @apply bg-green-500/10;
+  }
+}

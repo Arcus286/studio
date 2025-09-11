@@ -55,7 +55,7 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
 
      setTasks(prevTasks =>
         prevTasks.map(t =>
-            t.id === task.id ? { ...t, status: newStatus, timeSpent: newTimeSpent } : t
+            t.id === task.id ? { ...t, status: newStatus, timeSpent: newTimeSpent, updatedAt: new Date().toISOString() } : t
         )
      );
 
@@ -72,12 +72,13 @@ export function KanbanBoard({ initialTasks }: KanbanBoardProps) {
   const columns: Record<TaskStatus, Task[]> = {
     'To Do': filteredTasks.filter(t => t.status === 'To Do'),
     'In Progress': filteredTasks.filter(t => t.status === 'In Progress'),
+    'In Review': filteredTasks.filter(t => t.status === 'In Review'),
     'Done': filteredTasks.filter(t => t.status === 'Done'),
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {(Object.keys(columns) as TaskStatus[]).map(status => (
                 <KanbanColumn key={status} status={status} tasks={columns[status]} />
             ))}

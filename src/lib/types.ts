@@ -9,7 +9,7 @@ export type User = {
   avatar?: string;
 };
 
-export type TaskStatus = 'To Do' | 'In Progress' | 'Done';
+export type TaskStatus = 'To Do' | 'In Progress' | 'In Review' | 'Done';
 
 export type Task = {
   id: string;
@@ -21,4 +21,6 @@ export type Task = {
   timeSpent: number;
   createdAt: string;
   updatedAt: string;
+  priority: 'Low' | 'Medium' | 'High';
+  type: 'Epic' | 'Story' | 'Task';
 };
