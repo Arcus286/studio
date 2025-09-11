@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Workflow, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { PasswordStrength } from '@/components/password-strength';
 import { useToast } from '@/hooks/use-toast';
-import { USERS } from '@/lib/data';
+import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 
 export default function SignupPage() {
@@ -20,6 +20,8 @@ export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
+    const { addUser } = useAuth();
+
 
     const passwordChecks = useMemo(() => {
         const checks = [
@@ -47,13 +49,13 @@ export default function SignupPage() {
             return;
         }
 
-        if (USERS.some(user => user.email === email)) {
-            toast({ variant: 'destructive', title: 'Error', description: 'An account with this email already exists.' });
-            return;
+        try {
+            addUser({ username, email, password });
+            toast({ title: 'Success!', description: 'Account created successfully. Redirecting to login...' });
+            router.push('/login');
+        } catch (error) {
+            toast({ variant: 'destructive', title: 'Error', description: (error as Error).message });
         }
-
-        toast({ title: 'Success!', description: 'Account created successfully. Redirecting to login...' });
-        router.push('/login');
     };
 
     return (

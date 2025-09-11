@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import type { User, Role } from '@/lib/types';
-import { USERS } from '@/lib/data';
+import { USERS as initialUsers } from '@/lib/data';
 import Loading from '@/app/loading';
 
 interface AuthContextType {
@@ -12,6 +12,7 @@ interface AuthContextType {
   login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
+  addUser: (user: Omit<User, 'id' | 'role' | 'avatar'>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,6 +21,7 @@ const protectedRoutes = ['/dashboard', '/admin', '/board', '/projects', '/settin
 const authRoutes = ['/login', '/signup', '/forgot-password'];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [users, setUsers] = useState<User[]>(initialUsers);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -55,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, isLoading, pathname, router]);
 
   const login = (usernameOrEmail: string, password?: string) => {
-    const foundUser = USERS.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
+    const foundUser = users.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
     if (foundUser && (!foundUser.password || foundUser.password === password)) {
         localStorage.setItem('agilebridge-user', JSON.stringify(foundUser));
         setUser(foundUser);
@@ -72,12 +74,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
   
+  const addUser = (newUser: Omit<User, 'id' | 'role' | 'avatar'>) => {
+    const userExists = users.some(u => u.email === newUser.email || u.username === newUser.username);
+    if(userExists) {
+        throw new Error("User with this email or username already exists.");
+    }
+    const userWithDefaults: User = {
+        ...newUser,
+        id: String(users.length + 1),
+        role: 'Frontend', // Default role for new users
+        avatar: `https://i.pravatar.cc/150?u=${newUser.email}`
+    };
+    setUsers(prevUsers => [...prevUsers, userWithDefaults]);
+  }
+
   const value = {
     isAuthenticated: !!user,
     user,
     login,
     logout,
-    isLoading
+    isLoading,
+    addUser,
   };
   
   const isAuthPage = authRoutes.includes(pathname);
