@@ -10,7 +10,7 @@ import { ArrowLeft, Mail, Lock } from 'lucide-react'
 
 export default function SignupPage() {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 dark:bg-gray-950 px-4">
+    <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md">
         <CardContent className="p-6 sm:p-8">
             <Link href="/login" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50 mb-6">
