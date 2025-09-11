@@ -9,6 +9,7 @@ import { USERS } from '@/lib/data';
 import { format } from 'date-fns';
 import { Badge } from '../ui/badge';
 import Link from 'next/link';
+import { Button } from '../ui/button';
 
 type ProjectCardProps = {
   project: Project;
