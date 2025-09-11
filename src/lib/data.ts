@@ -1,4 +1,4 @@
-import type { User, Task, Role } from './types';
+import type { User, Task, Role, TaskType, Priority } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', avatar: 'https://i.pravatar.cc/150?u=admin' },
@@ -116,3 +116,6 @@ export const TASKS: Task[] = [
 ];
 
 export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Project Manager', 'Admin'];
+
+export const TASK_TYPES: TaskType[] = ['Epic', 'Story', 'Task'];
+export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

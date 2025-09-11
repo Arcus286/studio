@@ -18,6 +18,7 @@ import { NewTaskDialog } from '../new-task-dialog';
 
 export function Header() {
   const { user, logout } = useAuth();
+  const isAdmin = user?.role === 'Admin';
 
   return (
     <header className="flex h-16 items-center gap-4 border-b bg-card px-4 lg:px-6">
@@ -37,7 +38,7 @@ export function Header() {
           </div>
         </form>
       </div>
-      <NewTaskDialog />
+      {isAdmin && <NewTaskDialog />}
       <Button variant="ghost" size="icon" className="rounded-full">
         <Bell className="h-5 w-5" />
         <span className="sr-only">Toggle notifications</span>

@@ -18,15 +18,16 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ROLES } from '@/lib/data';
+import { ROLES, TASK_TYPES, PRIORITIES } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 
 const taskSchema = z.object({
   title: z.string().min(1, 'Title is required.'),
   description: z.string().min(1, 'Description is required.'),
+  type: z.string().min(1, 'Please select a task type.'),
+  priority: z.string().min(1, 'Please select a priority.'),
   estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.'),
   assignedRole: z.string().min(1, 'Please assign a role.'),
 });
@@ -41,6 +42,8 @@ export function NewTaskDialog() {
     defaultValues: {
       title: '',
       description: '',
+      type: '',
+      priority: 'Medium',
       estimatedHours: 1,
       assignedRole: '',
     },
@@ -64,7 +67,7 @@ export function NewTaskDialog() {
           New Task
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent className="sm:max-w-[520px]">
         <DialogHeader>
           <DialogTitle>Create New Task</DialogTitle>
           <DialogDescription>
@@ -102,6 +105,52 @@ export function NewTaskDialog() {
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Type of Work</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a type" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {TASK_TYPES.map(type => (
+                                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="priority"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Priority</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select priority" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {PRIORITIES.map(priority => (
+                                        <SelectItem key={priority} value={priority}>{priority}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
              <div className="grid grid-cols-2 gap-4">
                 <FormField
                     control={form.control}

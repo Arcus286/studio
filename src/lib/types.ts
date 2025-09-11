@@ -10,6 +10,9 @@ export type User = {
 };
 
 export type TaskStatus = 'To Do' | 'In Progress' | 'In Review' | 'Done';
+export type Priority = 'Low' | 'Medium' | 'High';
+export type TaskType = 'Epic' | 'Story' | 'Task';
+
 
 export type Task = {
   id: string;
@@ -21,6 +24,6 @@ export type Task = {
   timeSpent: number;
   createdAt: string;
   updatedAt: string;
-  priority: 'Low' | 'Medium' | 'High';
-  type: 'Epic' | 'Story' | 'Task';
+  priority: Priority;
+  type: TaskType;
 };
