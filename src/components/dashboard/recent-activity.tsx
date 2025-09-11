@@ -3,11 +3,11 @@
 import type { Task } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDistanceToNow } from 'date-fns';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { GitCommit, GitPullRequest, CircleDot } from 'lucide-react';
-import { ScrollArea } from '../ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type RecentActivityProps = {
   tasks: Task[];

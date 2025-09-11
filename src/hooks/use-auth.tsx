@@ -17,15 +17,11 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const protectedRoutes = ['/dashboard', '/admin', '/board', '/projects', '/settings', '/tasks'];
-const authRoutes = ['/login', '/signup', '/forgot-password'];
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<User[]>(initialUsers);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     try {
@@ -41,20 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    const isAuthenticated = !!user;
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
-    const isAuthRoute = authRoutes.includes(pathname);
-
-    if (isProtectedRoute && !isAuthenticated) {
-      router.push('/login');
-    } else if (isAuthRoute && isAuthenticated) {
-      router.push('/dashboard');
-    }
-  }, [user, isLoading, pathname, router]);
 
   const login = (usernameOrEmail: string, password?: string) => {
     const foundUser = users.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
@@ -99,12 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading,
     addUser,
   };
-
-  const isProtectedRoutePage = protectedRoutes.some(route => pathname.startsWith(route));
-
-  if (isLoading && isProtectedRoutePage) {
-    return <Loading />;
-  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

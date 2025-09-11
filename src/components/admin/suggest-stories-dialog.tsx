@@ -14,7 +14,7 @@ import { Lightbulb, Loader2 } from 'lucide-react';
 import { TASKS } from '@/lib/data';
 import { suggestUserStories } from '@/ai/flows/suggest-user-stories';
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 
 export function SuggestStoriesDialog() {
   const [isOpen, setIsOpen] = useState(false);

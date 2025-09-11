@@ -1,7 +1,7 @@
 'use client';
 import type { Project } from '@/lib/types';
 import { ProjectCard } from './project-card';
-import { Input } from '../ui/input';
+import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 

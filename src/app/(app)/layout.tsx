@@ -23,16 +23,12 @@ import {
   Workflow,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Notifications } from '@/components/layout/notifications';
+import { usePathname, useRouter } from 'next/navigation';
+import Loading from '../loading';
+import { useEffect } from 'react';
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
 
@@ -48,10 +44,7 @@ export default function AppLayout({
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === '/dashboard'}
-              >
+              <SidebarMenuButton asChild isActive={pathname === '/dashboard'}>
                 <Link href="/dashboard">
                   <LayoutDashboard />
                   Dashboard
@@ -59,23 +52,32 @@ export default function AppLayout({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/board')}>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/board')}
+              >
                 <Link href="/board">
                   <KanbanSquare />
                   Board
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/projects')}>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/projects')}
+              >
                 <Link href="/projects">
                   <Folder />
                   Projects
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-             <SidebarMenuItem>
-              <SidebarMenuButton asChild isActive={pathname.startsWith('/settings')}>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname.startsWith('/settings')}
+              >
                 <Link href="/settings">
                   <Settings />
                   Settings
@@ -84,19 +86,30 @@ export default function AppLayout({
             </SidebarMenuItem>
           </SidebarMenu>
           <SidebarGroup className="mt-4">
-              <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
-              <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname.startsWith('/tasks/new')}>
-                        <Link href="/tasks/new">
-                            <PlusCircle />
-                            Add Task
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
+            <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith('/tasks/new')}
+                >
+                  <Link href="/tasks/new">
+                    <PlusCircle />
+                    Add Task
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton onClick={logout}>
+              <LogOut />
+              Logout
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </Sidebar>
       <SidebarInset>
         <div className="flex min-h-screen w-full flex-col">
@@ -113,4 +126,28 @@ export default function AppLayout({
       </SidebarInset>
     </SidebarProvider>
   );
+}
+
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) {
+    return <Loading />;
+  }
+
+  // Prevent rendering auth routes here
+  const authRoutes = ['/login', '/signup', '/forgot-password'];
+  if (authRoutes.includes(pathname)) {
+    return <Loading />;
+  }
+
+  return <AppLayoutContent>{children}</AppLayoutContent>;
 }

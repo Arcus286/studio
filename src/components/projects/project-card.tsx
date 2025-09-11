@@ -1,14 +1,14 @@
 'use client';
 
 import type { Project } from '@/lib/types';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Folder, Calendar, CheckCircle } from 'lucide-react';
-import { Progress } from '../ui/progress';
+import { Progress } from '@/components/ui/progress';
 import { USERS } from '@/lib/data';
 import { format } from 'date-fns';
-import { Badge } from '../ui/badge';
+import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 
 type ProjectCardProps = {
   project: Project;
