@@ -40,14 +40,14 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
           <Badge variant="outline" className="mt-2 text-xs font-normal">+12% from last week</Badge>
         </CardContent>
       </Card>
-      <Card className="bg-card-green border-green-500/20 cursor-pointer" onClick={() => onCardClick('Done')}>
+      <Card className="bg-card-orange border-orange-500/20 cursor-pointer" onClick={() => onCardClick('To Do')}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
-          <div className="h-4 w-4 rounded-sm bg-green-500" />
+          <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
+          <div className="h-4 w-4 rounded-sm bg-orange-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold">{doneTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">{completionRate}% completion rate</Badge>
+          <div className="text-4xl font-bold">{todoTasks}</div>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">Ready to start</Badge>
         </CardContent>
       </Card>
       <Card className="bg-card-blue border-blue-500/20 cursor-pointer" onClick={() => onCardClick('In Progress')}>
@@ -60,14 +60,14 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
           <Badge variant="outline" className="mt-2 text-xs font-normal">Active work</Badge>
         </CardContent>
       </Card>
-       <Card className="bg-card-orange border-orange-500/20 cursor-pointer" onClick={() => onCardClick('To Do')}>
+       <Card className="bg-card-green border-green-500/20 cursor-pointer" onClick={() => onCardClick('Done')}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
-          <div className="h-4 w-4 rounded-sm bg-orange-500" />
+          <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
+          <div className="h-4 w-4 rounded-sm bg-green-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-4xl font-bold">{todoTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">Ready to start</Badge>
+          <div className="text-4xl font-bold">{doneTasks}</div>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">{completionRate}% completion rate</Badge>
         </CardContent>
       </Card>
     </div>
