@@ -1,6 +1,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, LogIn, Pencil, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, LogIn, Pencil, Users, Home } from 'lucide-react';
+import Link from 'next/link';
 
 const steps = [
   {
@@ -55,6 +57,15 @@ export default function HowItWorksPage() {
                         </CardHeader>
                     </Card>
                 ))}
+            </div>
+
+            <div className="mt-20 text-center">
+                <Button asChild variant="outline">
+                    <Link href="/">
+                        <Home className="mr-2 h-4 w-4" />
+                        Back to Home
+                    </Link>
+                </Button>
             </div>
         </div>
     </section>
