@@ -76,14 +76,6 @@ export default function LandingPage() {
             Contact
           </Link>
         </nav>
-        <div className="flex items-center gap-4">
-            <Button asChild variant="ghost">
-                <Link href="/login">Sign In</Link>
-            </Button>
-            <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-            </Button>
-        </div>
       </header>
       <main className="flex-1">
         <section className="relative py-20 md:py-32 lg:py-40">
