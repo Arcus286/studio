@@ -141,7 +141,7 @@ export default function LandingPage() {
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
                         Projects Completed
-                        <span className="ml-4 text-xl font-bold">code for this</span>
+                        <span className="ml-4 text-xl font-bold">20</span>
                     </div>
                 </div>
               </div>
@@ -151,7 +151,7 @@ export default function LandingPage() {
       </main>
       <footer className="flex items-center justify-center py-6 px-4 md:px-6 border-t border-border/40">
         <div className="container flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">&copy; 2024 AgileBridge. All rights reserved.</p>
+            <p className="text-sm text-muted-foreground">&copy; 2025 AgileBridge. All rights reserved.</p>
             <div className="flex items-center gap-4 text-sm">
                 <Link href="#" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link>
                 <Link href="#" className="text-muted-foreground hover:text-foreground">Terms of Service</Link>
