@@ -11,6 +11,7 @@ export const USERS: User[] = [
 export const TASKS: Task[] = [
     {
         id: 'TASK-1',
+        projectId: 'PROJ-1',
         title: 'Design login and signup pages',
         description: 'Create high-fidelity mockups for the user authentication flow, including login, signup, and forgot password pages.',
         status: 'Done',
@@ -24,6 +25,7 @@ export const TASKS: Task[] = [
     },
     {
         id: 'TASK-2',
+        projectId: 'PROJ-1',
         title: 'Develop user authentication API endpoints',
         description: 'Build the necessary API endpoints for user registration, login, and session management.',
         status: 'Done',
@@ -37,6 +39,7 @@ export const TASKS: Task[] = [
     },
     {
         id: 'TASK-3',
+        projectId: 'PROJ-1',
         title: 'Implement frontend for authentication',
         description: 'Connect the frontend forms for login, signup, and password reset to the backend APIs.',
         status: 'In Review',
@@ -50,6 +53,7 @@ export const TASKS: Task[] = [
     },
     {
         id: 'TASK-4',
+        projectId: 'PROJ-1',
         title: 'Design the main Kanban board UI',
         description: 'Create wireframes and final designs for the main task board, including columns and task cards.',
         status: 'In Progress',
@@ -63,6 +67,7 @@ export const TASKS: Task[] = [
     },
     {
         id: 'TASK-5',
+        projectId: 'PROJ-1',
         title: 'Set up database schema for tasks and users',
         description: 'Define and implement the database schema for storing user and task information, including roles and relationships.',
         status: 'In Progress',
@@ -76,6 +81,7 @@ export const TASKS: Task[] = [
     },
     {
         id: 'TASK-6',
+        projectId: 'PROJ-1',
         title: 'Build the Kanban board drag-and-drop functionality',
         description: 'Implement the client-side logic for dragging and dropping tasks between columns on the Kanban board.',
         status: 'To Do',
@@ -89,6 +95,7 @@ export const TASKS: Task[] = [
     },
     {
         id: 'TASK-7',
+        projectId: 'PROJ-1',
         title: 'Develop API for task state management',
         description: 'Create backend endpoints to handle creating, updating, and deleting tasks, and changing their status.',
         status: 'To Do',
@@ -102,6 +109,7 @@ export const TASKS: Task[] = [
     },
      {
         id: 'TASK-8',
+        projectId: 'PROJ-1',
         title: 'Create Admin panel for user role management',
         description: 'Build a UI for administrators to view all users and assign or change their roles.',
         status: 'To Do',
@@ -111,6 +119,34 @@ export const TASKS: Task[] = [
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Low',
+        type: 'Task',
+    },
+    {
+        id: 'TASK-9',
+        projectId: 'PROJ-2',
+        title: 'Plan mobile app architecture',
+        description: 'Outline the overall architecture for the native mobile apps, including technology stack and component breakdown.',
+        status: 'To Do',
+        assignedRole: 'Project Manager',
+        estimatedHours: 20,
+        timeSpent: 0,
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        priority: 'High',
+        type: 'Task',
+    },
+    {
+        id: 'TASK-10',
+        projectId: 'PROJ-2',
+        title: 'Design mobile splash screen',
+        description: 'Create the initial splash screen and loading indicators for the mobile app.',
+        status: 'To Do',
+        assignedRole: 'Designer',
+        estimatedHours: 4,
+        timeSpent: 0,
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        priority: 'Medium',
         type: 'Task',
     },
 ];
@@ -126,7 +162,7 @@ export const PROJECTS: Project[] = [
         completion: 45,
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 8,
-        members: ['admin@taskflow.com', 'pm@taskflow.com', 'frontend@taskflow.com', 'backend@taskflow.com', 'designer@taskflow.com'],
+        members: [{id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}, {id: '5'}],
     },
     {
         id: 'PROJ-2',
@@ -138,7 +174,7 @@ export const PROJECTS: Project[] = [
         completion: 10,
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 3,
-        members: ['pm@taskflow.com', 'frontend@taskflow.com', 'backend@taskflow.com'],
+        members: [{id: '2'}, {id: '3'}, {id: '4'}],
     },
     {
         id: 'PROJ-3',
@@ -150,7 +186,7 @@ export const PROJECTS: Project[] = [
         completion: 75,
         createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 2,
-        members: ['designer@taskflow.com', 'frontend@taskflow.com'],
+        members: [{id: '5'}, {id: '3'}],
     }
 ];
 

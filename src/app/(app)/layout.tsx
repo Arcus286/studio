@@ -20,6 +20,7 @@ import {
   PlusCircle,
   Settings,
   LogOut,
+  Users,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
@@ -30,6 +31,9 @@ import { useEffect } from 'react';
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
   const pathname = usePathname();
+
+  const isProjectPage = pathname.includes('/projects/');
+  const projectId = isProjectPage ? pathname.split('/')[2] : null;
 
   return (
     <SidebarProvider>
@@ -66,17 +70,6 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith('/board')}
-              >
-                <Link href="/board">
-                  <KanbanSquare />
-                  Board
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
                 isActive={pathname.startsWith('/projects')}
               >
                 <Link href="/projects">
@@ -85,7 +78,33 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
+            {isProjectPage && projectId && (
+              <>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname.includes('/board')}
+                  >
+                    <Link href={`/projects/${projectId}/board`}>
+                      <KanbanSquare />
+                      Board
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname.includes('/team')}
+                  >
+                    <Link href={`/projects/${projectId}/team`}>
+                      <Users />
+                      Team
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </>
+            )}
+             <SidebarMenuItem>
               <SidebarMenuButton
                 asChild
                 isActive={pathname.startsWith('/settings')}

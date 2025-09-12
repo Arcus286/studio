@@ -1,26 +1,20 @@
 'use client';
 
-import { KanbanBoard } from '@/components/kanban/kanban-board';
-import { TASKS } from '@/lib/data';
-import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
-import { useState } from 'react';
-import type { TaskStatus } from '@/lib/types';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { PROJECTS } from '@/lib/data';
+import Loading from '@/app/loading';
 
-export default function BoardPage() {
-  const tasks = TASKS; // In a real app, this would be fetched
-  const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
+export default function BoardRedirectPage() {
+  const router = useRouter();
 
-  const handleAnalyticsClick = (status: TaskStatus | 'all') => {
-    setHighlightedStatus(status);
-    setTimeout(() => {
-      setHighlightedStatus(null);
-    }, 1500);
-  };
+  useEffect(() => {
+    if (PROJECTS.length > 0) {
+      router.replace(`/projects/${PROJECTS[0].id}/board`);
+    } else {
+      router.replace('/projects');
+    }
+  }, [router]);
 
-  return (
-    <div className="space-y-6">
-        <DashboardAnalytics tasks={tasks} onCardClick={handleAnalyticsClick} />
-        <KanbanBoard initialTasks={tasks} highlightedStatus={highlightedStatus} />
-    </div>
-  );
+  return <Loading />;
 }

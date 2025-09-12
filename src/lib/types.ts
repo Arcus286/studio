@@ -18,6 +18,7 @@ export type TaskType = 'Bug' | 'Task';
 
 export type Task = {
   id: string;
+  projectId: string;
   title: string;
   description: string;
   status: TaskStatus;
@@ -30,6 +31,10 @@ export type Task = {
   type: TaskType;
 };
 
+export type ProjectMember = {
+    id: string;
+}
+
 export type Project = {
     id: string;
     name: string;
@@ -40,7 +45,7 @@ export type Project = {
     completion: number;
     createdAt: string;
     issues: number;
-    members: string[]; // array of user emails
+    members: ProjectMember[]; // array of user ids
 };
 
 export type Notification = {

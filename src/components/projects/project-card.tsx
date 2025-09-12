@@ -15,7 +15,7 @@ type ProjectCardProps = {
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const projectMembers = USERS.filter(user => project.members.includes(user.email));
+  const projectMembers = USERS.filter(user => project.members.some(m => m.id === user.id));
 
   return (
     <Card className="hover:shadow-lg transition-shadow">
@@ -27,7 +27,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 </div>
                 <div>
                     <CardTitle className="text-lg">
-                        <Link href="#" className="hover:underline">{project.name}</Link>
+                        <Link href={`/projects/${project.id}/board`} className="hover:underline">{project.name}</Link>
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">{project.key}</p>
                 </div>
@@ -68,7 +68,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             ))}
             </div>
             <Button variant="outline" size="sm" asChild>
-                <Link href="/board">View Board</Link>
+                <Link href={`/projects/${project.id}/board`}>View Board</Link>
             </Button>
         </div>
 

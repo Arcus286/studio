@@ -15,6 +15,7 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { Notifications } from './notifications';
 import { ThemeToggle } from './theme-toggle';
+import { usePathname } from 'next/navigation';
 
 type HeaderProps = {
   showSearch?: boolean;
@@ -23,6 +24,7 @@ type HeaderProps = {
 export function Header({ showSearch = true }: HeaderProps) {
   const { user, logout } = useAuth();
   const isAdmin = user?.role === 'Admin';
+  const pathname = usePathname();
 
   return (
     <>
@@ -45,28 +47,12 @@ export function Header({ showSearch = true }: HeaderProps) {
       <ThemeToggle />
 
       {isAdmin && (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Users className="h-5 w-5" />
-              <span className="sr-only">Team & Collaboration</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Team & Collaboration</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/admin">
-                <Eye className="mr-2 h-4 w-4" />
-                View Team Members
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Invite Members
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/admin">
+            <Users className="h-5 w-5" />
+            <span className="sr-only">Admin Panel</span>
+          </Link>
+        </Button>
       )}
       
       <DropdownMenu>
@@ -86,7 +72,9 @@ export function Header({ showSearch = true }: HeaderProps) {
               <Link href="/admin">Admin Panel</Link>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem>Settings</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/settings">Settings</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
