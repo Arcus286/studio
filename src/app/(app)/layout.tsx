@@ -79,7 +79,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
             {isProjectPage && projectId && (
-              <>
+              <div className="ml-4">
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
@@ -102,7 +102,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              </>
+              </div>
             )}
              <SidebarMenuItem>
               <SidebarMenuButton
