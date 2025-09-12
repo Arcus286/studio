@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Workflow, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -38,8 +38,21 @@ export default function LoginPage() {
       </Link>
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center">
-            <div className="mb-4 inline-block">
-                <Workflow className="h-10 w-10 text-primary mx-auto"/>
+            <div className="mb-4 inline-block mx-auto">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-10 w-10 text-primary"
+                >
+                    <path d="M12 3L4 9V17H20V9L12 3Z" />
+                    <path d="M8 21V15H16V21" />
+                    <path d="M10 11H14" />
+                </svg>
             </div>
           <CardTitle className="text-2xl">Welcome to AgileBridge</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>

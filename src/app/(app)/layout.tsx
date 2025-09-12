@@ -20,7 +20,6 @@ import {
   PlusCircle,
   Settings,
   LogOut,
-  Workflow,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
@@ -37,7 +36,20 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2 p-2">
-            <Workflow className="h-8 w-8 text-primary" />
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-8 w-8 text-primary"
+              >
+                <path d="M12 3L4 9V17H20V9L12 3Z" />
+                <path d="M8 21V15H16V21" />
+                <path d="M10 11H14" />
+            </svg>
             <span className="text-lg font-semibold">AgileBridge</span>
           </div>
         </SidebarHeader>
