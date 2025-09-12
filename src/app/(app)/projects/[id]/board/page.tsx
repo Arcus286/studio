@@ -1,13 +1,8 @@
-'use client';
-
-import { KanbanBoard } from '@/components/kanban/kanban-board';
 import { TASKS, PROJECTS } from '@/lib/data';
-import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
-import { useState } from 'react';
-import type { TaskStatus } from '@/lib/types';
 import { notFound } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
+import { ProjectBoard } from '@/components/projects/project-board';
 
 export default function ProjectBoardPage({ params }: { params: { id: string } }) {
   const project = PROJECTS.find(p => p.id === params.id);
@@ -17,14 +12,6 @@ export default function ProjectBoardPage({ params }: { params: { id: string } })
   }
 
   const projectTasks = TASKS.filter(t => t.projectId === project.id);
-  const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
-
-  const handleAnalyticsClick = (status: TaskStatus | 'all') => {
-    setHighlightedStatus(status);
-    setTimeout(() => {
-      setHighlightedStatus(null);
-    }, 1500);
-  };
 
   return (
     <div className="space-y-6">
@@ -45,8 +32,7 @@ export default function ProjectBoardPage({ params }: { params: { id: string } })
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <DashboardAnalytics tasks={projectTasks} onCardClick={handleAnalyticsClick} />
-        <KanbanBoard initialTasks={projectTasks} highlightedStatus={highlightedStatus} />
+        <ProjectBoard project={project} initialTasks={projectTasks} />
     </div>
   );
 }
