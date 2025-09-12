@@ -2,13 +2,14 @@
 
 import type { Project } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Folder, Calendar, CheckCircle } from 'lucide-react';
+import { Folder, Calendar, CheckCircle, Users } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { USERS } from '@/lib/data';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 type ProjectCardProps = {
   project: Project;
@@ -18,8 +19,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const projectMembers = USERS.filter(user => project.members.some(m => m.id === user.id));
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
-        <Link href={`/projects/${project.id}/board`} className="block hover:no-underline">
+    <Card className="hover:shadow-lg transition-shadow flex flex-col">
+        <Link href={`/projects/${project.id}/board`} className="block hover:no-underline flex-grow">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div className="flex items-center gap-3">
@@ -59,21 +60,28 @@ export function ProjectCard({ project }: ProjectCardProps) {
                         <span>{project.issues} Issues</span>
                     </div>
                 </div>
-                
-                <div className="flex items-center justify-between border-t pt-4">
-                    <div className="flex -space-x-2">
-                    {projectMembers.map(member => (
-                        <div key={member.id} className="h-8 w-8 border-2 border-card rounded-full bg-muted flex items-center justify-center text-xs font-semibold" title={member.username}>
-                            {member.username.charAt(0)}
-                        </div>
-                    ))}
-                    </div>
-                    <Button variant="outline" size="sm" asChild>
-                        <span>View Board</span>
-                    </Button>
-                </div>
             </CardContent>
       </Link>
+       <div className="border-t p-4 mt-auto">
+            <div className="flex items-center gap-2 mb-3">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <h4 className="text-sm font-medium text-muted-foreground">Team</h4>
+            </div>
+            <div className="flex flex-wrap gap-2">
+            <TooltipProvider>
+                {projectMembers.map(member => (
+                <Tooltip key={member.id}>
+                    <TooltipTrigger>
+                         <Badge variant="outline">{member.username}</Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>{member.role}</p>
+                    </TooltipContent>
+                </Tooltip>
+                ))}
+            </TooltipProvider>
+            </div>
+        </div>
     </Card>
   );
 }
