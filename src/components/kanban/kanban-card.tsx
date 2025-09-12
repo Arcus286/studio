@@ -14,7 +14,6 @@ import { USERS } from '@/lib/data';
 type KanbanCardProps = {
   task: Task;
   isDragging: boolean;
-  isHighlighted?: boolean;
 };
 
 const PriorityIcon = ({ priority }: { priority: 'Low' | 'Medium' | 'High' }) => {
@@ -40,7 +39,7 @@ const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' }) => {
     }
 }
 
-export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps) {
+export function KanbanCard({ task, isDragging }: KanbanCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const assignedUser = USERS.find(u => u.role === task.assignedRole);
 
@@ -50,8 +49,7 @@ export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps)
         className={cn(
           'transition-all bg-card/80 backdrop-blur-sm cursor-pointer',
           'hover:shadow-xl hover:ring-2 hover:ring-primary/50 hover:-translate-y-1',
-          isDragging && 'shadow-xl rotate-3',
-          isHighlighted && 'animate-flash'
+          isDragging && 'shadow-xl rotate-3'
         )}
         onClick={() => setIsDetailOpen(true)}
       >

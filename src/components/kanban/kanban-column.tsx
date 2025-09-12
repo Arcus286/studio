@@ -37,7 +37,7 @@ export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnP
     <div className={cn(
       "flex flex-col rounded-xl border", 
       statusColors[status],
-      highlightedStatus === 'all' && 'animate-flash'
+      (highlightedStatus === 'all' || highlightedStatus === status) && 'animate-flash'
       )}>
       <div className={cn("p-3 flex items-center justify-between")}>
         <h2 className={cn("text-lg font-semibold", titleColors[status])}>
@@ -67,7 +67,6 @@ export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnP
                     <KanbanCard 
                       task={task} 
                       isDragging={snapshot.isDragging}
-                      isHighlighted={highlightedStatus === task.status}
                     />
                   </div>
                 )}
