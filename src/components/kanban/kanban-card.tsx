@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -49,7 +48,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
         className={cn(
           'transition-all bg-card/80 backdrop-blur-sm cursor-pointer',
           'hover:shadow-xl hover:ring-2 hover:ring-primary/50 hover:-translate-y-1',
-          isDragging && 'shadow-xl rotate-3'
+          isDragging && 'shadow-2xl scale-105 ring-2 ring-primary'
         )}
         onClick={() => setIsDetailOpen(true)}
       >
