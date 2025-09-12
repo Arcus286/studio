@@ -133,7 +133,7 @@ export default function LandingPage() {
                    <div className="inline-flex items-center rounded-lg border text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2  p-3 shadow-lg border-border/50 bg-background/80 backdrop-blur-sm">
                         <span className="w-2 h-2 rounded-full bg-purple-500 mr-2"></span>
                         Active Users
-                        <span className="ml-4 text-xl font-bold">218</span>
+                        <span className="ml-4 text-xl font-bold">50</span>
                     </div>
                 </div>
 
