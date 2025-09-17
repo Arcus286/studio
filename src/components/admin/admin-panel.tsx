@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
 import { Settings, Trash2 } from 'lucide-react';
 import { Separator } from '../ui/separator';
+import { Checkbox } from '../ui/checkbox';
+import { Label } from '../ui/label';
 
 const defaultBuckets: KanbanColumnData[] = [
     { id: 'under-development', title: 'Under Development', color: 'border-cyan-500' },
@@ -34,6 +36,7 @@ const defaultBuckets: KanbanColumnData[] = [
 export function AdminPanel() {
   const [users, setUsers] = useState<User[]>(USERS);
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
+  const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
 
   const handleRoleChange = (userId: string, newRole: Role) => {
     setUsers(users.map(user => 
@@ -41,15 +44,23 @@ export function AdminPanel() {
     ));
   };
   
-  const handleAddColumn = (column: KanbanColumnData) => {
-    if (column.title && !columns.find(c => c.id === column.id)) {
-      setColumns([...columns, column]);
-    }
+  const handleAddSelectedColumns = () => {
+    const bucketsToAdd = defaultBuckets.filter(bucket => selectedBuckets.includes(bucket.id));
+    setColumns([...columns, ...bucketsToAdd]);
+    setSelectedBuckets([]);
   };
 
   const handleRemoveColumn = (columnId: string) => {
     setColumns(columns.filter(c => c.id !== columnId));
   };
+
+  const handleBucketSelection = (bucketId: string, isSelected: boolean) => {
+    if (isSelected) {
+        setSelectedBuckets([...selectedBuckets, bucketId]);
+    } else {
+        setSelectedBuckets(selectedBuckets.filter(id => id !== bucketId));
+    }
+  }
 
 
   return (
@@ -130,14 +141,24 @@ export function AdminPanel() {
                 
                 <div>
                     <h3 className="text-lg font-medium mb-2">Add New Buckets</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Click to add predefined buckets to your board.</p>
-                    <div className="flex flex-wrap gap-2">
+                    <p className="text-sm text-muted-foreground mb-4">Select the buckets you want to add to your board.</p>
+                    <div className="space-y-2">
                         {defaultBuckets.filter(b => !columns.some(c => c.id === b.id)).map(bucket => (
-                            <Button key={bucket.id} variant="outline" onClick={() => handleAddColumn(bucket)}>
-                                Add "{bucket.title}"
-                            </Button>
+                            <div key={bucket.id} className="flex items-center space-x-2">
+                                <Checkbox 
+                                    id={bucket.id} 
+                                    onCheckedChange={(checked) => handleBucketSelection(bucket.id, !!checked)}
+                                    checked={selectedBuckets.includes(bucket.id)}
+                                />
+                                <Label htmlFor={bucket.id} className="font-normal">{bucket.title}</Label>
+                            </div>
                         ))}
                     </div>
+                    {selectedBuckets.length > 0 && (
+                        <Button onClick={handleAddSelectedColumns} className="mt-4">
+                            Add Selected Buckets ({selectedBuckets.length})
+                        </Button>
+                    )}
                 </div>
             </CardContent>
         </Card>
