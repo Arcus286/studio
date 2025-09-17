@@ -21,34 +21,61 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+const USERS_STORAGE_KEY = 'agilebridge-all-users';
+const CURRENT_USER_STORAGE_KEY = 'agilebridge-user';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [users, setUsers] = useState<User[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  // Initialize users from localStorage or initial data
   useEffect(() => {
     try {
-      const storedUser = localStorage.getItem('agilebridge-user');
+      const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+      if (storedUsers) {
+        setUsers(JSON.parse(storedUsers));
+      } else {
+        setUsers(initialUsers);
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
+      }
+    } catch (error) {
+      console.error("Failed to initialize users from localStorage", error);
+      setUsers(initialUsers);
+    }
+  }, []);
+
+  // Effect to manage the currently logged-in user
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem(CURRENT_USER_STORAGE_KEY);
       if (storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        // Sync with the main users list in case roles/status changed
         const freshUser = users.find(u => u.id === parsedUser.id);
         if (freshUser && freshUser.status === 'active') {
           setUser(freshUser);
         } else {
-            localStorage.removeItem('agilebridge-user');
-            setUser(null);
+          localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
+          setUser(null);
         }
       }
     } catch (error) {
       console.error("Failed to parse user from localStorage", error);
-      localStorage.removeItem('agilebridge-user');
+      localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
       setUser(null);
     } finally {
-      setIsLoading(false);
+      if(users.length > 0) {
+        setIsLoading(false);
+      }
     }
   }, [users]);
+  
+  const updateUsersState = (newUsers: User[]) => {
+      setUsers(newUsers);
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
+  }
+
 
   const login = (usernameOrEmail: string, password?: string) => {
     const foundUser = users.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
@@ -62,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     
     if (foundUser && (!foundUser.password || foundUser.password === password)) {
-        localStorage.setItem('agilebridge-user', JSON.stringify(foundUser));
+        localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(foundUser));
         setUser(foundUser);
         router.push('/dashboard');
     } else {
@@ -72,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('agilebridge-user');
+    localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
     setUser(null);
     router.push('/login');
   };
@@ -88,19 +115,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: 'User', // Default role
         status: 'pending', // Default status
     };
-    setUsers(prevUsers => [...prevUsers, userWithDefaults]);
+    updateUsersState([...users, userWithDefaults]);
   };
 
   const approveUser = (userId: string) => {
-    setUsers(prevUsers => prevUsers.map(u => u.id === userId ? { ...u, status: 'active' } : u));
+    const newUsers = users.map(u => u.id === userId ? { ...u, status: 'active' } : u);
+    updateUsersState(newUsers);
   };
 
   const rejectUser = (userId: string) => {
-    setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
+    const newUsers = users.filter(u => u.id !== userId);
+    updateUsersState(newUsers);
   }
 
   const updateUserRole = (userId: string, role: Role) => {
-    setUsers(prevUsers => prevUsers.map(u => u.id === userId ? { ...u, role } : u));
+    const newUsers = users.map(u => u.id === userId ? { ...u, role } : u);
+    updateUsersState(newUsers);
   };
 
 
