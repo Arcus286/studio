@@ -1,6 +1,4 @@
 
-'use client';
-
 import { notFound } from 'next/navigation';
 import { PROJECTS } from '@/lib/data';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
@@ -11,7 +9,10 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 
+// This is now a Client Component because it uses the useAuth hook.
 function SprintsPageContent({ project }: { project: (typeof PROJECTS)[0] }) {
+  'use client';
+
   const { user } = useAuth();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
 
@@ -49,8 +50,9 @@ function SprintsPageContent({ project }: { project: (typeof PROJECTS)[0] }) {
   )
 }
 
-export default function ProjectSprintsPage({ params: { id } }: { params: { id: string } }) {
-  const project = PROJECTS.find(p => p.id === id);
+// This remains a Server Component. It can safely access params.
+export default function ProjectSprintsPage({ params }: { params: { id: string } }) {
+  const project = PROJECTS.find(p => p.id === params.id);
 
   if (!project) {
     notFound();
