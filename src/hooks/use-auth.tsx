@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import type { User, Role } from '@/lib/types';
+import type { User, Role, SpecializedRole } from '@/lib/types';
 import { USERS as initialUsers } from '@/lib/data';
 import Loading from '@/app/loading';
 
@@ -13,10 +13,11 @@ interface AuthContextType {
   login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
-  addUser: (user: Omit<User, 'id' | 'role' | 'status' | 'password'> & { password?: string }) => void;
+  addUser: (user: Omit<User, 'id' | 'role' | 'status' | 'password' | 'specialization'> & { password?: string }) => void;
   approveUser: (userId: string) => void;
   rejectUser: (userId: string) => void;
   updateUserRole: (userId: string, role: Role) => void;
+  updateUserSpecialization: (userId: string, specialization: SpecializedRole) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -104,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
   
-  const addUser = (newUser: Omit<User, 'id' | 'role'| 'status' | 'password'> & { password?: string }) => {
+  const addUser = (newUser: Omit<User, 'id' | 'role'| 'status' | 'password' | 'specialization'> & { password?: string }) => {
     const userExists = users.some(u => u.email === newUser.email || u.username === newUser.username);
     if(userExists) {
         throw new Error("User with this email or username already exists.");
@@ -113,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...newUser,
         id: String(Date.now()), // Use a more unique ID
         role: 'User', // Default role
+        specialization: 'Developer', // Default specialization
         status: 'pending', // Default status
     };
     updateUsersState([...users, userWithDefaults]);
@@ -133,6 +135,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     updateUsersState(newUsers);
   };
 
+  const updateUserSpecialization = (userId: string, specialization: SpecializedRole) => {
+    const newUsers = users.map(u => u.id === userId ? { ...u, specialization } : u);
+    updateUsersState(newUsers);
+  };
 
   const value = {
     isAuthenticated: !!user,
@@ -145,6 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     approveUser,
     rejectUser,
     updateUserRole,
+    updateUserSpecialization
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

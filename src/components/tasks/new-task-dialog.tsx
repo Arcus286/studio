@@ -18,13 +18,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ROLES, TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS } from '@/lib/data';
+import { TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS, SPECIALIZED_ROLES } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { DatePicker } from '../ui/date-picker';
 import { useStore } from '@/lib/store';
-import type { Task } from '@/lib/types';
+import type { Task, SpecializedRole } from '@/lib/types';
 
 
 const taskSchema = z.object({
@@ -66,7 +66,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const onSubmit = (data: TaskFormValues) => {
     const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
       ...data,
-      assignedRole: data.assignedRole as Task['assignedRole'],
+      assignedRole: data.assignedRole as SpecializedRole,
       priority: data.priority as Task['priority'],
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
@@ -167,7 +167,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {ROLES.map(role => (
+                        {SPECIALIZED_ROLES.map(role => (
                           <SelectItem key={role} value={role}>{role}</SelectItem>
                         ))}
                       </SelectContent>

@@ -32,7 +32,7 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
     const filtered =
       user?.role === 'Admin' || user?.role === 'Manager'
         ? tasks
-        : tasks.filter((task) => task.assignedRole === user?.role);
+        : tasks.filter((task) => task.assignedRole === user?.specialization);
     
     return filtered
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())

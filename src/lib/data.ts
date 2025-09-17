@@ -1,11 +1,11 @@
-import type { User, Task, Role, TaskType, Priority, Project, Notification, KanbanColumnData } from './types';
+import type { User, Task, Project, Notification, KanbanColumnData, SpecializedRole, Role } from './types';
 
 export const USERS: User[] = [
-  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
-  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Manager', status: 'active' },
-  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', role: 'Developer', status: 'active' },
-  { id: '4', username: 'Another User', email: 'user@taskflow.com', password: 'userpassword', role: 'Frontend', status: 'active' },
-  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', role: 'Designer', status: 'active' },
+  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', specialization: 'None', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
+  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Manager', specialization: 'None', status: 'active' },
+  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', role: 'User', specialization: 'Developer', status: 'active' },
+  { id: '4', username: 'Frontend User', email: 'frontend@taskflow.com', password: 'userpassword', role: 'User', specialization: 'Frontend', status: 'active' },
+  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', role: 'User', specialization: 'Designer', status: 'active' },
 ];
 
 export const KANBAN_COLUMNS: KanbanColumnData[] = [
@@ -126,7 +126,7 @@ export const TASKS: Task[] = [
         title: 'Create Admin panel for user role management',
         description: 'Build a UI for administrators to view all users and assign or change their roles.',
         status: 'to-do',
-        assignedRole: 'Manager',
+        assignedRole: 'Developer',
         estimatedHours: 8,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -141,7 +141,7 @@ export const TASKS: Task[] = [
         title: 'Plan mobile app architecture',
         description: 'Outline the overall architecture for the native mobile apps, including technology stack and component breakdown.',
         status: 'to-do',
-        assignedRole: 'Manager',
+        assignedRole: 'Developer',
         estimatedHours: 20,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -243,7 +243,8 @@ export const NOTIFICATIONS: Notification[] = [
 ];
 
 
-export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Developer', 'Manager', 'Admin'];
+export const ROLES: Role[] = ['Admin', 'Manager', 'User'];
+export const SPECIALIZED_ROLES: SpecializedRole[] = ['Frontend', 'Backend', 'Designer', 'Developer'];
 
 export const TASK_TYPES: TaskType[] = ['Bug', 'Task'];
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

@@ -68,7 +68,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   };
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
-  const assignedUser = USERS.find(u => u.role === task.assignedRole);
+  const assignedUser = USERS.find(u => u.specialization === task.assignedRole);
   const statusLabel = KANBAN_COLUMNS.find(c => c.id === task.status)?.title || task.status;
   const isOverdue = task.deadline && isPast(new Date(task.deadline));
 
@@ -135,7 +135,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
                             <p className="font-semibold text-foreground">{assignedUser.username}</p>
                             <p className="text-xs text-muted-foreground">{assignedUser.email}</p>
                         </div>
-                        <Badge variant="outline">{assignedUser.role}</Badge>
+                        <Badge variant="outline">{assignedUser.specialization}</Badge>
                     </div>
                 )}
             </div>

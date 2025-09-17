@@ -72,7 +72,7 @@ const DeadlineDisplay = ({ deadline }: { deadline: string }) => {
 
 export function KanbanCard({ task, isDragging }: KanbanCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const assignedUser = USERS.find(u => u.role === task.assignedRole);
+  const assignedUser = USERS.find(u => u.specialization === task.assignedRole);
 
   return (
     <>

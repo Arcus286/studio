@@ -17,7 +17,7 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
   const filteredTasks =
     user?.role === 'Admin' || user?.role === 'Manager'
       ? tasks
-      : tasks.filter((task) => task.assignedRole === user?.role);
+      : tasks.filter((task) => task.assignedRole === user?.specialization);
 
   const totalTasks = filteredTasks.length;
   const doneTasks = filteredTasks.filter((t) => t.status === 'done').length;

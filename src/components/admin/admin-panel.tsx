@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import type { User, Role, KanbanColumnData } from '@/lib/types';
-import { USERS, ROLES, KANBAN_COLUMNS } from '@/lib/data';
+import type { User, Role, KanbanColumnData, SpecializedRole } from '@/lib/types';
+import { USERS, ROLES, KANBAN_COLUMNS, SPECIALIZED_ROLES } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -36,7 +36,7 @@ const defaultBuckets: KanbanColumnData[] = [
 ];
 
 export function AdminPanel() {
-  const { allUsers, approveUser, rejectUser, updateUserRole } = useAuth();
+  const { allUsers, approveUser, rejectUser, updateUserRole, updateUserSpecialization } = useAuth();
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
   const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
   
@@ -47,6 +47,10 @@ export function AdminPanel() {
     updateUserRole(userId, newRole);
   };
   
+  const handleSpecializationChange = (userId: string, newSpecialization: SpecializedRole) => {
+    updateUserSpecialization(userId, newSpecialization);
+  };
+
   const handleAddSelectedColumns = () => {
     const bucketsToAdd = defaultBuckets.filter(bucket => selectedBuckets.includes(bucket.id));
     setColumns([...columns, ...bucketsToAdd]);
@@ -120,7 +124,8 @@ export function AdminPanel() {
                     <TableHead>User</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="w-[200px]">Role</TableHead>
+                    <TableHead className="w-[180px]">Role</TableHead>
+                    <TableHead className="w-[180px]">Specialization</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -144,11 +149,29 @@ export function AdminPanel() {
                         </SelectTrigger>
                         <SelectContent>
                             {ROLES.map((role) => (
-                            <SelectItem key={role} value={role} disabled={role === 'Admin'}>
+                            <SelectItem key={role} value={role} disabled={role === 'Admin' && user.role === 'Admin'}>
                                 {role}
                             </SelectItem>
                             ))}
                         </SelectContent>
+                        </Select>
+                    </TableCell>
+                    <TableCell>
+                         <Select 
+                            value={user.specialization}
+                            onValueChange={(newSpec) => handleSpecializationChange(user.id, newSpec as SpecializedRole)}
+                            disabled={user.role !== 'User'}
+                         >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select specialization" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {SPECIALIZED_ROLES.map((spec) => (
+                                <SelectItem key={spec} value={spec}>
+                                    {spec}
+                                </SelectItem>
+                                ))}
+                            </SelectContent>
                         </Select>
                     </TableCell>
                     </TableRow>
