@@ -21,17 +21,21 @@ import {
   Settings,
   LogOut,
   Users,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '../loading';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PROJECTS } from '@/lib/data';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { cn } from '@/lib/utils';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
   const pathname = usePathname();
+  const [isProjectsOpen, setIsProjectsOpen] = useState(true);
 
   const isProjectPage = pathname.includes('/projects/');
   const projectId = isProjectPage ? pathname.split('/')[2] : null;
@@ -68,33 +72,48 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith('/projects')}
-              >
-                <Link href="/projects">
-                  <Folder />
-                  Projects
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <div className="ml-4 space-y-1 mt-1">
-              {PROJECTS.map(project => (
-                  <SidebarMenuItem key={project.id}>
+            
+            <Collapsible open={isProjectsOpen} onOpenChange={setIsProjectsOpen}>
+              <SidebarMenuItem>
+                <div className='flex items-center w-full'>
                     <SidebarMenuButton
-                      asChild
-                      size="sm"
-                      isActive={pathname.startsWith(`/projects/${project.id}`)}
-                    >
-                      <Link href={`/projects/${project.id}/board`}>
-                        <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: project.color }}></span>
-                        {project.name}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-              ))}
-            </div>
+                    asChild
+                    isActive={pathname.startsWith('/projects')}
+                    className="flex-1"
+                  >
+                    <Link href="/projects">
+                      <Folder />
+                      Projects
+                    </Link>
+                  </SidebarMenuButton>
+                  <CollapsibleTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                          <ChevronRight className={cn("h-4 w-4 transition-transform", isProjectsOpen && "rotate-90")} />
+                      </Button>
+                  </CollapsibleTrigger>
+                </div>
+              </SidebarMenuItem>
+              
+              <CollapsibleContent>
+                <div className="ml-4 space-y-1 mt-1">
+                  {PROJECTS.map(project => (
+                      <SidebarMenuItem key={project.id}>
+                        <SidebarMenuButton
+                          asChild
+                          size="sm"
+                          isActive={pathname.startsWith(`/projects/${project.id}`)}
+                        >
+                          <Link href={`/projects/${project.id}/board`}>
+                            <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: project.color }}></span>
+                            {project.name}
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
 
             {isProjectPage && projectId && (
               <div className="ml-4 mt-2">
