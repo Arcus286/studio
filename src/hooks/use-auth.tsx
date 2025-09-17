@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userWithDefaults: User = {
         ...newUser,
         id: String(users.length + 1),
-        role: 'Frontend', // Default role for new users
+        role: 'User', // Default role for new users
     };
     setUsers(prevUsers => {
         const newUsers = [...prevUsers, userWithDefaults];

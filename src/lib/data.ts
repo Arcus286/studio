@@ -2,10 +2,10 @@ import type { User, Task, Role, TaskType, Priority, Project, Notification, Kanba
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
-  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Project Manager' },
-  { id: '3', username: 'Frontend Dev', email: 'frontend@taskflow.com', password: 'frontendpassword', role: 'Frontend' },
-  { id: '4', username: 'Backend Dev', email: 'backend@taskflow.com', password: 'backendpassword', role: 'Backend' },
-  { id: '5', username: 'UI/UX Designer', email: 'designer@taskflow.com', password: 'designerpassword', role: 'Designer' },
+  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Manager' },
+  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', role: 'User' },
+  { id: '4', username: 'Another User', email: 'user@taskflow.com', password: 'userpassword', role: 'User' },
+  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', role: 'User' },
 ];
 
 export const KANBAN_COLUMNS: KanbanColumnData[] = [
@@ -22,7 +22,7 @@ export const TASKS: Task[] = [
         title: 'Design login and signup pages',
         description: 'Create high-fidelity mockups for the user authentication flow, including login, signup, and forgot password pages.',
         status: 'done',
-        assignedRole: 'Designer',
+        assignedRole: 'User',
         estimatedHours: 8,
         timeSpent: 8,
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
@@ -36,7 +36,7 @@ export const TASKS: Task[] = [
         title: 'Develop user authentication API endpoints',
         description: 'Build the necessary API endpoints for user registration, login, and session management.',
         status: 'done',
-        assignedRole: 'Backend',
+        assignedRole: 'User',
         estimatedHours: 12,
         timeSpent: 12,
         createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
@@ -50,7 +50,7 @@ export const TASKS: Task[] = [
         title: 'Implement frontend for authentication',
         description: 'Connect the frontend forms for login, signup, and password reset to the backend APIs.',
         status: 'in-review',
-        assignedRole: 'Frontend',
+        assignedRole: 'User',
         estimatedHours: 10,
         timeSpent: 9,
         createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
@@ -64,7 +64,7 @@ export const TASKS: Task[] = [
         title: 'Design the main Kanban board UI',
         description: 'Create wireframes and final designs for the main task board, including columns and task cards.',
         status: 'in-progress',
-        assignedRole: 'Designer',
+        assignedRole: 'User',
         estimatedHours: 6,
         timeSpent: 2,
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
@@ -78,7 +78,7 @@ export const TASKS: Task[] = [
         title: 'Set up database schema for tasks and users',
         description: 'Define and implement the database schema for storing user and task information, including roles and relationships.',
         status: 'in-progress',
-        assignedRole: 'Backend',
+        assignedRole: 'User',
         estimatedHours: 8,
         timeSpent: 1,
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
@@ -92,7 +92,7 @@ export const TASKS: Task[] = [
         title: 'Build the Kanban board drag-and-drop functionality',
         description: 'Implement the client-side logic for dragging and dropping tasks between columns on the Kanban board.',
         status: 'to-do',
-        assignedRole: 'Frontend',
+        assignedRole: 'User',
         estimatedHours: 16,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -106,7 +106,7 @@ export const TASKS: Task[] = [
         title: 'Develop API for task state management',
         description: 'Create backend endpoints to handle creating, updating, and deleting tasks, and changing their status.',
         status: 'to-do',
-        assignedRole: 'Backend',
+        assignedRole: 'User',
         estimatedHours: 10,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -120,7 +120,7 @@ export const TASKS: Task[] = [
         title: 'Create Admin panel for user role management',
         description: 'Build a UI for administrators to view all users and assign or change their roles.',
         status: 'to-do',
-        assignedRole: 'Project Manager',
+        assignedRole: 'Manager',
         estimatedHours: 8,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -134,7 +134,7 @@ export const TASKS: Task[] = [
         title: 'Plan mobile app architecture',
         description: 'Outline the overall architecture for the native mobile apps, including technology stack and component breakdown.',
         status: 'to-do',
-        assignedRole: 'Project Manager',
+        assignedRole: 'Manager',
         estimatedHours: 20,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -148,7 +148,7 @@ export const TASKS: Task[] = [
         title: 'Design mobile splash screen',
         description: 'Create the initial splash screen and loading indicators for the mobile app.',
         status: 'to-do',
-        assignedRole: 'Designer',
+        assignedRole: 'User',
         estimatedHours: 4,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -215,7 +215,7 @@ export const NOTIFICATIONS: Notification[] = [
     {
         id: '3',
         title: 'Project Update',
-        message: 'New task "Implement frontend auth" assigned to Frontend.',
+        message: 'New task "Implement frontend auth" assigned to a user.',
         createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         read: false,
     },
@@ -236,7 +236,7 @@ export const NOTIFICATIONS: Notification[] = [
 ];
 
 
-export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Project Manager', 'Admin'];
+export const ROLES: Role[] = ['User', 'Manager', 'Admin'];
 
 export const TASK_TYPES: TaskType[] = ['Bug', 'Task'];
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

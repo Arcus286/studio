@@ -15,7 +15,7 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
   const { user } = useAuth();
 
   const filteredTasks =
-    user?.role === 'Admin'
+    user?.role === 'Admin' || user?.role === 'Manager'
       ? tasks
       : tasks.filter((task) => task.assignedRole === user?.role);
 

@@ -30,7 +30,7 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
 
   const recentTasks = useMemo(() => {
     const filtered =
-      user?.role === 'Admin'
+      user?.role === 'Admin' || user?.role === 'Manager'
         ? tasks
         : tasks.filter((task) => task.assignedRole === user?.role);
     

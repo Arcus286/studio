@@ -216,7 +216,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Team Member" />
+                                        <SelectValue placeholder="Role" />
                                     </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
