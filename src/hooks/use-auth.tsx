@@ -17,8 +17,8 @@ interface AuthContextType {
   addUser: (user: Omit<User, 'id' | 'userType' | 'status' | 'password' | 'role'> & { password?: string }) => void;
   approveUser: (userId: string) => void;
   rejectUser: (userId: string) => void;
-  updateUserType: (userId: string, userType: UserType) => void;
-  updateUserRole: (userId: string, role: Role) => void;
+  updateUser: (userId: string, data: Partial<User>) => void;
+  deleteUser: (userId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -130,14 +130,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newUsers = users.filter(u => u.id !== userId);
     updateUsersState(newUsers);
   }
-
-  const updateUserType = (userId: string, userType: UserType) => {
-    const newUsers = users.map(u => u.id === userId ? { ...u, userType } : u);
+  
+  const deleteUser = (userId: string) => {
+    const newUsers = users.filter(u => u.id !== userId);
     updateUsersState(newUsers);
-  };
+  }
 
-  const updateUserRole = (userId: string, role: Role) => {
-    const newUsers = users.map(u => u.id === userId ? { ...u, role } : u);
+  const updateUser = (userId: string, data: Partial<User>) => {
+    const newUsers = users.map(u => u.id === userId ? { ...u, ...data } : u);
     updateUsersState(newUsers);
   };
 
@@ -151,8 +151,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     addUser,
     approveUser,
     rejectUser,
-    updateUserType,
-    updateUserRole
+    updateUser,
+    deleteUser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

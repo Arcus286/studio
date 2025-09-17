@@ -1,6 +1,6 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { User, UserType, KanbanColumnData, Role } from '@/lib/types';
 import { USER_TYPES, ROLES, KANBAN_COLUMNS } from '@/lib/data';
 import {
@@ -21,12 +21,14 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
-import { Settings, Trash2, UserCheck, UserX, Users } from 'lucide-react';
+import { Settings, Trash2, UserCheck, UserX, Users, Save } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { useAuth } from '@/hooks/use-auth';
 import { Badge } from '../ui/badge';
+import { Input } from '../ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const defaultBuckets: KanbanColumnData[] = [
     { id: 'under-development', title: 'Under Development', color: 'border-cyan-500' },
@@ -37,20 +39,58 @@ const defaultBuckets: KanbanColumnData[] = [
 ];
 
 export function AdminPanel() {
-  const { allUsers, approveUser, rejectUser, updateUserType, updateUserRole } = useAuth();
+  const { allUsers, approveUser, rejectUser, updateUser, deleteUser } = useAuth();
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
   const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
+  const { toast } = useToast();
+
+  const [editableUsers, setEditableUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    setEditableUsers(allUsers.filter(u => u.status !== 'pending'));
+  }, [allUsers]);
+
   
   const pendingUsers = allUsers.filter(u => u.status === 'pending');
-  const activeUsers = allUsers.filter(u => u.status !== 'pending');
 
-  const handleUserTypeChange = (userId: string, newUserType: UserType) => {
-    updateUserType(userId, newUserType);
+  const handleFieldChange = (userId: string, field: keyof User, value: string) => {
+    setEditableUsers(editableUsers.map(u => u.id === userId ? { ...u, [field]: value } : u));
+  }
+
+  const handleSaveUser = (userId: string) => {
+    const userToSave = editableUsers.find(u => u.id === userId);
+    if (userToSave) {
+        updateUser(userId, {
+            username: userToSave.username,
+            email: userToSave.email,
+            userType: userToSave.userType,
+            role: userToSave.role,
+        });
+        toast({
+            title: "User Updated",
+            description: `User ${userToSave.username} has been updated.`,
+        });
+    }
   };
   
-  const handleRoleChange = (userId: string, newRole: Role) => {
-    updateUserRole(userId, newRole);
-  };
+  const handleDeleteUser = (userId: string) => {
+    const userToDelete = allUsers.find(u => u.id === userId);
+    if(userToDelete && userToDelete.userType === 'Admin') {
+        toast({
+            variant: 'destructive',
+            title: "Action Forbidden",
+            description: "Cannot delete an Admin user.",
+        });
+        return;
+    }
+    deleteUser(userId);
+    toast({
+      variant: 'destructive',
+      title: 'User Deleted',
+      description: `User has been permanently deleted.`,
+    });
+  }
+
 
   const handleAddSelectedColumns = () => {
     const bucketsToAdd = defaultBuckets.filter(bucket => selectedBuckets.includes(bucket.id));
@@ -122,58 +162,69 @@ export function AdminPanel() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>User</TableHead>
+                    <TableHead className="w-[180px]">Username</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead className="w-[180px]">User Type</TableHead>
-                    <TableHead className="w-[180px]">Role</TableHead>
+                    <TableHead className="w-[150px]">User Type</TableHead>
+                    <TableHead className="w-[150px]">Role</TableHead>
+                    <TableHead className="w-[120px] text-right">Actions</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {activeUsers.map((user) => (
+                {editableUsers.map((user) => (
                     <TableRow key={user.id}>
-                    <TableCell className="font-medium">
-                        {user.username}
-                    </TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                        <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>{user.status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                        <Select 
-                        value={user.userType}
-                        onValueChange={(newUserType) => handleUserTypeChange(user.id, newUserType as UserType)}
-                        disabled={user.userType === 'Admin'}
-                        >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select user type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {USER_TYPES.map((userType) => (
-                            <SelectItem key={userType} value={userType} disabled={userType === 'Admin' && user.userType === 'Admin'}>
-                                {userType}
-                            </SelectItem>
-                            ))}
-                        </SelectContent>
-                        </Select>
-                    </TableCell>
-                    <TableCell>
-                         <Select 
-                            value={user.role}
-                            onValueChange={(newRole) => handleRoleChange(user.id, newRole as Role)}
-                         >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {ROLES.map((role) => (
-                                <SelectItem key={role} value={role}>
-                                    {role}
-                                </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </TableCell>
+                        <TableCell>
+                            <Input value={user.username} onChange={(e) => handleFieldChange(user.id, 'username', e.target.value)} />
+                        </TableCell>
+                        <TableCell>
+                             <Input value={user.email} onChange={(e) => handleFieldChange(user.id, 'email', e.target.value)} />
+                        </TableCell>
+                        <TableCell>
+                            <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>{user.status}</Badge>
+                        </TableCell>
+                        <TableCell>
+                            <Select 
+                                value={user.userType}
+                                onValueChange={(newUserType) => handleFieldChange(user.id, 'userType', newUserType)}
+                                disabled={user.userType === 'Admin'}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select user type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {USER_TYPES.map((userType) => (
+                                    <SelectItem key={userType} value={userType} disabled={userType === 'Admin'}>
+                                        {userType}
+                                    </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </TableCell>
+                        <TableCell>
+                            <Select 
+                                value={user.role}
+                                onValueChange={(newRole) => handleFieldChange(user.id, 'role', newRole)}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {ROLES.map((role) => (
+                                    <SelectItem key={role} value={role}>
+                                        {role}
+                                    </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </TableCell>
+                        <TableCell className="text-right">
+                             <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleSaveUser(user.id)}>
+                                <Save className="h-4 w-4" />
+                            </Button>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDeleteUser(user.id)}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </TableCell>
                     </TableRow>
                 ))}
                 </TableBody>
