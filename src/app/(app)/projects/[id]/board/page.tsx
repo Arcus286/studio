@@ -17,7 +17,7 @@ export default function ProjectBoardPage({ params }: { params: { id: string } })
   
   const activeSprint = useMemo(() => {
     return sprints.find(s => s.projectId === params.id && s.status === 'active');
-  }, [sprints, params.id]);
+  }, [sprints, params]);
 
   if (!project) {
     notFound();
