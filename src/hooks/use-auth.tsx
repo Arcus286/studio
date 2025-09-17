@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import type { User } from '@/lib/types';
+import type { User, Role } from '@/lib/types';
 import { USERS as initialUsers } from '@/lib/data';
 import Loading from '@/app/loading';
 
@@ -16,6 +16,7 @@ interface AuthContextType {
   addUser: (user: Omit<User, 'id' | 'role' | 'status' | 'password'> & { password?: string }) => void;
   approveUser: (userId: string) => void;
   rejectUser: (userId: string) => void;
+  updateUserRole: (userId: string, role: Role) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -33,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const parsedUser = JSON.parse(storedUser);
         // Sync with the main users list in case roles/status changed
         const freshUser = users.find(u => u.id === parsedUser.id);
-        if (freshUser) {
+        if (freshUser && freshUser.status === 'active') {
           setUser(freshUser);
         } else {
             localStorage.removeItem('agilebridge-user');
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [users]);
 
   const login = (usernameOrEmail: string, password?: string) => {
     const foundUser = users.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
@@ -83,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const userWithDefaults: User = {
         ...newUser,
-        id: String(users.length + 1),
+        id: String(Date.now()), // Use a more unique ID
         role: 'User', // Default role
         status: 'pending', // Default status
     };
@@ -98,6 +99,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
   }
 
+  const updateUserRole = (userId: string, role: Role) => {
+    setUsers(prevUsers => prevUsers.map(u => u.id === userId ? { ...u, role } : u));
+  };
+
 
   const value = {
     isAuthenticated: !!user,
@@ -109,6 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     addUser,
     approveUser,
     rejectUser,
+    updateUserRole,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

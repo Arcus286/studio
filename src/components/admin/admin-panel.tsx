@@ -36,30 +36,16 @@ const defaultBuckets: KanbanColumnData[] = [
 ];
 
 export function AdminPanel() {
-  const { allUsers, approveUser, rejectUser } = useAuth();
-  const [users, setUsers] = useState<User[]>(allUsers);
+  const { allUsers, approveUser, rejectUser, updateUserRole } = useAuth();
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
   const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
   
-  const pendingUsers = users.filter(u => u.status === 'pending');
-  const activeUsers = users.filter(u => u.status === 'active');
+  const pendingUsers = allUsers.filter(u => u.status === 'pending');
+  const activeUsers = allUsers.filter(u => u.status !== 'pending');
 
   const handleRoleChange = (userId: string, newRole: Role) => {
-    // This part should ideally be handled via the useAuth hook to persist changes
-    setUsers(users.map(user => 
-      user.id === userId ? { ...user, role: newRole } : user
-    ));
+    updateUserRole(userId, newRole);
   };
-  
-  const handleApproval = (userId: string) => {
-    approveUser(userId);
-    setUsers(users.map(u => u.id === userId ? { ...u, status: 'active'} : u));
-  }
-
-  const handleRejection = (userId: string) => {
-    rejectUser(userId);
-    setUsers(users.filter(u => u.id !== userId));
-  }
   
   const handleAddSelectedColumns = () => {
     const bucketsToAdd = defaultBuckets.filter(bucket => selectedBuckets.includes(bucket.id));
@@ -106,10 +92,10 @@ export function AdminPanel() {
                                     <TableCell>{user.username}</TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-green-500" onClick={() => handleApproval(user.id)}>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-green-500" onClick={() => approveUser(user.id)}>
                                             <UserCheck className="h-4 w-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => handleRejection(user.id)}>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => rejectUser(user.id)}>
                                             <UserX className="h-4 w-4" />
                                         </Button>
                                     </TableCell>
