@@ -19,9 +19,7 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
-import { Label } from '../ui/label';
 import { Settings, Trash2 } from 'lucide-react';
 import { Separator } from '../ui/separator';
 
@@ -36,7 +34,6 @@ const defaultBuckets: KanbanColumnData[] = [
 export function AdminPanel() {
   const [users, setUsers] = useState<User[]>(USERS);
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
-  const [newColumnName, setNewColumnName] = useState('');
 
   const handleRoleChange = (userId: string, newRole: Role) => {
     setUsers(users.map(user => 
