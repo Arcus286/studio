@@ -3,9 +3,9 @@ import type { User, Task, Role, TaskType, Priority, Project, Notification, Kanba
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
   { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Manager', status: 'active' },
-  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', role: 'User', status: 'active' },
-  { id: '4', username: 'Another User', email: 'user@taskflow.com', password: 'userpassword', role: 'User', status: 'active' },
-  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', role: 'User', status: 'active' },
+  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', role: 'Backend', status: 'active' },
+  { id: '4', username: 'Another User', email: 'user@taskflow.com', password: 'userpassword', role: 'Frontend', status: 'active' },
+  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', role: 'Designer', status: 'active' },
 ];
 
 export const KANBAN_COLUMNS: KanbanColumnData[] = [
@@ -22,7 +22,7 @@ export const TASKS: Task[] = [
         title: 'Design login and signup pages',
         description: 'Create high-fidelity mockups for the user authentication flow, including login, signup, and forgot password pages.',
         status: 'done',
-        assignedRole: 'User',
+        assignedRole: 'Designer',
         estimatedHours: 8,
         timeSpent: 8,
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
@@ -37,7 +37,7 @@ export const TASKS: Task[] = [
         title: 'Develop user authentication API endpoints',
         description: 'Build the necessary API endpoints for user registration, login, and session management.',
         status: 'done',
-        assignedRole: 'User',
+        assignedRole: 'Backend',
         estimatedHours: 12,
         timeSpent: 12,
         createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
@@ -52,7 +52,7 @@ export const TASKS: Task[] = [
         title: 'Implement frontend for authentication',
         description: 'Connect the frontend forms for login, signup, and password reset to the backend APIs.',
         status: 'in-review',
-        assignedRole: 'User',
+        assignedRole: 'Frontend',
         estimatedHours: 10,
         timeSpent: 9,
         createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
@@ -67,7 +67,7 @@ export const TASKS: Task[] = [
         title: 'Design the main Kanban board UI',
         description: 'Create wireframes and final designs for the main task board, including columns and task cards.',
         status: 'in-progress',
-        assignedRole: 'User',
+        assignedRole: 'Designer',
         estimatedHours: 6,
         timeSpent: 2,
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
@@ -82,7 +82,7 @@ export const TASKS: Task[] = [
         title: 'Set up database schema for tasks and users',
         description: 'Define and implement the database schema for storing user and task information, including roles and relationships.',
         status: 'in-progress',
-        assignedRole: 'User',
+        assignedRole: 'Backend',
         estimatedHours: 8,
         timeSpent: 1,
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
@@ -97,7 +97,7 @@ export const TASKS: Task[] = [
         title: 'Build the Kanban board drag-and-drop functionality',
         description: 'Implement the client-side logic for dragging and dropping tasks between columns on the Kanban board.',
         status: 'to-do',
-        assignedRole: 'User',
+        assignedRole: 'Frontend',
         estimatedHours: 16,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -112,7 +112,7 @@ export const TASKS: Task[] = [
         title: 'Develop API for task state management',
         description: 'Create backend endpoints to handle creating, updating, and deleting tasks, and changing their status.',
         status: 'to-do',
-        assignedRole: 'User',
+        assignedRole: 'Backend',
         estimatedHours: 10,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -155,7 +155,7 @@ export const TASKS: Task[] = [
         title: 'Design mobile splash screen',
         description: 'Create the initial splash screen and loading indicators for the mobile app.',
         status: 'to-do',
-        assignedRole: 'User',
+        assignedRole: 'Designer',
         estimatedHours: 4,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -243,7 +243,7 @@ export const NOTIFICATIONS: Notification[] = [
 ];
 
 
-export const ROLES: Role[] = ['User', 'Manager', 'Admin'];
+export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Manager', 'Admin'];
 
 export const TASK_TYPES: TaskType[] = ['Bug', 'Task'];
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

@@ -24,6 +24,8 @@ type HeaderProps = {
 export function Header({ showSearch = true }: HeaderProps) {
   const { user, logout } = useAuth();
   const isAdmin = user?.role === 'Admin';
+  const isManager = isAdmin || user?.role === 'Manager';
+
 
   return (
     <>
@@ -42,12 +44,14 @@ export function Header({ showSearch = true }: HeaderProps) {
         )}
       </div>
 
-       <NewTaskDialog>
-        <Button variant="outline">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Task
-        </Button>
-       </NewTaskDialog>
+       {isManager && (
+        <NewTaskDialog>
+            <Button variant="outline">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Task
+            </Button>
+        </NewTaskDialog>
+       )}
       <Notifications />
       <ThemeToggle />
 
@@ -72,7 +76,7 @@ export function Header({ showSearch = true }: HeaderProps) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {user?.role === 'Admin' && (
+          {isAdmin && (
             <DropdownMenuItem asChild>
               <Link href="/admin">Admin Panel</Link>
             </DropdownMenuItem>

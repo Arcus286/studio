@@ -35,9 +35,11 @@ import { Button } from '@/components/ui/button';
 import { NewProjectDialog } from '@/components/projects/new-project-dialog';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const pathname = usePathname();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
+  const isManager = user?.role === 'Manager' || user?.role === 'Admin';
+
 
   const isProjectPage = pathname.startsWith('/projects/');
   const projectId = isProjectPage ? pathname.split('/')[2] : null;
@@ -88,11 +90,13 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                       Projects
                     </Link>
                   </SidebarMenuButton>
-                  <NewProjectDialog>
-                     <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                          <Plus className="h-4 w-4" />
-                      </Button>
-                  </NewProjectDialog>
+                  {isManager && (
+                    <NewProjectDialog>
+                       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                            <Plus className="h-4 w-4" />
+                        </Button>
+                    </NewProjectDialog>
+                  )}
                   <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
                           <ChevronRight className={cn("h-4 w-4 transition-transform", isProjectsOpen && "rotate-90")} />

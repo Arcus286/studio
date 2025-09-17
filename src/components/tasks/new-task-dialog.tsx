@@ -144,7 +144,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {ROLES.filter(r => r !== 'Admin').map(role => (
+                        {ROLES.map(role => (
                           <SelectItem key={role} value={role}>{role}</SelectItem>
                         ))}
                       </SelectContent>

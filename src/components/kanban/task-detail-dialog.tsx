@@ -17,7 +17,7 @@ import { format, parseISO, isPast } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users, Bug, CalendarClock } from 'lucide-react';
+import { CalendarDays, Users, Bug, CalendarClock, Trash2 } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -39,7 +39,7 @@ const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task', className?: s
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialogProps) {
   const { user } = useAuth();
-  const isAdmin = user?.role === 'Admin';
+  const isManager = user?.role === 'Manager' || user?.role === 'Admin';
   const { toast } = useToast();
 
   const [title, setTitle] = useState(task.title);
@@ -51,6 +51,17 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
     toast({
         title: 'Task Updated',
         description: `"${title}" has been saved.`
+    });
+    onOpenChange(false);
+  };
+  
+   const handleDelete = () => {
+    // In a real app, this would be a server action
+    console.log('Deleting task:', task.id);
+    toast({
+      variant: 'destructive',
+      title: 'Task Deleted',
+      description: `"${task.title}" has been deleted.`,
     });
     onOpenChange(false);
   };
@@ -135,7 +146,14 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
                 <span>Created on {format(parseISO(task.createdAt), "MMM d, yyyy")}</span>
             </div>
              <div className="flex items-center gap-2">
-                {isAdmin && <Button onClick={handleSave}>Save Changes</Button>}
+                {isManager && (
+                  <>
+                    <Button variant="destructive" onClick={handleDelete}>
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                    </Button>
+                    <Button onClick={handleSave}>Save Changes</Button>
+                  </>
+                )}
              </div>
         </DialogFooter>
       </DialogContent>
