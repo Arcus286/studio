@@ -3,6 +3,7 @@ import { Droppable, Draggable } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanCard } from './kanban-card';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/use-auth';
 
 type KanbanColumnProps = {
   column: KanbanColumnData;
@@ -23,6 +24,8 @@ const titleColors: Record<string, string> = {
 
 
 export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnProps) {
+  const { user } = useAuth();
+  
   return (
     <div className={cn(
       "flex flex-col rounded-xl border", 
@@ -46,8 +49,10 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
               snapshot.isDraggingOver ? 'bg-black/10' : 'bg-transparent'
             )}
           >
-            {tasks.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
+            {tasks.map((task, index) => {
+              const isDraggable = user?.role === 'Admin' || user?.role === task.assignedRole;
+              return (
+              <Draggable key={task.id} draggableId={task.id} index={index} isDragDisabled={!isDraggable}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
@@ -61,7 +66,7 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
                   </div>
                 )}
               </Draggable>
-            ))}
+            )})}
             {provided.placeholder}
           </div>
         )}

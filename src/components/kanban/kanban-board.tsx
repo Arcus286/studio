@@ -1,4 +1,3 @@
-
 'use client';
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
@@ -71,16 +70,12 @@ export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProp
      });
   };
 
-  const filteredTasks = user?.role === 'Admin'
-    ? tasks
-    : tasks.filter(task => task.assignedRole === user?.role);
-
   const groupedTasks: Record<string, Task[]> = columns.reduce((acc, col) => {
     acc[col.id] = [];
     return acc;
   }, {} as Record<string, Task[]>);
 
-  filteredTasks.forEach(task => {
+  tasks.forEach(task => {
       if (groupedTasks[task.status]) {
         groupedTasks[task.status].push(task);
       }
@@ -91,7 +86,7 @@ export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProp
     <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {columns.map(column => (
-                <KanbanColumn key={column.id} column={column} tasks={groupedTasks[column.id]} highlightedStatus={highlightedStatus} />
+                <KanbanColumn key={column.id} column={column} tasks={groupedTasks[column.id] || []} highlightedStatus={highlightedStatus} />
             ))}
         </div>
         <TimeLogDialog 
