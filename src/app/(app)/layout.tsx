@@ -31,6 +31,7 @@ import { useEffect, useState } from 'react';
 import { PROJECTS } from '@/lib/data';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
