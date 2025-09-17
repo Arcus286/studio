@@ -1,8 +1,64 @@
 
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, LogIn, Pencil, Users, CheckCircle, Home } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+
+
+const features = [
+  {
+    title: 'AI-Powered Suggestions',
+    description: 'Leverage artificial intelligence to generate user stories, suggest task breakdowns, and identify potential risks in your project.',
+  },
+  {
+    title: 'Interactive Kanban Board',
+    description: 'Visualize your workflow with a drag-and-drop Kanban board. Easily move tasks between columns to track progress from "To Do" to "Done".',
+  },
+  {
+    title: 'Real-Time Collaboration',
+    description: 'Work seamlessly with your team. Get instant notifications on task updates, assignments, and comments.',
+  },
+  {
+    title: 'Project & Role Management',
+    description: 'Organize your work into projects, assign roles to team members, and manage permissions with a powerful admin dashboard.',
+  },
+  {
+    title: 'Detailed Analytics',
+    description: 'Gain insights into your team\'s performance with charts and metrics on task completion, time tracking, and workload distribution.',
+  },
+  {
+    title: 'Customizable Profiles',
+    description: 'Personalize your user profile with your designation, university, bio, and more to share your role and expertise with the team.',
+  },
+];
+
+const steps = [
+  {
+    icon: <LogIn className="h-8 w-8 text-primary" />,
+    title: '1. Sign Up & Create Your Profile',
+    description: 'Join AgileBridge by creating an account. Fill out your profile to let your team know who you are and what your role is.',
+  },
+  {
+    icon: <Users className="h-8 w-8 text-primary" />,
+    title: '2. Create or Join a Project',
+    description: 'Start a new project or get invited to an existing one. Admins can easily manage team members and their roles.',
+  },
+  {
+    icon: <Pencil className="h-8 w-8 text-primary" />,
+    title: '3. Add and Assign Tasks',
+    description: 'Break down your project into tasks. Add details, set priorities, and assign them to the appropriate team members.',
+  },
+  {
+    icon: <ArrowRight className="h-8 w-8 text-primary" />,
+    title: '4. Track Progress on the Board',
+    description: 'Use the Kanban board to visualize your workflow. Drag and drop tasks to update their status and keep everyone in the loop.',
+  },
+];
+
 
 export default function LandingPage() {
   return (
@@ -30,19 +86,19 @@ export default function LandingPage() {
         </Link>
         <nav className="hidden flex-1 items-center justify-center gap-6 text-sm font-medium md:flex">
           <Link
-            href="/features"
+            href="#features"
             className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             Features
           </Link>
           <Link
-            href="/how-it-works"
+            href="#how-it-works"
             className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             How it Works
           </Link>
           <Link
-            href="#"
+            href="#contact"
             className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
           >
             Contact
@@ -148,6 +204,103 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
+        <section id="features" className="py-20 md:py-24 lg:py-32 bg-muted/30">
+            <div className="container px-4 md:px-6">
+                <div className="mx-auto max-w-3xl text-center space-y-4">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                        Features of <span className="text-primary">AgileBridge</span>
+                    </h2>
+                    <p className="text-muted-foreground md:text-xl">
+                        Everything you need to manage your projects, collaborate with your team, and ship faster.
+                    </p>
+                </div>
+
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {features.map((feature, index) => (
+                        <Card key={index} className="hover:shadow-primary/20 hover:shadow-lg transition-shadow">
+                            <CardHeader>
+                                <div className="flex items-center gap-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                                        <CheckCircle className="h-6 w-6 text-primary" />
+                                    </div>
+                                    <CardTitle>{feature.title}</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground">{feature.description}</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
+        
+        <section id="how-it-works" className="py-20 md:py-24 lg:py-32">
+            <div className="container px-4 md:px-6">
+                <div className="mx-auto max-w-3xl text-center space-y-4">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                        How <span className="text-primary">AgileBridge</span> Works
+                    </h2>
+                    <p className="text-muted-foreground md:text-xl">
+                        A simple and intuitive process to get your projects moving from idea to launch.
+                    </p>
+                </div>
+
+                <div className="mt-16 max-w-4xl mx-auto space-y-8">
+                    {steps.map((step, index) => (
+                        <Card key={index} className="hover:shadow-lg transition-shadow">
+                            <CardHeader>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10">
+                                        {step.icon}
+                                    </div>
+                                    <div>
+                                        <CardTitle className="text-xl">{step.title}</CardTitle>
+                                        <p className="text-muted-foreground mt-1">{step.description}</p>
+                                    </div>
+                                </div>
+                            </CardHeader>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" className="py-20 md:py-24 lg:py-32 bg-muted/30">
+            <div className="container px-4 md:px-6">
+                <div className="mx-auto max-w-3xl text-center space-y-4">
+                    <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                        Get in Touch
+                    </h2>
+                    <p className="text-muted-foreground md:text-xl">
+                        Have questions or want to learn more? Send us a message.
+                    </p>
+                </div>
+                <div className="mt-12 max-w-xl mx-auto">
+                    <form className="grid gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">Name</Label>
+                                <Input id="name" placeholder="Enter your name" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input id="email" type="email" placeholder="Enter your email" />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="message">Message</Label>
+                            <Textarea id="message" placeholder="Enter your message" className="min-h-[120px]" />
+                        </div>
+                        <div className="flex justify-center">
+                            <Button type="submit">Send Message</Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
       </main>
       <footer className="flex items-center justify-center py-6 px-4 md:px-6 border-t border-border/40">
         <div className="container flex items-center justify-between">
