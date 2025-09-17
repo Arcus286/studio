@@ -29,26 +29,6 @@ export default function InfoLayout({
           </svg>
           <span className="font-bold">AgileBridge</span>
         </Link>
-        <nav className="hidden flex-1 items-center justify-center gap-6 text-sm font-medium md:flex">
-          <Link
-            href="/#features"
-            className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
-          >
-            Features
-          </Link>
-          <Link
-            href="/#how-it-works"
-            className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
-          >
-            How it Works
-          </Link>
-          <Link
-            href="/#contact"
-            className="text-foreground/70 transition-all hover:text-foreground hover:scale-110"
-          >
-            Contact
-          </Link>
-        </nav>
         <div className="flex items-center gap-4"></div>
       </header>
       <main className="flex-1">
