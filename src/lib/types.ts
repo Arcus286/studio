@@ -1,4 +1,4 @@
-export type Role = 'Frontend' | 'Backend' | 'Designer' | 'Manager' | 'Admin' | 'User';
+export type Role = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Manager' | 'Admin' | 'User';
 
 export type User = {
   id: string;
