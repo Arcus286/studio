@@ -6,15 +6,9 @@ import { notFound } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
+import type { Project } from '@/lib/types';
 
-export default function ProjectBoardPage({ params: { id } }: { params: { id: string } }) {
-  const { projects } = useProjectStore();
-  const project = projects.find(p => p.id === id);
-
-  if (!project) {
-    return <div>Loading project...</div>;
-  }
-
+function ProjectBoardPageContent({ project }: { project: Project }) {
   return (
     <div className="space-y-6">
         <Breadcrumb>
@@ -38,4 +32,15 @@ export default function ProjectBoardPage({ params: { id } }: { params: { id: str
         <ProjectBoard project={project} />
     </div>
   );
+}
+
+export default function ProjectBoardPage({ params }: { params: { id: string } }) {
+  const { projects } = useProjectStore();
+  const project = projects.find(p => p.id === params.id);
+
+  if (!project) {
+    return <div>Loading project...</div>;
+  }
+
+  return <ProjectBoardPageContent project={project} />
 }
