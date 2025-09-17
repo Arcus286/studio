@@ -9,10 +9,13 @@ import Loading from '@/app/loading';
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
+  allUsers: User[];
   login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
-  addUser: (user: Omit<User, 'id' | 'role' | 'password'> & { password?: string }) => void;
+  addUser: (user: Omit<User, 'id' | 'role' | 'status' | 'password'> & { password?: string }) => void;
+  approveUser: (userId: string) => void;
+  rejectUser: (userId: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -27,7 +30,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const storedUser = localStorage.getItem('agilebridge-user');
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        // Sync with the main users list in case roles/status changed
+        const freshUser = users.find(u => u.id === parsedUser.id);
+        if (freshUser) {
+          setUser(freshUser);
+        } else {
+            localStorage.removeItem('agilebridge-user');
+            setUser(null);
+        }
       }
     } catch (error) {
       console.error("Failed to parse user from localStorage", error);
@@ -40,6 +51,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (usernameOrEmail: string, password?: string) => {
     const foundUser = users.find(u => (u.email === usernameOrEmail || u.username === usernameOrEmail));
+    
+    if (!foundUser) {
+        throw new Error("Invalid credentials");
+    }
+
+    if (foundUser.status === 'pending') {
+        throw new Error("Your account is pending approval.");
+    }
+    
     if (foundUser && (!foundUser.password || foundUser.password === password)) {
         localStorage.setItem('agilebridge-user', JSON.stringify(foundUser));
         setUser(foundUser);
@@ -56,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
   
-  const addUser = (newUser: Omit<User, 'id' | 'role' | 'password'> & { password?: string }) => {
+  const addUser = (newUser: Omit<User, 'id' | 'role'| 'status' | 'password'> & { password?: string }) => {
     const userExists = users.some(u => u.email === newUser.email || u.username === newUser.username);
     if(userExists) {
         throw new Error("User with this email or username already exists.");
@@ -64,22 +84,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userWithDefaults: User = {
         ...newUser,
         id: String(users.length + 1),
-        role: 'User', // Default role for new users
+        role: 'User', // Default role
+        status: 'pending', // Default status
     };
-    setUsers(prevUsers => {
-        const newUsers = [...prevUsers, userWithDefaults];
-        console.log("Updated users list:", newUsers);
-        return newUsers;
-    });
+    setUsers(prevUsers => [...prevUsers, userWithDefaults]);
+  };
+
+  const approveUser = (userId: string) => {
+    setUsers(prevUsers => prevUsers.map(u => u.id === userId ? { ...u, status: 'active' } : u));
+  };
+
+  const rejectUser = (userId: string) => {
+    setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
   }
+
 
   const value = {
     isAuthenticated: !!user,
     user,
+    allUsers: users,
     login,
     logout,
     isLoading,
     addUser,
+    approveUser,
+    rejectUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, CheckCircle } from 'lucide-react';
 import { PasswordStrength } from '@/components/password-strength';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
@@ -18,6 +18,7 @@ export default function SignupPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [signupSuccess, setSignupSuccess] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
     const { addUser } = useAuth();
@@ -51,12 +52,34 @@ export default function SignupPage() {
 
         try {
             addUser({ username, email, password });
-            toast({ title: 'Success!', description: 'Account created successfully. Redirecting to login...' });
-            router.push('/login');
+            setSignupSuccess(true);
         } catch (error) {
             toast({ variant: 'destructive', title: 'Error', description: (error as Error).message });
         }
     };
+
+    if (signupSuccess) {
+        return (
+             <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
+                <Card className="w-full max-w-md shadow-lg text-center">
+                    <CardHeader>
+                        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50 mb-4">
+                            <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+                        </div>
+                        <CardTitle className="text-2xl">Registration Successful</CardTitle>
+                        <CardDescription>
+                           Your account has been created and is now pending approval from an administrator. You will be notified via email once your account is activated.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Button asChild className="w-full">
+                           <Link href="/">Return to Home</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center bg-background px-4 py-8">

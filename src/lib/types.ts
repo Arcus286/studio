@@ -6,6 +6,7 @@ export type User = {
   email: string;
   password?: string;
   role: Role;
+  status: 'pending' | 'active';
   designation?: string;
   phoneNumber?: string;
   bio?: string;

@@ -17,13 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
-import { Settings, Trash2 } from 'lucide-react';
+import { Settings, Trash2, UserCheck, UserX, Users } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { useAuth } from '@/hooks/use-auth';
+import { Badge } from '../ui/badge';
 
 const defaultBuckets: KanbanColumnData[] = [
     { id: 'under-development', title: 'Under Development', color: 'border-cyan-500' },
@@ -34,15 +36,30 @@ const defaultBuckets: KanbanColumnData[] = [
 ];
 
 export function AdminPanel() {
-  const [users, setUsers] = useState<User[]>(USERS);
+  const { allUsers, approveUser, rejectUser } = useAuth();
+  const [users, setUsers] = useState<User[]>(allUsers);
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
   const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
+  
+  const pendingUsers = users.filter(u => u.status === 'pending');
+  const activeUsers = users.filter(u => u.status === 'active');
 
   const handleRoleChange = (userId: string, newRole: Role) => {
+    // This part should ideally be handled via the useAuth hook to persist changes
     setUsers(users.map(user => 
       user.id === userId ? { ...user, role: newRole } : user
     ));
   };
+  
+  const handleApproval = (userId: string) => {
+    approveUser(userId);
+    setUsers(users.map(u => u.id === userId ? { ...u, status: 'active'} : u));
+  }
+
+  const handleRejection = (userId: string) => {
+    rejectUser(userId);
+    setUsers(users.filter(u => u.id !== userId));
+  }
   
   const handleAddSelectedColumns = () => {
     const bucketsToAdd = defaultBuckets.filter(bucket => selectedBuckets.includes(bucket.id));
@@ -64,10 +81,51 @@ export function AdminPanel() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+        {pendingUsers.length > 0 && (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <UserCheck className="h-5 w-5 text-primary"/>
+                        Pending Approvals
+                        <Badge variant="outline">{pendingUsers.length}</Badge>
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                     <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>User</TableHead>
+                                <TableHead>Email</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {pendingUsers.map((user) => (
+                                <TableRow key={user.id}>
+                                    <TableCell>{user.username}</TableCell>
+                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-green-500" onClick={() => handleApproval(user.id)}>
+                                            <UserCheck className="h-4 w-4" />
+                                        </Button>
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500" onClick={() => handleRejection(user.id)}>
+                                            <UserX className="h-4 w-4" />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        )}
         <Card>
             <div className="p-4 border-b flex justify-between items-center">
-                <h2 className="text-xl font-semibold">User Management</h2>
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    User Management
+                </h2>
                 <SuggestStoriesDialog />
             </div>
             <Table>
@@ -75,18 +133,20 @@ export function AdminPanel() {
                 <TableRow>
                     <TableHead>User</TableHead>
                     <TableHead>Email</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead className="w-[200px]">Role</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {users.map((user) => (
+                {activeUsers.map((user) => (
                     <TableRow key={user.id}>
                     <TableCell className="font-medium">
-                        <div className="flex items-center gap-3">
                         {user.username}
-                        </div>
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                        <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>{user.status}</Badge>
+                    </TableCell>
                     <TableCell>
                         <Select 
                         value={user.role}
