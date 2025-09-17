@@ -38,7 +38,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
 
-  const isProjectPage = pathname.includes('/projects/');
+  const isProjectPage = pathname.startsWith('/projects/');
   const projectId = isProjectPage ? pathname.split('/')[2] : null;
 
   return (
@@ -79,7 +79,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 <div className='flex items-center w-full'>
                     <SidebarMenuButton
                     asChild
-                    isActive={pathname.startsWith('/projects')}
+                    isActive={pathname === '/projects'}
                     className="flex-1"
                   >
                     <Link href="/projects">
