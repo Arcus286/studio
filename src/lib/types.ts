@@ -37,6 +37,7 @@ export type Task = {
   updatedAt: string;
   priority: Priority;
   type: TaskType;
+  deadline?: string;
 };
 
 export type ProjectMember = {

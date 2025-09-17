@@ -22,6 +22,7 @@ import { ROLES, TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS } from '@/lib/d
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { DatePicker } from '../ui/date-picker';
 
 const taskSchema = z.object({
   projectId: z.string().min(1, 'Please select a project.'),
@@ -32,6 +33,7 @@ const taskSchema = z.object({
   priority: z.string().min(1, 'Please select a priority.'),
   estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.'),
   assignedRole: z.string().min(1, 'Please assign a role.'),
+  deadline: z.date().optional(),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -53,6 +55,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       priority: 'Medium',
       estimatedHours: 1,
       assignedRole: '',
+      deadline: undefined,
     },
   });
 
@@ -78,7 +81,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
           <DialogDescription>Fill in the details below to add a new task to your project.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
             <FormField
               control={form.control}
               name="projectId"
@@ -217,19 +220,34 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                 )}
               />
             </div>
-             <FormField
-                control={form.control}
-                name="estimatedHours"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Time Estimate (Hours)</FormLabel>
-                    <FormControl>
-                        <Input type="number" min="0" step="0.5" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-            />
+             <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    control={form.control}
+                    name="estimatedHours"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Time Estimate (Hours)</FormLabel>
+                        <FormControl>
+                            <Input type="number" min="0" step="0.5" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="deadline"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Deadline</FormLabel>
+                        <FormControl>
+                            <DatePicker value={field.value} onSelect={field.onChange} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
             <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
                 <Button type="submit">Create Task</Button>

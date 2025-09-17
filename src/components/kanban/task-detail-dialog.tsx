@@ -13,11 +13,11 @@ import { Button } from '@/components/ui/button';
 import { USERS, KANBAN_COLUMNS } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isPast } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users, Bug } from 'lucide-react';
+import { CalendarDays, Users, Bug, CalendarClock } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -58,6 +58,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
   const assignedUser = USERS.find(u => u.role === task.assignedRole);
   const statusLabel = KANBAN_COLUMNS.find(c => c.id === task.status)?.title || task.status;
+  const isOverdue = task.deadline && isPast(new Date(task.deadline));
 
 
   return (
@@ -86,13 +87,27 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
             
             <Separator />
 
-            <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-3">Task Progress</h3>
-                <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-muted-foreground">{task.timeSpent}h / {task.estimatedHours}h</span>
-                    <span className="text-sm font-semibold">{Math.round(progressPercentage)}%</span>
+            <div className="grid grid-cols-2 gap-6">
+                <div>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-3">Task Progress</h3>
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-muted-foreground">{task.timeSpent}h / {task.estimatedHours}h</span>
+                        <span className="text-sm font-semibold">{Math.round(progressPercentage)}%</span>
+                    </div>
+                    <Progress value={progressPercentage} className="h-2" />
                 </div>
-                <Progress value={progressPercentage} className="h-2" />
+                 {task.deadline && (
+                    <div>
+                        <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3">
+                            <CalendarClock className="h-4 w-4" />
+                            Deadline
+                        </h3>
+                        <div className={cn("text-sm", isOverdue ? "text-red-500 font-semibold" : "text-foreground")}>
+                           {format(parseISO(task.deadline), "MMMM d, yyyy")}
+                           {isOverdue && " (Overdue)"}
+                        </div>
+                    </div>
+                 )}
             </div>
 
             <Separator />

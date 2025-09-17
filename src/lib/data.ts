@@ -29,6 +29,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Task',
+        deadline: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-2',
@@ -43,6 +44,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Task',
+        deadline: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-3',
@@ -57,6 +59,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
         type: 'Task',
+        deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-4',
@@ -71,6 +74,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
         type: 'Task',
+        deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-5',
@@ -85,6 +89,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Task',
+        deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // Overdue
     },
     {
         id: 'TASK-6',
@@ -99,6 +104,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Bug',
+        deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-7',
@@ -127,6 +133,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Low',
         type: 'Task',
+        deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-9',
