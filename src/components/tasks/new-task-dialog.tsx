@@ -208,7 +208,6 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">None</SelectItem>
                           {stories.map(story => (
                             <SelectItem key={story.id} value={story.id}>{story.title}</SelectItem>
                           ))}
