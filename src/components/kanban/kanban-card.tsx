@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -53,7 +54,10 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
         onClick={() => setIsDetailOpen(true)}
       >
         <CardContent className="p-4 space-y-3">
-          <p className="font-semibold text-foreground">{task.title}</p>
+          <div className="flex justify-between items-center">
+            <p className="font-semibold text-foreground">{task.title}</p>
+            <Badge variant="outline">{task.id}</Badge>
+          </div>
           <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>
            <div className="flex items-center gap-2">
                 <Badge variant="outline" className="flex items-center flex-shrink-0">
