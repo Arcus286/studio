@@ -9,8 +9,7 @@ import { SprintList } from '@/components/sprints/sprint-list';
 import { NewSprintDialog } from '@/components/sprints/new-sprint-dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { AuthProvider, useAuth } from '@/hooks/use-auth';
-
+import { useAuth } from '@/hooks/use-auth';
 
 function SprintsPageContent({ project }: { project: (typeof PROJECTS)[0] }) {
   const { user } = useAuth();
