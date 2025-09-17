@@ -1,4 +1,6 @@
 
+'use client';
+
 import { notFound } from 'next/navigation';
 import { PROJECTS } from '@/lib/data';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
