@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -18,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS, ROLES } from '@/lib/data';
+import { TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS, SPECIALIZED_ROLES } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -225,7 +226,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {ROLES.map(role => (
+                        {SPECIALIZED_ROLES.map(role => (
                           <SelectItem key={role} value={role}>{role}</SelectItem>
                         ))}
                       </SelectContent>
