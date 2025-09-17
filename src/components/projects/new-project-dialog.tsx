@@ -29,8 +29,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Palette, Plus, Trash2, KanbanSquare, Settings } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ROLES, KANBAN_COLUMNS } from '@/lib/data';
+import { ROLES } from '@/lib/data';
 import { Checkbox } from '../ui/checkbox';
+import { useStore } from '@/lib/store';
 
 const optionalBuckets = [
     { id: 'under-development', title: 'Under Development' },
@@ -67,6 +68,7 @@ const colorThemes = [
 export function NewProjectDialog({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
+  const { columns } = useStore();
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -94,7 +96,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
 
   const onSubmit = (data: ProjectFormValues) => {
     const selectedBuckets = optionalBuckets.filter(b => data.buckets?.includes(b.id));
-    const finalBuckets = [...KANBAN_COLUMNS, ...selectedBuckets];
+    const finalBuckets = [...columns, ...selectedBuckets];
     console.log('New project data:', {...data, buckets: finalBuckets});
     toast({
       title: 'Project Created!',
@@ -247,7 +249,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                 <div className='p-4 border rounded-md bg-muted/50'>
                     <p className='text-sm text-muted-foreground mb-4'>The board will be created with these standard columns. You cannot remove them.</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-                        {KANBAN_COLUMNS.map(col => (
+                        {columns.map(col => (
                             <div key={col.id} className="flex items-center gap-2 p-2 rounded-md bg-background border">
                                 <div className={`w-2 h-2 rounded-full border-2 ${col.color}`} />
                                 <span className='text-sm font-medium'>{col.title}</span>

@@ -20,7 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS, SPECIALIZED_ROLES, EFFORT_LEVELS } from '@/lib/data';
+import { TASK_TYPES, PRIORITIES, PROJECTS, SPECIALIZED_ROLES, EFFORT_LEVELS } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -53,7 +53,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const currentProjectId = pathname.startsWith('/projects/') ? pathname.split('/')[2] : '';
-  const { addTask, tasks } = useStore();
+  const { addTask, tasks, columns } = useStore();
   const { sprints } = useSprintStore();
 
   const form = useForm<TaskFormValues>({
@@ -288,7 +288,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {KANBAN_COLUMNS.map(col => (
+                        {columns.map(col => (
                           <SelectItem key={col.id} value={col.id}>{col.title}</SelectItem>
                         ))}
                       </SelectContent>

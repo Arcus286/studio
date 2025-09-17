@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { USERS, KANBAN_COLUMNS } from '@/lib/data';
+import { USERS } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isPast } from 'date-fns';
@@ -41,7 +41,7 @@ const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task', className?: s
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialogProps) {
   const { user } = useAuth();
-  const { deleteTask } = useStore();
+  const { deleteTask, columns } = useStore();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
 
@@ -70,7 +70,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
   const assignedUser = USERS.find(u => u.role === task.assignedRole);
-  const statusLabel = KANBAN_COLUMNS.find(c => c.id === task.status)?.title || task.status;
+  const statusLabel = columns.find(c => c.id === task.status)?.title || task.status;
   const isOverdue = task.deadline && isPast(new Date(task.deadline));
 
 

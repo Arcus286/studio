@@ -1,23 +1,27 @@
 
 import { create } from 'zustand';
-import type { Task, Role } from './types';
-import { TASKS as initialTasks } from './data';
+import type { Task, Role, KanbanColumnData } from './types';
+import { TASKS as initialTasks, KANBAN_COLUMNS as initialColumns } from './data';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface TaskStore {
   tasks: Task[];
+  columns: KanbanColumnData[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'>) => void;
   updateTask: (taskId: string, newStatus: string, timeSpent: number) => void;
   assignTaskToSprint: (taskId: string, sprintId: string) => void;
   deleteTask: (taskId: string) => void;
   setTasks: (tasks: Task[]) => void;
+  setColumns: (columns: KanbanColumnData[]) => void;
 }
 
 export const useStore = create<TaskStore>()(
   persist(
     (set) => ({
       tasks: initialTasks,
+      columns: initialColumns,
       setTasks: (tasks) => set({ tasks }),
+      setColumns: (columns) => set({ columns }),
       addTask: (task) =>
         set((state) => {
           const newTask: Task = {

@@ -9,7 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Bug, CircleDot } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { KANBAN_COLUMNS } from '@/lib/data';
+import { useStore } from '@/lib/store';
 
 type RecentActivityProps = {
   tasks: Task[];
@@ -27,6 +27,7 @@ const TaskTypeIcon = ({ type }: { type: TaskTypeLabel }) => {
 
 export function RecentActivity({ tasks }: RecentActivityProps) {
   const { user } = useAuth();
+  const { columns } = useStore();
 
   const recentTasks = useMemo(() => {
     const filtered =
@@ -45,7 +46,7 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
         <ScrollArea className="h-[300px]">
             <div className="space-y-6">
             {recentTasks.map((task) => {
-                const statusLabel = KANBAN_COLUMNS.find(c => c.id === task.status)?.title || task.status;
+                const statusLabel = columns.find(c => c.id === task.status)?.title || task.status;
                 return (
                 <div key={task.id} className="flex items-start gap-4">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted mt-1">

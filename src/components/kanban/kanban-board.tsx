@@ -1,3 +1,4 @@
+
 'use client';
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
@@ -5,7 +6,6 @@ import { KanbanColumn } from './kanban-column';
 import { useState, useEffect } from 'react';
 import { TimeLogDialog } from './time-log-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { KANBAN_COLUMNS } from '@/lib/data';
 import { useStore } from '@/lib/store';
 
 type KanbanBoardProps = {
@@ -16,8 +16,7 @@ type KanbanBoardProps = {
 export function KanbanBoard({ tasks: initialTasks, highlightedStatus }: KanbanBoardProps) {
   const { toast } = useToast();
   const [timeLogTask, setTimeLogTask] = useState<Task | null>(null);
-  const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
-  const { tasks, updateTask } = useStore();
+  const { tasks, updateTask, columns } = useStore();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { source, destination } = result;

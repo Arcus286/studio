@@ -2,7 +2,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import type { User, UserType, KanbanColumnData, Role } from '@/lib/types';
-import { USER_TYPES, ROLES, KANBAN_COLUMNS } from '@/lib/data';
+import { USER_TYPES, ROLES } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -21,7 +21,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
-import { Settings, Trash2, UserCheck, UserX, Users, Save } from 'lucide-react';
+import { Settings, Trash2, UserCheck, UserX, Users, Save, GripVertical } from 'lucide-react';
 import { Separator } from '../ui/separator';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
@@ -29,6 +29,9 @@ import { useAuth } from '@/hooks/use-auth';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from '@hello-pangea/dnd';
+import { useStore } from '@/lib/store';
+import { cn } from '@/lib/utils';
 
 const defaultBuckets: KanbanColumnData[] = [
     { id: 'under-development', title: 'Under Development', color: 'border-cyan-500' },
@@ -40,7 +43,7 @@ const defaultBuckets: KanbanColumnData[] = [
 
 export function AdminPanel() {
   const { allUsers, approveUser, rejectUser, updateUser, deleteUser } = useAuth();
-  const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
+  const { columns, setColumns } = useStore();
   const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
   const { toast } = useToast();
 
@@ -89,6 +92,20 @@ export function AdminPanel() {
       description: `User has been permanently deleted.`,
     });
   }
+
+  const onDragEnd: OnDragEndResponder = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(columns);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setColumns(items);
+    toast({
+        title: "Workflow Updated",
+        description: "The column order has been saved.",
+    });
+  };
 
 
   const handleAddSelectedColumns = () => {
@@ -239,31 +256,51 @@ export function AdminPanel() {
                     <Settings className="h-5 w-5 text-primary" />
                     Board Settings
                 </h2>
-                <p className="text-sm text-muted-foreground mt-1">Customize the columns for the project Kanban boards.</p>
+                <p className="text-sm text-muted-foreground mt-1">Customize the columns for the project Kanban boards. Drag to reorder.</p>
             </div>
             <CardContent className="p-6 space-y-6">
                 <div>
-                    <h3 className="text-lg font-medium mb-2">Current Columns</h3>
-                    <div className="space-y-2">
-                        {columns.map(col => (
-                             <div key={col.id} className="flex items-center justify-between p-2 rounded-md border bg-muted/50">
-                                <div className="flex items-center gap-3">
-                                    <div className={`w-3 h-3 rounded-full border-2 ${col.color}`} />
-                                    <span>{col.title}</span>
+                    <h3 className="text-lg font-medium mb-2">Workflow Columns</h3>
+                     <DragDropContext onDragEnd={onDragEnd}>
+                        <Droppable droppableId="columns">
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+                                    {columns.map((col, index) => (
+                                        <Draggable key={col.id} draggableId={col.id} index={index}>
+                                            {(provided, snapshot) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    className={cn(
+                                                        "flex items-center justify-between p-2 rounded-md border bg-muted/50",
+                                                        snapshot.isDragging && "shadow-lg ring-2 ring-primary"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <GripVertical className="h-5 w-5 text-muted-foreground" />
+                                                        <div className={`w-3 h-3 rounded-full border-2 ${col.color}`} />
+                                                        <span>{col.title}</span>
+                                                    </div>
+                                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleRemoveColumn(col.id)}>
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
                                 </div>
-                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleRemoveColumn(col.id)}>
-                                    <Trash2 className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 </div>
 
                 <Separator />
                 
                 <div>
-                    <h3 className="text-lg font-medium mb-2">Add New Buckets</h3>
-                    <p className="text-sm text-muted-foreground mb-4">Select the buckets you want to add to your board.</p>
+                    <h3 className="text-lg font-medium mb-2">Add New Columns</h3>
+                    <p className="text-sm text-muted-foreground mb-4">Select columns to add to your workflow.</p>
                     <div className="space-y-2">
                         {defaultBuckets.filter(b => !columns.some(c => c.id === b.id)).map(bucket => (
                             <div key={bucket.id} className="flex items-center space-x-2">
@@ -278,7 +315,7 @@ export function AdminPanel() {
                     </div>
                     {selectedBuckets.length > 0 && (
                         <Button onClick={handleAddSelectedColumns} className="mt-4">
-                            Add Selected Buckets ({selectedBuckets.length})
+                            Add Selected ({selectedBuckets.length})
                         </Button>
                     )}
                 </div>
@@ -287,5 +324,3 @@ export function AdminPanel() {
     </div>
   );
 }
-
-    
