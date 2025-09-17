@@ -2,7 +2,7 @@
 import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanColumn } from './kanban-column';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { TimeLogDialog } from './time-log-dialog';
 import { useToast } from '@/hooks/use-toast';
@@ -20,7 +20,7 @@ export function KanbanBoard({ tasks: initialTasks, highlightedStatus }: KanbanBo
   const [timeLogTask, setTimeLogTask] = useState<Task | null>(null);
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
   
-  React.useEffect(() => {
+  useEffect(() => {
     setTasks(initialTasks);
   }, [initialTasks]);
 
