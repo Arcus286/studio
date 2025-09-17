@@ -17,6 +17,20 @@ export const KANBAN_COLUMNS: KanbanColumnData[] = [
 ];
 
 export const TASKS: Task[] = [
+     {
+        id: 'TASK-0',
+        projectId: 'PROJ-1',
+        title: 'User Authentication Feature',
+        description: 'Implement the full user authentication flow, including login, signup, and password reset.',
+        status: 'in-progress',
+        assignedRole: 'Manager',
+        estimatedHours: 40,
+        timeSpent: 29,
+        createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        priority: 'High',
+        type: 'Story',
+    },
     {
         id: 'TASK-1',
         projectId: 'PROJ-1',
@@ -31,6 +45,7 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Task',
         deadline: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+        storyId: 'TASK-0',
     },
     {
         id: 'TASK-2',
@@ -46,6 +61,7 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Task',
         deadline: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+        storyId: 'TASK-0',
     },
     {
         id: 'TASK-3',
@@ -61,6 +77,7 @@ export const TASKS: Task[] = [
         priority: 'Medium',
         type: 'Task',
         deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+        storyId: 'TASK-0',
     },
     {
         id: 'TASK-4',
@@ -246,7 +263,7 @@ export const NOTIFICATIONS: Notification[] = [
 
 export const USER_TYPES: UserType[] = ['Admin', 'Manager', 'User'];
 export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Developer', 'Admin', 'Manager'];
-export type TaskTypeLabel = 'Bug' | 'Task';
-export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task'];
+export type TaskTypeLabel = 'Bug' | 'Task' | 'Story';
+export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task', 'Story'];
 export type Priority = 'Low' | 'Medium' | 'High';
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

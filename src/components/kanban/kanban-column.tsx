@@ -26,6 +26,16 @@ const titleColors: Record<string, string> = {
 export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnProps) {
   const { user } = useAuth();
   
+  // Filter out tasks that are children of a story in the current column
+  const topLevelTasks = tasks.filter(task => {
+    if (task.storyId) {
+        const parentStory = tasks.find(t => t.id === task.storyId);
+        return !parentStory || parentStory.status !== column.id;
+    }
+    return true;
+  });
+
+
   return (
     <div className={cn(
       "flex flex-col rounded-xl border", 
@@ -49,7 +59,7 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
               snapshot.isDraggingOver ? 'bg-black/10' : 'bg-transparent'
             )}
           >
-            {tasks.map((task, index) => {
+            {topLevelTasks.map((task, index) => {
               const isDraggable = user?.userType === 'Admin' || user?.userType === 'Manager' || (user?.userType === 'User' && user.role === task.assignedRole);
               return (
               <Draggable key={task.id} draggableId={task.id} index={index} isDragDisabled={!isDraggable}>

@@ -25,7 +25,7 @@ import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { DatePicker } from '../ui/date-picker';
 import { useStore } from '@/lib/store';
-import type { Task, Role } from '@/lib/types';
+import type { Task, SpecializedRole } from '@/lib/types';
 
 
 const taskSchema = z.object({
@@ -38,6 +38,7 @@ const taskSchema = z.object({
   estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.'),
   assignedRole: z.string().min(1, 'Please assign a role.'),
   deadline: z.date().optional(),
+  storyId: z.string().optional(),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -47,7 +48,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const currentProjectId = pathname.startsWith('/projects/') ? pathname.split('/')[2] : '';
-  const { addTask } = useStore();
+  const { addTask, tasks } = useStore();
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -61,16 +62,23 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       estimatedHours: 1,
       assignedRole: '',
       deadline: undefined,
+      storyId: '',
     },
   });
+
+  const watchType = form.watch('type');
+  const watchProjectId = form.watch('projectId');
+  
+  const stories = tasks.filter(t => t.type === 'Story' && t.projectId === watchProjectId);
 
   const onSubmit = (data: TaskFormValues) => {
     const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
       ...data,
-      assignedRole: data.assignedRole as Role,
+      assignedRole: data.assignedRole as SpecializedRole,
       priority: data.priority as Task['priority'],
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
+      storyId: data.storyId || undefined,
     };
 
     addTask(taskData);
@@ -89,6 +97,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       estimatedHours: 1,
       assignedRole: '',
       deadline: undefined,
+      storyId: '',
     });
     setIsOpen(false);
   };
@@ -128,12 +137,61 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                 </FormItem>
               )}
             />
+             <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Task Type</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {TASK_TYPES.map(type => (
+                          <SelectItem key={type} value={type}>{type}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            
+            {watchType === 'Task' && (
+                <FormField
+                  control={form.control}
+                  name="storyId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Parent Story (Optional)</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a parent story" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="">None</SelectItem>
+                          {stories.map(story => (
+                            <SelectItem key={story.id} value={story.id}>{story.title}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            )}
+
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Task Title</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., Implement user authentication" {...field} />
                   </FormControl>
@@ -187,7 +245,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a status" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {KANBAN_COLUMNS.map(col => (
@@ -199,28 +257,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Task Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {TASK_TYPES.map(type => (
-                          <SelectItem key={type} value={type}>{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+             
               <FormField
                 control={form.control}
                 name="priority"

@@ -26,6 +26,7 @@ export const useStore = create<TaskStore>()(
             updatedAt: new Date().toISOString(),
             timeSpent: 0,
             assignedRole: task.assignedRole as Role,
+            storyId: task.storyId || undefined,
           };
           return { tasks: [...state.tasks, newTask] };
         }),

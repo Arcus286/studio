@@ -24,7 +24,7 @@ export type KanbanColumnData = {
 
 export type TaskStatus = string;
 export type Priority = 'Low' | 'Medium' | 'High';
-export type TaskType = 'Bug' | 'Task';
+export type TaskType = 'Bug' | 'Task' | 'Story';
 
 
 export type Task = {
@@ -41,6 +41,7 @@ export type Task = {
   priority: Priority;
   type: TaskType;
   deadline?: string;
+  storyId?: string;
 };
 
 export type ProjectMember = {

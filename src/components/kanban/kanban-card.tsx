@@ -5,12 +5,12 @@ import { useState } from 'react';
 import type { Task } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock } from 'lucide-react';
+import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock, Layers, CircleDot } from 'lucide-react';
 import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
-import { CircleDot } from 'lucide-react';
 import { USERS } from '@/lib/data';
 import { format, isPast, differenceInDays } from 'date-fns';
+import { useStore } from '@/lib/store';
 
 type KanbanCardProps = {
   task: Task;
@@ -30,13 +30,15 @@ const PriorityIcon = ({ priority }: { priority: 'Low' | 'Medium' | 'High' }) => 
     }
 };
 
-const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' }) => {
+const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' | 'Story' }) => {
     const className = "h-4 w-4 mr-1";
     switch (type) {
         case 'Bug':
             return <Bug className={cn(className, "text-red-500")} />;
         case 'Task':
             return <CircleDot className={cn(className, "text-blue-400")} />;
+        case 'Story':
+            return <Layers className={cn(className, "text-green-500")} />;
     }
 }
 
@@ -70,9 +72,82 @@ const DeadlineDisplay = ({ deadline }: { deadline: string }) => {
     )
 }
 
+const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task) => void }) => {
+    const assignedUser = USERS.find(u => u.role === task.assignedRole);
+    return (
+        <div 
+            className="flex items-center justify-between p-2 rounded-md bg-card/50 hover:bg-card cursor-pointer"
+            onClick={() => onTaskClick(task)}
+        >
+            <div className="flex items-center gap-2">
+                <TaskTypeIcon type={task.type} />
+                <span className="text-xs font-medium truncate">{task.title}</span>
+            </div>
+            <div className="flex items-center gap-2">
+                {assignedUser && (
+                     <Badge variant="outline" className="text-xs">{assignedUser.username}</Badge>
+                )}
+                 <PriorityIcon priority={task.priority} />
+            </div>
+        </div>
+    )
+}
+
 export function KanbanCard({ task, isDragging }: KanbanCardProps) {
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [detailTask, setDetailTask] = useState<Task | null>(null);
   const assignedUser = USERS.find(u => u.role === task.assignedRole);
+  const { tasks: allTasks } = useStore();
+  
+  const childTasks = task.type === 'Story' 
+    ? allTasks.filter(t => t.storyId === task.id && t.status === task.status) 
+    : [];
+
+  const handleCardClick = () => {
+    setDetailTask(task);
+  }
+  
+  const handleChildTaskClick = (child: Task) => {
+    setDetailTask(child);
+  }
+
+  const handleOpenChange = (isOpen: boolean) => {
+      if (!isOpen) {
+          setDetailTask(null);
+      }
+  }
+  
+  if (task.type === 'Story') {
+    return (
+        <>
+            <Card
+                className={cn(
+                'transition-all bg-muted/20 border-l-4 border-green-500',
+                isDragging && 'shadow-2xl scale-105 ring-2 ring-primary'
+                )}
+            >
+                <CardContent className="p-3 space-y-2">
+                    <div className="flex justify-between items-start cursor-pointer" onClick={handleCardClick}>
+                        <p className="font-semibold text-foreground pr-2 flex items-center gap-2">
+                            <TaskTypeIcon type={task.type} />
+                            {task.title}
+                        </p>
+                        <Badge variant="outline" className="shrink-0">{task.id}</Badge>
+                    </div>
+                     <div className="pl-6 space-y-1">
+                        {childTasks.length > 0 ? (
+                            childTasks.map(child => (
+                                <ChildTask key={child.id} task={child} onTaskClick={handleChildTaskClick} />
+                            ))
+                        ) : (
+                             <p className="text-xs text-muted-foreground px-2 py-1">No tasks in this story.</p>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
+            {detailTask && <TaskDetailDialog isOpen={!!detailTask} onOpenChange={handleOpenChange} task={detailTask} />}
+        </>
+    )
+  }
 
   return (
     <>
@@ -82,7 +157,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
           'hover:shadow-xl hover:ring-2 hover:ring-primary/50 hover:-translate-y-1',
           isDragging && 'shadow-2xl scale-105 ring-2 ring-primary'
         )}
-        onClick={() => setIsDetailOpen(true)}
+        onClick={handleCardClick}
       >
         <CardContent className="p-4 space-y-3">
           <div className="flex justify-between items-start">
@@ -116,7 +191,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
           </div>
         </CardContent>
       </Card>
-      <TaskDetailDialog isOpen={isDetailOpen} onOpenChange={setIsDetailOpen} task={task} />
+      {detailTask && <TaskDetailDialog isOpen={!!detailTask} onOpenChange={handleOpenChange} task={detailTask} />}
     </>
   );
 }
