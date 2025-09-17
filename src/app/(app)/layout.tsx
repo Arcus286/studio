@@ -151,7 +151,9 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             <Header />
           </header>
           <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6 bg-background">
-            {children}
+             <div className="mx-auto w-full max-w-7xl">
+                {children}
+            </div>
           </main>
         </div>
       </SidebarInset>

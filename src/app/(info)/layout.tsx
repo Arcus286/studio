@@ -51,7 +51,11 @@ export default function InfoLayout({
         </nav>
         <div className="flex items-center gap-4"></div>
       </header>
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        <div className="mx-auto max-w-7xl">
+            {children}
+        </div>
+      </main>
       <footer className="flex items-center justify-center py-6 px-4 md:px-6 border-t border-border/40">
         <div className="container flex items-center justify-between">
             <p className="text-sm text-muted-foreground">&copy; 2024 AgileBridge. All rights reserved.</p>
