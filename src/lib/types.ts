@@ -81,4 +81,6 @@ export type Notification = {
     message: string;
     createdAt: string;
     read: boolean;
+    taskId?: string;
 };
+

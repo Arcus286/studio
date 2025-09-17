@@ -270,6 +270,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Design login page" moved to In Progress.',
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         read: false,
+        taskId: 'TASK-1',
     },
     {
         id: '2',
@@ -277,6 +278,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Develop user auth API" moved to In Review.',
         createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         read: false,
+        taskId: 'TASK-2',
     },
     {
         id: '3',
@@ -284,6 +286,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'New task "Implement frontend auth" assigned to a user.',
         createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         read: false,
+        taskId: 'TASK-3',
     },
     {
         id: '4',
@@ -291,6 +294,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Design Kanban board" due soon.',
         createdAt: new Date(Date.now() - 9 * 60 * 60 * 1000).toISOString(),
         read: true,
+        taskId: 'TASK-4',
     },
     {
         id: '5',
@@ -298,6 +302,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Setup database schema" is overdue.',
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         read: true,
+        taskId: 'TASK-5',
     },
 ];
 
@@ -311,3 +316,4 @@ export type TaskTypeLabel = 'Bug' | 'Task' | 'Story';
 export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task', 'Story'];
 export type Priority = 'Low' | 'Medium' | 'High';
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];
+

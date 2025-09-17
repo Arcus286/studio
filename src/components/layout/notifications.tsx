@@ -1,3 +1,4 @@
+
 'use client';
 import {
   DropdownMenu,
@@ -10,16 +11,28 @@ import {
 import { Button } from '@/components/ui/button';
 import { Bell, AlertTriangle } from 'lucide-react';
 import { Badge } from '../ui/badge';
-import { NOTIFICATIONS } from '@/lib/data';
+import { NOTIFICATIONS, TASKS } from '@/lib/data';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Separator } from '../ui/separator';
+import { TaskDetailDialog } from '../kanban/task-detail-dialog';
+import type { Task } from '@/lib/types';
 
 export function Notifications() {
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const handleNotificationClick = (taskId?: string) => {
+    if (taskId) {
+        const task = TASKS.find(t => t.id === taskId);
+        if (task) {
+            setSelectedTask(task);
+        }
+    }
+  }
 
   const handleMarkAsRead = (id: string) => {
     setNotifications(
@@ -32,6 +45,7 @@ export function Notifications() {
   }
 
   return (
+    <>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative rounded-full">
@@ -62,8 +76,11 @@ export function Notifications() {
         {notifications.map((notification) => (
           <DropdownMenuItem
             key={notification.id}
-            className={cn('flex items-start gap-3 p-3', !notification.read && 'bg-accent/50')}
-            onClick={() => handleMarkAsRead(notification.id)}
+            className={cn('flex items-start gap-3 p-3 cursor-pointer', !notification.read && 'bg-accent/50')}
+            onClick={() => {
+                handleMarkAsRead(notification.id);
+                handleNotificationClick(notification.taskId);
+            }}
           >
             <AlertTriangle className="h-5 w-5 text-yellow-500 mt-0.5" />
             <div className="flex-1 space-y-1">
@@ -82,5 +99,13 @@ export function Notifications() {
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
+    {selectedTask && (
+        <TaskDetailDialog 
+            isOpen={!!selectedTask}
+            onOpenChange={(isOpen) => !isOpen && setSelectedTask(null)}
+            task={selectedTask}
+        />
+    )}
+    </>
   );
 }
