@@ -27,9 +27,18 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Users, Palette, Plus, Trash2 } from 'lucide-react';
+import { Users, Palette, Plus, Trash2, KanbanSquare, Settings } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ROLES, USERS } from '@/lib/data';
+import { ROLES, KANBAN_COLUMNS } from '@/lib/data';
+import { Checkbox } from '../ui/checkbox';
+
+const optionalBuckets = [
+    { id: 'under-development', title: 'Under Development' },
+    { id: 'blocked', title: 'Blocked' },
+    { id: 'under-testing', title: 'Under Testing' },
+    { id: 'ready-for-deployment', title: 'Ready for Deployment' },
+    { id: 'closed', title: 'Closed' },
+];
 
 const projectSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
@@ -40,6 +49,7 @@ const projectSchema = z.object({
     email: z.string().email('Invalid email address'),
     role: z.string().min(1, 'Role is required'),
   })).min(1, 'At least one team member is required'),
+  buckets: z.array(z.string()).optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
@@ -66,6 +76,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
       color: colorThemes[0],
       description: '',
       members: [{ email: '', role: '' }],
+      buckets: [],
     },
   });
   
@@ -82,7 +93,9 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
   }, [watchName, form]);
 
   const onSubmit = (data: ProjectFormValues) => {
-    console.log('New project data:', data);
+    const selectedBuckets = optionalBuckets.filter(b => data.buckets?.includes(b.id));
+    const finalBuckets = [...KANBAN_COLUMNS, ...selectedBuckets];
+    console.log('New project data:', {...data, buckets: finalBuckets});
     toast({
       title: 'Project Created!',
       description: `"${data.name}" has been successfully created.`,
@@ -102,7 +115,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 py-4 max-h-[70vh] overflow-y-auto pr-2">
             <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2">
                     <FormField
@@ -224,6 +237,75 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                  <Button type="button" variant="outline" size="sm" onClick={() => append({ email: '', role: '' })}>
                     <Plus className="mr-2 h-4 w-4" /> Add Member
                 </Button>
+                </div>
+            </div>
+
+            <div>
+                <FormLabel className="flex items-center gap-2 mb-2">
+                    <KanbanSquare className="h-4 w-4" /> Board Columns
+                </FormLabel>
+                <div className='p-4 border rounded-md bg-muted/50'>
+                    <p className='text-sm text-muted-foreground mb-4'>The board will be created with these standard columns. You cannot remove them.</p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
+                        {KANBAN_COLUMNS.map(col => (
+                            <div key={col.id} className="flex items-center gap-2 p-2 rounded-md bg-background border">
+                                <div className={`w-2 h-2 rounded-full border-2 ${col.color}`} />
+                                <span className='text-sm font-medium'>{col.title}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <FormField
+                    control={form.control}
+                    name="buckets"
+                    render={() => (
+                        <FormItem>
+                        <div className="mb-4">
+                            <FormLabel className="text-base flex items-center gap-2">
+                                <Settings className="h-4 w-4" />
+                                Optional Columns
+                            </FormLabel>
+                            <p className="text-sm text-muted-foreground">Select any additional columns you need for your workflow.</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            {optionalBuckets.map((item) => (
+                                <FormField
+                                key={item.id}
+                                control={form.control}
+                                name="buckets"
+                                render={({ field }) => {
+                                    return (
+                                    <FormItem
+                                        key={item.id}
+                                        className="flex flex-row items-start space-x-3 space-y-0"
+                                    >
+                                        <FormControl>
+                                        <Checkbox
+                                            checked={field.value?.includes(item.id)}
+                                            onCheckedChange={(checked) => {
+                                            return checked
+                                                ? field.onChange([...(field.value ?? []), item.id])
+                                                : field.onChange(
+                                                    field.value?.filter(
+                                                        (value) => value !== item.id
+                                                    )
+                                                    )
+                                            }}
+                                        />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                        {item.title}
+                                        </FormLabel>
+                                    </FormItem>
+                                    )
+                                }}
+                                />
+                            ))}
+                        </div>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
                 </div>
             </div>
 
