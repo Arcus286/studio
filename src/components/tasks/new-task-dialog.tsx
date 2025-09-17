@@ -208,7 +208,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a type" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {TASK_TYPES.map(type => (
