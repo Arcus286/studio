@@ -27,6 +27,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '../loading';
 import { useEffect } from 'react';
+import { PROJECTS } from '@/lib/data';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
@@ -78,8 +79,26 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <div className="ml-4 space-y-1 mt-1">
+              {PROJECTS.map(project => (
+                  <SidebarMenuItem key={project.id}>
+                    <SidebarMenuButton
+                      asChild
+                      size="sm"
+                      isActive={pathname.startsWith(`/projects/${project.id}`)}
+                    >
+                      <Link href={`/projects/${project.id}/board`}>
+                        <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: project.color }}></span>
+                        {project.name}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+              ))}
+            </div>
+
             {isProjectPage && projectId && (
-              <div className="ml-4">
+              <div className="ml-4 mt-2">
+                <SidebarGroupLabel>Project Tools</SidebarGroupLabel>
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
