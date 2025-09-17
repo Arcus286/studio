@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ROLES, TASK_TYPES, PRIORITIES } from '@/lib/data';
+import { ROLES, TASK_TYPES, PRIORITIES, KANBAN_COLUMNS } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ArrowLeft, PlusCircle } from 'lucide-react';
@@ -20,6 +20,7 @@ import Link from 'next/link';
 const taskSchema = z.object({
   title: z.string().min(1, 'Title is required.'),
   description: z.string().min(1, 'Description is required.'),
+  status: z.string().min(1, 'Please select a status.'),
   type: z.string().min(1, 'Please select a task type.'),
   priority: z.string().min(1, 'Please select a priority.'),
   estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.'),
@@ -36,6 +37,7 @@ export function NewTaskForm() {
     defaultValues: {
       title: '',
       description: '',
+      status: 'to-do',
       type: '',
       priority: 'Medium',
       estimatedHours: 1,
@@ -123,7 +125,29 @@ export function NewTaskForm() {
                         </FormItem>
                     )}
                     />
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                            control={form.control}
+                            name="status"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>Status</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a status" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {KANBAN_COLUMNS.map(col => (
+                                                <SelectItem key={col.id} value={col.id}>{col.title}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <FormField
                             control={form.control}
                             name="type"
@@ -146,7 +170,7 @@ export function NewTaskForm() {
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                         <FormField
                             control={form.control}
                             name="priority"
                             render={({ field }) => (
