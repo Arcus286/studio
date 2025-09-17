@@ -245,7 +245,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a status" />
-                        </Trigger>
+                        </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {KANBAN_COLUMNS.map(col => (

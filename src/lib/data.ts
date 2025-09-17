@@ -1,5 +1,5 @@
 
-import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType } from './types';
+import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
@@ -263,6 +263,8 @@ export const NOTIFICATIONS: Notification[] = [
 
 export const USER_TYPES: UserType[] = ['Admin', 'Manager', 'User'];
 export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Developer', 'Admin', 'Manager'];
+export const SPECIALIZED_ROLES: SpecializedRole[] = ['Frontend', 'Backend', 'Designer', 'Developer'];
+
 export type TaskTypeLabel = 'Bug' | 'Task' | 'Story';
 export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task', 'Story'];
 export type Priority = 'Low' | 'Medium' | 'High';
