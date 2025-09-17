@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { SuggestStoriesDialog } from './suggest-stories-dialog';
 import { Settings, Trash2, UserCheck, UserX, Users, Save } from 'lucide-react';
@@ -57,20 +57,19 @@ export function AdminPanel() {
     setEditableUsers(editableUsers.map(u => u.id === userId ? { ...u, [field]: value } : u));
   }
 
-  const handleSaveUser = (userId: string) => {
-    const userToSave = editableUsers.find(u => u.id === userId);
-    if (userToSave) {
-        updateUser(userId, {
-            username: userToSave.username,
-            email: userToSave.email,
-            userType: userToSave.userType,
-            role: userToSave.role,
+  const handleSaveAllUsers = () => {
+    editableUsers.forEach(user => {
+        updateUser(user.id, {
+            username: user.username,
+            email: user.email,
+            userType: user.userType,
+            role: user.role,
         });
-        toast({
-            title: "User Updated",
-            description: `User ${userToSave.username} has been updated.`,
-        });
-    }
+    });
+    toast({
+        title: "Users Updated",
+        description: `All user changes have been saved.`,
+    });
   };
   
   const handleDeleteUser = (userId: string) => {
@@ -167,7 +166,7 @@ export function AdminPanel() {
                     <TableHead>Status</TableHead>
                     <TableHead className="w-[150px]">User Type</TableHead>
                     <TableHead className="w-[150px]">Role</TableHead>
-                    <TableHead className="w-[120px] text-right">Actions</TableHead>
+                    <TableHead className="w-[80px] text-right">Actions</TableHead>
                 </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -218,9 +217,6 @@ export function AdminPanel() {
                             </Select>
                         </TableCell>
                         <TableCell className="text-right">
-                             <Button variant="ghost" size="icon" className="h-8 w-8 text-primary" onClick={() => handleSaveUser(user.id)}>
-                                <Save className="h-4 w-4" />
-                            </Button>
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDeleteUser(user.id)}>
                                 <Trash2 className="h-4 w-4" />
                             </Button>
@@ -229,6 +225,12 @@ export function AdminPanel() {
                 ))}
                 </TableBody>
             </Table>
+            <CardFooter className="flex justify-end p-4 border-t">
+                <Button onClick={handleSaveAllUsers}>
+                    <Save className="mr-2 h-4 w-4" />
+                    Save All Changes
+                </Button>
+            </CardFooter>
         </Card>
 
         <Card>
@@ -285,3 +287,5 @@ export function AdminPanel() {
     </div>
   );
 }
+
+    
