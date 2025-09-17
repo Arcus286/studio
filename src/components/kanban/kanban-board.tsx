@@ -1,12 +1,13 @@
 
 'use client';
 import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from '@hello-pangea/dnd';
-import type { Task, TaskStatus } from '@/lib/types';
+import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanColumn } from './kanban-column';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { TimeLogDialog } from './time-log-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { KANBAN_COLUMNS } from '@/lib/data';
 
 type KanbanBoardProps = {
   initialTasks: Task[];
@@ -18,40 +19,41 @@ export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProp
   const [tasks, setTasks] = useState(initialTasks);
   const { toast } = useToast();
   const [timeLogTask, setTimeLogTask] = useState<Task | null>(null);
+  const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { source, destination } = result;
 
     if (!destination) return;
 
-    const sourceCol = source.droppableId as TaskStatus;
-    const destCol = destination.droppableId as TaskStatus;
+    const sourceColId = source.droppableId;
+    const destColId = destination.droppableId;
 
     const draggedTask = tasks.find(t => t.id === result.draggableId);
     if (!draggedTask) return;
 
     // Time logging logic
-    if (sourceCol === 'To Do' && destCol === 'In Progress') {
+    if (sourceColId === 'to-do' && destColId === 'in-progress') {
       setTimeLogTask(draggedTask);
       // We will update the task state after the dialog is handled
       return;
     }
 
-    updateTaskState(draggedTask, destCol, draggedTask.timeSpent);
+    updateTaskState(draggedTask, destColId, draggedTask.timeSpent);
   };
   
   const handleTimeLog = (hours: number) => {
     if (timeLogTask) {
-        updateTaskState(timeLogTask, 'In Progress', hours);
+        updateTaskState(timeLogTask, 'in-progress', hours);
     }
     setTimeLogTask(null);
   };
 
   const updateTaskState = (task: Task, newStatus: TaskStatus, timeSpent: number) => {
      let newTimeSpent = timeSpent;
-     if (newStatus === 'Done') {
+     if (newStatus === 'done') {
         newTimeSpent = task.estimatedHours;
-     } else if (newStatus === 'To Do') {
+     } else if (newStatus === 'to-do') {
         newTimeSpent = 0;
      }
 
@@ -61,9 +63,11 @@ export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProp
         )
      );
 
+     const destColumn = columns.find(c => c.id === newStatus);
+
      toast({
         title: `Task "${task.title}" moved`,
-        description: `Status updated to ${newStatus}.`,
+        description: `Status updated to ${destColumn?.title || newStatus}.`,
      });
   };
 
@@ -71,18 +75,23 @@ export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProp
     ? tasks
     : tasks.filter(task => task.assignedRole === user?.role);
 
-  const columns: Record<TaskStatus, Task[]> = {
-    'To Do': filteredTasks.filter(t => t.status === 'To Do'),
-    'In Progress': filteredTasks.filter(t => t.status === 'In Progress'),
-    'In Review': filteredTasks.filter(t => t.status === 'In Review'),
-    'Done': filteredTasks.filter(t => t.status === 'Done'),
-  };
+  const groupedTasks: Record<string, Task[]> = columns.reduce((acc, col) => {
+    acc[col.id] = [];
+    return acc;
+  }, {} as Record<string, Task[]>);
+
+  filteredTasks.forEach(task => {
+      if (groupedTasks[task.status]) {
+        groupedTasks[task.status].push(task);
+      }
+  });
+
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {(Object.keys(columns) as TaskStatus[]).map(status => (
-                <KanbanColumn key={status} status={status} tasks={columns[status]} highlightedStatus={highlightedStatus} />
+            {columns.map(column => (
+                <KanbanColumn key={column.id} column={column} tasks={groupedTasks[column.id]} highlightedStatus={highlightedStatus} />
             ))}
         </div>
         <TimeLogDialog 

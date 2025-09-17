@@ -20,11 +20,11 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
       : tasks.filter((task) => task.assignedRole === user?.role);
 
   const totalTasks = filteredTasks.length;
-  const doneTasks = filteredTasks.filter((t) => t.status === 'Done').length;
+  const doneTasks = filteredTasks.filter((t) => t.status === 'done').length;
   const inProgressTasks = filteredTasks.filter(
-    (t) => t.status === 'In Progress'
+    (t) => t.status === 'in-progress'
   ).length;
-  const todoTasks = filteredTasks.filter((t) => t.status === 'To Do').length;
+  const todoTasks = filteredTasks.filter((t) => t.status === 'to-do').length;
   
   const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
@@ -40,7 +40,7 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
           <Badge variant="outline" className="mt-2 text-xs font-normal">+12% from last week</Badge>
         </CardContent>
       </Card>
-      <Card className="bg-card-orange border-orange-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('To Do')}>
+      <Card className="bg-card-orange border-orange-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('to-do')}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
           <div className="h-4 w-4 rounded-sm bg-orange-500" />
@@ -50,7 +50,7 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
           <Badge variant="outline" className="mt-2 text-xs font-normal">Ready to start</Badge>
         </CardContent>
       </Card>
-      <Card className="bg-card-blue border-blue-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('In Progress')}>
+      <Card className="bg-card-blue border-blue-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('in-progress')}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
           <div className="h-4 w-4 rounded-sm bg-blue-500" />
@@ -60,7 +60,7 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
           <Badge variant="outline" className="mt-2 text-xs font-normal">Active work</Badge>
         </CardContent>
       </Card>
-       <Card className="bg-card-green border-green-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('Done')}>
+       <Card className="bg-card-green border-green-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('done')}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
           <div className="h-4 w-4 rounded-sm bg-green-500" />

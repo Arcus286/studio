@@ -10,7 +10,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { USERS } from '@/lib/data';
+import { USERS, KANBAN_COLUMNS } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO } from 'date-fns';
@@ -57,6 +57,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
   const assignedUser = USERS.find(u => u.role === task.assignedRole);
+  const statusLabel = KANBAN_COLUMNS.find(c => c.id === task.status)?.title || task.status;
 
 
   return (
@@ -71,7 +72,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
                 <DialogTitle className="text-xl">{title}</DialogTitle>
                 <div className="flex items-center gap-2 mt-1">
                     <Badge variant="outline">{task.type}</Badge>
-                    <Badge variant="secondary">{task.status}</Badge>
+                    <Badge variant="secondary">{statusLabel}</Badge>
                 </div>
             </div>
           </div>

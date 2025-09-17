@@ -1,53 +1,43 @@
 
 import { Droppable, Draggable } from '@hello-pangea/dnd';
-import type { Task, TaskStatus } from '@/lib/types';
+import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanCard } from './kanban-card';
 import { cn } from '@/lib/utils';
 
 type KanbanColumnProps = {
-  status: TaskStatus;
+  column: KanbanColumnData;
   tasks: Task[];
   highlightedStatus?: TaskStatus | 'all' | null;
 };
 
-const columnTitles: Record<TaskStatus, string> = {
-  'To Do': 'To Do',
-  'In Progress': 'In Progress',
-  'In Review': 'In Review',
-  'Done': 'Done',
-};
-
-const statusColors: Record<TaskStatus, string> = {
-  'To Do': 'border-blue-500',
-  'In Progress': 'border-yellow-500',
-  'In Review': 'border-purple-500',
-  'Done': 'border-green-500',
-};
-
-const titleColors: Record<TaskStatus, string> = {
-    'To Do': 'text-blue-500',
-    'In Progress': 'text-yellow-500',
-    'In Review': 'text-purple-500',
-    'Done': 'text-green-500',
+const titleColors: Record<string, string> = {
+    'border-blue-500': 'text-blue-500',
+    'border-yellow-500': 'text-yellow-500',
+    'border-purple-500': 'text-purple-500',
+    'border-green-500': 'text-green-500',
+    'border-gray-500': 'text-gray-500',
+    'border-red-500': 'text-red-500',
+    'border-cyan-500': 'text-cyan-500',
+    'border-orange-500': 'text-orange-500',
 };
 
 
-export function KanbanColumn({ status, tasks, highlightedStatus }: KanbanColumnProps) {
+export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnProps) {
   return (
     <div className={cn(
       "flex flex-col rounded-xl border", 
-      statusColors[status],
-      (highlightedStatus === 'all' || highlightedStatus === status) && 'animate-flash'
+      column.color,
+      (highlightedStatus === 'all' || highlightedStatus === column.id) && 'animate-flash'
       )}>
       <div className={cn("p-3 flex items-center justify-between")}>
-        <h2 className={cn("text-lg font-semibold", titleColors[status])}>
-          {columnTitles[status]}
+        <h2 className={cn("text-lg font-semibold", titleColors[column.color] || 'text-foreground')}>
+          {column.title}
         </h2>
         <span className={cn("text-sm font-normal h-6 w-6 flex items-center justify-center rounded-full bg-background")}>
             {tasks.length}
           </span>
       </div>
-      <Droppable droppableId={status}>
+      <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
           <div
             {...provided.droppableProps}

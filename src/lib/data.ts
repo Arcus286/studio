@@ -1,4 +1,4 @@
-import type { User, Task, Role, TaskType, Priority, Project, Notification } from './types';
+import type { User, Task, Role, TaskType, Priority, Project, Notification, KanbanColumnData } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
@@ -8,13 +8,20 @@ export const USERS: User[] = [
   { id: '5', username: 'UI/UX Designer', email: 'designer@taskflow.com', password: 'designerpassword', role: 'Designer' },
 ];
 
+export const KANBAN_COLUMNS: KanbanColumnData[] = [
+    { id: 'to-do', title: 'To Do', color: 'border-blue-500' },
+    { id: 'in-progress', title: 'In Progress', color: 'border-yellow-500' },
+    { id: 'in-review', title: 'In Review', color: 'border-purple-500' },
+    { id: 'done', title: 'Done', color: 'border-green-500' },
+];
+
 export const TASKS: Task[] = [
     {
         id: 'TASK-1',
         projectId: 'PROJ-1',
         title: 'Design login and signup pages',
         description: 'Create high-fidelity mockups for the user authentication flow, including login, signup, and forgot password pages.',
-        status: 'Done',
+        status: 'done',
         assignedRole: 'Designer',
         estimatedHours: 8,
         timeSpent: 8,
@@ -28,7 +35,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Develop user authentication API endpoints',
         description: 'Build the necessary API endpoints for user registration, login, and session management.',
-        status: 'Done',
+        status: 'done',
         assignedRole: 'Backend',
         estimatedHours: 12,
         timeSpent: 12,
@@ -42,7 +49,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Implement frontend for authentication',
         description: 'Connect the frontend forms for login, signup, and password reset to the backend APIs.',
-        status: 'In Review',
+        status: 'in-review',
         assignedRole: 'Frontend',
         estimatedHours: 10,
         timeSpent: 9,
@@ -56,7 +63,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Design the main Kanban board UI',
         description: 'Create wireframes and final designs for the main task board, including columns and task cards.',
-        status: 'In Progress',
+        status: 'in-progress',
         assignedRole: 'Designer',
         estimatedHours: 6,
         timeSpent: 2,
@@ -70,7 +77,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Set up database schema for tasks and users',
         description: 'Define and implement the database schema for storing user and task information, including roles and relationships.',
-        status: 'In Progress',
+        status: 'in-progress',
         assignedRole: 'Backend',
         estimatedHours: 8,
         timeSpent: 1,
@@ -84,7 +91,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Build the Kanban board drag-and-drop functionality',
         description: 'Implement the client-side logic for dragging and dropping tasks between columns on the Kanban board.',
-        status: 'To Do',
+        status: 'to-do',
         assignedRole: 'Frontend',
         estimatedHours: 16,
         timeSpent: 0,
@@ -98,7 +105,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Develop API for task state management',
         description: 'Create backend endpoints to handle creating, updating, and deleting tasks, and changing their status.',
-        status: 'To Do',
+        status: 'to-do',
         assignedRole: 'Backend',
         estimatedHours: 10,
         timeSpent: 0,
@@ -112,7 +119,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-1',
         title: 'Create Admin panel for user role management',
         description: 'Build a UI for administrators to view all users and assign or change their roles.',
-        status: 'To Do',
+        status: 'to-do',
         assignedRole: 'Project Manager',
         estimatedHours: 8,
         timeSpent: 0,
@@ -126,7 +133,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-2',
         title: 'Plan mobile app architecture',
         description: 'Outline the overall architecture for the native mobile apps, including technology stack and component breakdown.',
-        status: 'To Do',
+        status: 'to-do',
         assignedRole: 'Project Manager',
         estimatedHours: 20,
         timeSpent: 0,
@@ -140,7 +147,7 @@ export const TASKS: Task[] = [
         projectId: 'PROJ-2',
         title: 'Design mobile splash screen',
         description: 'Create the initial splash screen and loading indicators for the mobile app.',
-        status: 'To Do',
+        status: 'to-do',
         assignedRole: 'Designer',
         estimatedHours: 4,
         timeSpent: 0,

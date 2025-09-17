@@ -11,7 +11,14 @@ export type User = {
   bio?: string;
 };
 
-export type TaskStatus = 'To Do' | 'In Progress' | 'In Review' | 'Done';
+export type KanbanColumnData = {
+  id: string;
+  title: string;
+  color: string;
+};
+
+
+export type TaskStatus = string;
 export type Priority = 'Low' | 'Medium' | 'High';
 export type TaskType = 'Bug' | 'Task';
 
