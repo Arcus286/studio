@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, Search, Users, Eye, UserPlus, Plus } from 'lucide-react';
+import { Bell, Search, Users, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,7 +15,7 @@ import {
 import { useAuth } from '@/hooks/use-auth';
 import { Notifications } from './notifications';
 import { ThemeToggle } from './theme-toggle';
-import { usePathname } from 'next/navigation';
+import { NewTaskDialog } from '../tasks/new-task-dialog';
 
 type HeaderProps = {
   showSearch?: boolean;
@@ -24,7 +24,6 @@ type HeaderProps = {
 export function Header({ showSearch = true }: HeaderProps) {
   const { user, logout } = useAuth();
   const isAdmin = user?.role === 'Admin';
-  const pathname = usePathname();
 
   return (
     <>
@@ -43,12 +42,12 @@ export function Header({ showSearch = true }: HeaderProps) {
         )}
       </div>
 
-       <Button variant="outline" asChild>
-          <Link href="/tasks/new">
+       <NewTaskDialog>
+        <Button variant="outline">
             <Plus className="mr-2 h-4 w-4" />
             Add Task
-          </Link>
         </Button>
+       </NewTaskDialog>
       <Notifications />
       <ThemeToggle />
 
