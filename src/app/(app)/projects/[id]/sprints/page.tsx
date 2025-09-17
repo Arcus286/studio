@@ -1,6 +1,7 @@
 
+'use client';
 import { notFound } from 'next/navigation';
-import { PROJECTS } from '@/lib/data';
+import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { SprintList } from '@/components/sprints/sprint-list';
@@ -8,11 +9,10 @@ import { NewSprintDialog } from '@/components/sprints/new-sprint-dialog';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import type { Project } from '@/lib/types';
 
-// This is now a Client Component because it uses the useAuth hook.
-function SprintsPageContent({ project }: { project: (typeof PROJECTS)[0] }) {
-  'use client';
 
+function SprintsPageContent({ project }: { project: Project }) {
   const { user } = useAuth();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
 
@@ -50,12 +50,13 @@ function SprintsPageContent({ project }: { project: (typeof PROJECTS)[0] }) {
   )
 }
 
-// This remains a Server Component. It can safely access params.
+
 export default function ProjectSprintsPage({ params }: { params: { id: string } }) {
-  const project = PROJECTS.find(p => p.id === params.id);
+  const { projects } = useProjectStore();
+  const project = projects.find(p => p.id === params.id);
 
   if (!project) {
-    notFound();
+    return <div>Loading project...</div>;
   }
 
   return <SprintsPageContent project={project} />;

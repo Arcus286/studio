@@ -1,6 +1,8 @@
 
+'use client';
 import { notFound } from 'next/navigation';
-import { PROJECTS, USERS } from '@/lib/data';
+import { useProjectStore } from '@/lib/project-store';
+import { USERS } from '@/lib/data';
 import {
   Table,
   TableBody,
@@ -15,10 +17,11 @@ import Link from 'next/link';
 
 
 export default function ProjectTeamPage({ params: { id } }: { params: { id: string } }) {
-    const project = PROJECTS.find(p => p.id === id);
+    const { projects } = useProjectStore();
+    const project = projects.find(p => p.id === id);
 
     if (!project) {
-        notFound();
+        return <div>Loading project...</div>;
     }
     
     const teamMembers = USERS.filter(user => project.members.some(m => m.id === user.id));

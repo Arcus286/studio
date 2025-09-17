@@ -27,20 +27,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Users, Palette, Plus, Trash2, KanbanSquare, Settings } from 'lucide-react';
+import { Users, Palette, Plus, Trash2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { USERS } from '@/lib/data';
-import { Checkbox } from '../ui/checkbox';
-import { useStore } from '@/lib/store';
+import { ROLES, USERS } from '@/lib/data';
 import { useProjectStore } from '@/lib/project-store';
-
-const optionalBuckets = [
-    { id: 'under-development', title: 'Under Development' },
-    { id: 'blocked', title: 'Blocked' },
-    { id: 'under-testing', title: 'Under Testing' },
-    { id: 'ready-for-deployment', title: 'Ready for Deployment' },
-    { id: 'closed', title: 'Closed' },
-];
+import type { Project } from '@/lib/types';
 
 const projectSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
@@ -50,7 +41,6 @@ const projectSchema = z.object({
   members: z.array(z.object({
     id: z.string().min(1, 'Please select a user'),
   })).min(1, 'At least one team member is required'),
-  buckets: z.array(z.string()).optional(),
 });
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
@@ -64,22 +54,19 @@ const colorThemes = [
   'hsl(var(--chart-5))',
 ];
 
-
-export function NewProjectDialog({ children }: { children: React.ReactNode }) {
+export function EditProjectDialog({ project, children }: { project: Project; children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
-  const { columns } = useStore();
-  const { addProject } = useProjectStore();
+  const { updateProject } = useProjectStore();
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      name: '',
-      key: '',
-      color: colorThemes[0],
-      description: '',
-      members: [{ id: '' }],
-      buckets: [],
+      name: project.name,
+      key: project.key,
+      color: project.color,
+      description: project.description,
+      members: project.members.map(m => ({ id: m.id })),
     },
   });
   
@@ -88,35 +75,23 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
     name: "members"
   });
 
-  const watchName = form.watch('name');
-  
-  React.useEffect(() => {
-    const key = watchName.substring(0, 4).toUpperCase().replace(/[^A-Z]/g, '');
-    form.setValue('key', key);
-  }, [watchName, form]);
-
   const onSubmit = (data: ProjectFormValues) => {
-    // This is a mock submission. In a real app, you'd send this to a server.
-    addProject({
-      ...data,
-      description: data.description || '',
-    });
+    updateProject(project.id, data);
     toast({
-      title: 'Project Created!',
-      description: `"${data.name}" has been successfully created.`,
+      title: 'Project Updated!',
+      description: `"${data.name}" has been successfully updated.`,
     });
-    form.reset();
     setIsOpen(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>Edit Project</DialogTitle>
           <DialogDescription>
-            Fill in the details below to start a new project.
+            Update the details for your project.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -130,7 +105,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                         <FormItem>
                         <FormLabel>Project Name</FormLabel>
                         <FormControl>
-                            <Input placeholder="Enter project name" {...field} />
+                            <Input {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -145,7 +120,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                         <FormItem>
                         <FormLabel>Project Key</FormLabel>
                         <FormControl>
-                            <Input placeholder="PROJ" {...field} />
+                            <Input {...field} />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
@@ -187,7 +162,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Describe your project..." {...field} />
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -206,18 +181,18 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                             name={`members.${index}.id`}
                             render={({ field }) => (
                                 <FormItem className="flex-1">
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a user" />
-                                    </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                    {USERS.filter(u => u.status === 'active' && u.userType !== 'Admin').map(user => (
-                                        <SelectItem key={user.id} value={user.id}>{user.username} ({user.role})</SelectItem>
-                                    ))}
-                                    </SelectContent>
-                                </Select>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a user" />
+                                        </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                        {USERS.filter(u => u.status === 'active' && u.userType !== 'Admin').map(user => (
+                                            <SelectItem key={user.id} value={user.id}>{user.username} ({user.role})</SelectItem>
+                                        ))}
+                                        </SelectContent>
+                                    </Select>
                                 <FormMessage />
                                 </FormItem>
                             )}
@@ -233,80 +208,11 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                 </div>
             </div>
 
-            <div>
-                <FormLabel className="flex items-center gap-2 mb-2">
-                    <KanbanSquare className="h-4 w-4" /> Board Columns
-                </FormLabel>
-                <div className='p-4 border rounded-md bg-muted/50'>
-                    <p className='text-sm text-muted-foreground mb-4'>The board will be created with these standard columns. You cannot remove them.</p>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-                        {columns.map(col => (
-                            <div key={col.id} className="flex items-center gap-2 p-2 rounded-md bg-background border">
-                                <div className={`w-2 h-2 rounded-full border-2 ${col.color}`} />
-                                <span className='text-sm font-medium'>{col.title}</span>
-                            </div>
-                        ))}
-                    </div>
-                    
-                    <FormField
-                    control={form.control}
-                    name="buckets"
-                    render={() => (
-                        <FormItem>
-                        <div className="mb-4">
-                            <FormLabel className="text-base flex items-center gap-2">
-                                <Settings className="h-4 w-4" />
-                                Optional Columns
-                            </FormLabel>
-                            <p className="text-sm text-muted-foreground">Select any additional columns you need for your workflow.</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            {optionalBuckets.map((item) => (
-                                <FormField
-                                key={item.id}
-                                control={form.control}
-                                name="buckets"
-                                render={({ field }) => {
-                                    return (
-                                    <FormItem
-                                        key={item.id}
-                                        className="flex flex-row items-start space-x-3 space-y-0"
-                                    >
-                                        <FormControl>
-                                        <Checkbox
-                                            checked={field.value?.includes(item.id)}
-                                            onCheckedChange={(checked) => {
-                                            return checked
-                                                ? field.onChange([...(field.value ?? []), item.id])
-                                                : field.onChange(
-                                                    field.value?.filter(
-                                                        (value) => value !== item.id
-                                                    )
-                                                    )
-                                            }}
-                                        />
-                                        </FormControl>
-                                        <FormLabel className="font-normal">
-                                        {item.title}
-                                        </FormLabel>
-                                    </FormItem>
-                                    )
-                                }}
-                                />
-                            ))}
-                        </div>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                </div>
-            </div>
-
             <DialogFooter className="pt-4">
               <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button type="submit">Create Project</Button>
+              <Button type="submit">Save Changes</Button>
             </DialogFooter>
           </form>
         </Form>

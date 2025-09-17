@@ -1,15 +1,18 @@
 
-import { PROJECTS } from '@/lib/data';
+'use client';
+
+import { useProjectStore } from '@/lib/project-store';
 import { notFound } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
 
 export default function ProjectBoardPage({ params: { id } }: { params: { id: string } }) {
-  const project = PROJECTS.find(p => p.id === id);
+  const { projects } = useProjectStore();
+  const project = projects.find(p => p.id === id);
 
   if (!project) {
-    notFound();
+    return <div>Loading project...</div>;
   }
 
   return (

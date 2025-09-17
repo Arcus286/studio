@@ -31,16 +31,17 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '../loading';
 import { useEffect, useState } from 'react';
-import { PROJECTS } from '@/lib/data';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NewProjectDialog } from '@/components/projects/new-project-dialog';
+import { useProjectStore } from '@/lib/project-store';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
+  const { projects } = useProjectStore();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
 
 
@@ -110,7 +111,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               
               <CollapsibleContent>
                 <div className="ml-4 space-y-1 mt-1">
-                  {PROJECTS.map(project => (
+                  {projects.map(project => (
                       <SidebarMenuItem key={project.id}>
                         <SidebarMenuButton
                           asChild

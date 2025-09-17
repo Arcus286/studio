@@ -1,15 +1,22 @@
 
+'use client';
+
 import { notFound } from 'next/navigation';
-import { PROJECTS } from '@/lib/data';
+import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { Backlog } from '@/components/sprints/backlog';
 
 export default function ProjectBacklogPage({ params: { id } }: { params: { id: string } }) {
-  const project = PROJECTS.find(p => p.id === id);
+  const { projects } = useProjectStore();
+  const project = projects.find(p => p.id === id);
 
   if (!project) {
-    notFound();
+    // We could show a loading state or a "not found" message.
+    // For now, returning null or a loading spinner might be best
+    // while the store hydrates on the client.
+    // notFound() should be used carefully on client components.
+    return <div>Loading project...</div>; 
   }
 
   return (
