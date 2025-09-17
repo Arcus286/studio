@@ -30,6 +30,12 @@ export function ProjectBoard({ project, initialTasks }: ProjectBoardProps) {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
 
+    // First, check if the search term matches the task ID.
+    if (task.id.toLowerCase() === term) {
+        return true;
+    }
+
+    // If not, proceed with category-based filtering.
     switch (filterCategory) {
       case 'title':
         return task.title.toLowerCase().includes(term);
@@ -51,7 +57,7 @@ export function ProjectBoard({ project, initialTasks }: ProjectBoardProps) {
             <div className="relative flex-grow">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                    placeholder={`Search by ${filterCategory}...`}
+                    placeholder={`Search by ${filterCategory}, or task ID...`}
                     className="pl-10"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
