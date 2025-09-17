@@ -80,7 +80,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 <div className='flex items-center w-full'>
                     <SidebarMenuButton
                     asChild
-                    isActive={pathname.startsWith('/projects') && !pathname.includes('/board') && !pathname.includes('/team')}
+                    isActive={pathname === '/projects'}
                     className="flex-1"
                   >
                     <Link href="/projects">
@@ -161,22 +161,6 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-          <SidebarGroup className="mt-4">
-            <SidebarGroupLabel>Quick Actions</SidebarGroupLabel>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname.startsWith('/tasks/new')}
-                >
-                  <Link href="/tasks/new">
-                    <Plus />
-                    Add Task
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroup>
         </SidebarContent>
         <SidebarMenu>
           <SidebarMenuItem>

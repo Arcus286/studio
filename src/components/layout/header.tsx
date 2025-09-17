@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, Search, Users, Eye, UserPlus } from 'lucide-react';
+import { Bell, Search, Users, Eye, UserPlus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -43,6 +43,12 @@ export function Header({ showSearch = true }: HeaderProps) {
         )}
       </div>
 
+       <Button variant="outline" asChild>
+          <Link href="/tasks/new">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Task
+          </Link>
+        </Button>
       <Notifications />
       <ThemeToggle />
 
