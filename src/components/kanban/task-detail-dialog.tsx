@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -41,7 +42,7 @@ const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task', className?: s
 export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialogProps) {
   const { user } = useAuth();
   const { deleteTask } = useStore();
-  const isManager = user?.role === 'Manager' || user?.role === 'Admin';
+  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
 
   const [title, setTitle] = useState(task.title);
@@ -68,7 +69,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   };
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
-  const assignedUser = USERS.find(u => u.specialization === task.assignedRole);
+  const assignedUser = USERS.find(u => u.role === task.assignedRole);
   const statusLabel = KANBAN_COLUMNS.find(c => c.id === task.status)?.title || task.status;
   const isOverdue = task.deadline && isPast(new Date(task.deadline));
 
@@ -135,7 +136,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
                             <p className="font-semibold text-foreground">{assignedUser.username}</p>
                             <p className="text-xs text-muted-foreground">{assignedUser.email}</p>
                         </div>
-                        <Badge variant="outline">{assignedUser.specialization}</Badge>
+                        <Badge variant="outline">{assignedUser.role}</Badge>
                     </div>
                 )}
             </div>

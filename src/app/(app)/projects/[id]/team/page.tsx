@@ -52,7 +52,7 @@ export default function ProjectTeamPage({ params }: { params: { id: string } }) 
                     <TableRow>
                         <TableHead>User</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Role</TableHead>
+                        <TableHead>User Type</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -63,7 +63,7 @@ export default function ProjectTeamPage({ params }: { params: { id: string } }) 
                         </TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                            {user.role}
+                            {user.userType}
                         </TableCell>
                         </TableRow>
                     ))}

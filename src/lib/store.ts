@@ -1,6 +1,6 @@
 
 import { create } from 'zustand';
-import type { Task } from './types';
+import type { Task, Role } from './types';
 import { TASKS as initialTasks } from './data';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -25,6 +25,7 @@ export const useStore = create<TaskStore>()(
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             timeSpent: 0,
+            assignedRole: task.assignedRole as Role,
           };
           return { tasks: [...state.tasks, newTask] };
         }),

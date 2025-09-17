@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -23,8 +24,8 @@ type HeaderProps = {
 
 export function Header({ showSearch = true }: HeaderProps) {
   const { user, logout } = useAuth();
-  const isAdmin = user?.role === 'Admin';
-  const isManager = isAdmin || user?.role === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
+  const isManager = isAdmin || user?.userType === 'Manager';
 
 
   return (

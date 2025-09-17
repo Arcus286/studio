@@ -1,11 +1,12 @@
-import type { User, Task, Project, Notification, KanbanColumnData, SpecializedRole, Role } from './types';
+
+import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType } from './types';
 
 export const USERS: User[] = [
-  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', role: 'Admin', specialization: 'None', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
-  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', role: 'Manager', specialization: 'None', status: 'active' },
-  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', role: 'User', specialization: 'Developer', status: 'active' },
-  { id: '4', username: 'Frontend User', email: 'frontend@taskflow.com', password: 'userpassword', role: 'User', specialization: 'Frontend', status: 'active' },
-  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', role: 'User', specialization: 'Designer', status: 'active' },
+  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
+  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', userType: 'Manager', role: 'Manager', status: 'active' },
+  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', userType: 'User', role: 'Developer', status: 'active' },
+  { id: '4', username: 'Frontend User', email: 'frontend@taskflow.com', password: 'userpassword', userType: 'User', role: 'Frontend', status: 'active' },
+  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', userType: 'User', role: 'Designer', status: 'active' },
 ];
 
 export const KANBAN_COLUMNS: KanbanColumnData[] = [
@@ -126,7 +127,7 @@ export const TASKS: Task[] = [
         title: 'Create Admin panel for user role management',
         description: 'Build a UI for administrators to view all users and assign or change their roles.',
         status: 'to-do',
-        assignedRole: 'Developer',
+        assignedRole: 'Admin',
         estimatedHours: 8,
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -243,8 +244,9 @@ export const NOTIFICATIONS: Notification[] = [
 ];
 
 
-export const ROLES: Role[] = ['Admin', 'Manager', 'User'];
-export const SPECIALIZED_ROLES: SpecializedRole[] = ['Frontend', 'Backend', 'Designer', 'Developer'];
-
-export const TASK_TYPES: TaskType[] = ['Bug', 'Task'];
+export const USER_TYPES: UserType[] = ['Admin', 'Manager', 'User'];
+export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Developer', 'Admin', 'Manager'];
+export type TaskTypeLabel = 'Bug' | 'Task';
+export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task'];
+export type Priority = 'Low' | 'Medium' | 'High';
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];

@@ -1,3 +1,4 @@
+
 'use client';
 import { Header } from '@/components/layout/header';
 import {
@@ -38,7 +39,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
-  const isManager = user?.role === 'Manager' || user?.role === 'Admin';
+  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
 
 
   const isProjectPage = pathname.startsWith('/projects/');

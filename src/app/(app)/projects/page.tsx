@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 export default function ProjectsPage() {
     const { user } = useAuth();
-    const isManager = user?.role === 'Manager' || user?.role === 'Admin';
+    const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
     return (
         <div>
             <div className="flex justify-between items-center mb-6">

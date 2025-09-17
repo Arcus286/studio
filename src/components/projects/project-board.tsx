@@ -1,3 +1,4 @@
+
 'use client';
 
 import { KanbanBoard } from '@/components/kanban/kanban-board';
@@ -43,7 +44,7 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
       case 'role':
         return task.assignedRole.toLowerCase().includes(term);
       case 'user':
-        const user = USERS.find(u => u.specialization === task.assignedRole);
+        const user = USERS.find(u => u.role === task.assignedRole);
         return user?.username.toLowerCase().includes(term) ?? false;
       default:
         return true;

@@ -50,7 +50,7 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
             )}
           >
             {tasks.map((task, index) => {
-              const isDraggable = user?.role === 'Admin' || user?.role === 'Manager' || (user?.role === 'User' && user.specialization === task.assignedRole);
+              const isDraggable = user?.userType === 'Admin' || user?.userType === 'Manager' || (user?.userType === 'User' && user.role === task.assignedRole);
               return (
               <Draggable key={task.id} draggableId={task.id} index={index} isDragDisabled={!isDraggable}>
                 {(provided, snapshot) => (

@@ -29,7 +29,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Palette, Plus, Trash2, KanbanSquare, Settings } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ROLES, KANBAN_COLUMNS } from '@/lib/data';
+import { USER_TYPES, KANBAN_COLUMNS } from '@/lib/data';
 import { Checkbox } from '../ui/checkbox';
 
 const optionalBuckets = [
@@ -220,7 +220,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                                     </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                    {ROLES.map(role => (
+                                    {USER_TYPES.map(role => (
                                         <SelectItem key={role} value={role}>{role}</SelectItem>
                                     ))}
                                     </SelectContent>

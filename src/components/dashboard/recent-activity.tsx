@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { Task, TaskType } from '@/lib/types';
+import type { Task, TaskTypeLabel } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,7 @@ type RecentActivityProps = {
   tasks: Task[];
 };
 
-const TaskTypeIcon = ({ type }: { type: TaskType }) => {
+const TaskTypeIcon = ({ type }: { type: TaskTypeLabel }) => {
     switch (type) {
         case 'Bug':
             return <Bug className="h-4 w-4 text-red-500" />;
@@ -30,9 +30,9 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
 
   const recentTasks = useMemo(() => {
     const filtered =
-      user?.role === 'Admin' || user?.role === 'Manager'
+      user?.userType === 'Admin' || user?.userType === 'Manager'
         ? tasks
-        : tasks.filter((task) => task.assignedRole === user?.specialization);
+        : tasks.filter((task) => task.assignedRole === user?.role);
     
     return filtered
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())

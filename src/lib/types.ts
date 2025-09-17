@@ -1,13 +1,14 @@
-export type Role = 'Admin' | 'Manager' | 'User';
-export type SpecializedRole = 'Frontend' | 'Backend' | 'Designer' | 'Developer';
+
+export type UserType = 'Admin' | 'Manager' | 'User';
+export type Role = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager' | 'None';
 
 export type User = {
   id: string;
   username: string;
   email: string;
   password?: string;
+  userType: UserType;
   role: Role;
-  specialization: SpecializedRole | 'None';
   status: 'pending' | 'active';
   designation?: string;
   phoneNumber?: string;
@@ -32,7 +33,7 @@ export type Task = {
   title: string;
   description: string;
   status: TaskStatus;
-  assignedRole: SpecializedRole;
+  assignedRole: Role;
   estimatedHours: number;
   timeSpent: number;
   createdAt: string;

@@ -1,3 +1,4 @@
+
 'use client';
 import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,7 +25,7 @@ export function ProfileCard() {
         </div>
         <h2 className="text-2xl font-bold">{user.username}</h2>
         <p className="text-muted-foreground">{user.email}</p>
-        <Badge variant="secondary" className="mt-2">{user.role}</Badge>
+        <Badge variant="secondary" className="mt-2">{user.userType}</Badge>
 
         <div className="text-left mt-8 space-y-4">
           {infoItems.map((item, index) => (

@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Project } from '@/lib/types';
@@ -75,7 +76,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                          <Badge variant="outline">{member.username}</Badge>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>{member.role}</p>
+                        <p>{member.userType}</p>
                     </TooltipContent>
                 </Tooltip>
                 ))}
