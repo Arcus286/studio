@@ -17,7 +17,7 @@ import {
   LayoutDashboard,
   KanbanSquare,
   Folder,
-  PlusCircle,
+  Plus,
   Settings,
   LogOut,
   Users,
@@ -32,6 +32,7 @@ import { PROJECTS } from '@/lib/data';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { NewProjectDialog } from '@/components/projects/new-project-dialog';
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { logout } = useAuth();
@@ -79,7 +80,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 <div className='flex items-center w-full'>
                     <SidebarMenuButton
                     asChild
-                    isActive={pathname === '/projects'}
+                    isActive={pathname.startsWith('/projects') && !pathname.includes('/board') && !pathname.includes('/team')}
                     className="flex-1"
                   >
                     <Link href="/projects">
@@ -87,6 +88,11 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                       Projects
                     </Link>
                   </SidebarMenuButton>
+                  <NewProjectDialog>
+                     <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                          <Plus className="h-4 w-4" />
+                      </Button>
+                  </NewProjectDialog>
                   <CollapsibleTrigger asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
                           <ChevronRight className={cn("h-4 w-4 transition-transform", isProjectsOpen && "rotate-90")} />
@@ -164,7 +170,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                   isActive={pathname.startsWith('/tasks/new')}
                 >
                   <Link href="/tasks/new">
-                    <PlusCircle />
+                    <Plus />
                     Add Task
                   </Link>
                 </SidebarMenuButton>
