@@ -1,4 +1,5 @@
 
+
 export type UserType = 'Admin' | 'Manager' | 'User';
 export type Role = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager' | 'None';
 export type SpecializedRole = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager';
@@ -26,6 +27,7 @@ export type KanbanColumnData = {
 
 export type TaskStatus = string;
 export type Priority = 'Low' | 'Medium' | 'High';
+export type Effort = 'Low' | 'Medium' | 'High';
 export type TaskType = 'Bug' | 'Task' | 'Story';
 
 
@@ -37,6 +39,7 @@ export type Task = {
   status: TaskStatus;
   assignedRole: Role;
   estimatedHours: number;
+  effort?: Effort;
   timeSpent: number;
   createdAt: string;
   updatedAt: string;

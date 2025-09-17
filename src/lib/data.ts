@@ -1,5 +1,6 @@
 
-import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole, Sprint } from './types';
+
+import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole, Sprint, Effort } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
@@ -55,6 +56,7 @@ export const TASKS: Task[] = [
         status: 'in-progress',
         assignedRole: 'Manager',
         estimatedHours: 40,
+        effort: 'High',
         timeSpent: 29,
         createdAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -70,6 +72,7 @@ export const TASKS: Task[] = [
         status: 'done',
         assignedRole: 'Designer',
         estimatedHours: 8,
+        effort: 'Medium',
         timeSpent: 8,
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
@@ -87,6 +90,7 @@ export const TASKS: Task[] = [
         status: 'done',
         assignedRole: 'Developer',
         estimatedHours: 12,
+        effort: 'Medium',
         timeSpent: 12,
         createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -104,6 +108,7 @@ export const TASKS: Task[] = [
         status: 'in-review',
         assignedRole: 'Frontend',
         estimatedHours: 10,
+        effort: 'Medium',
         timeSpent: 9,
         createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -121,6 +126,7 @@ export const TASKS: Task[] = [
         status: 'in-progress',
         assignedRole: 'Designer',
         estimatedHours: 6,
+        effort: 'Low',
         timeSpent: 2,
         createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -137,6 +143,7 @@ export const TASKS: Task[] = [
         status: 'in-progress',
         assignedRole: 'Developer',
         estimatedHours: 8,
+        effort: 'Medium',
         timeSpent: 1,
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
@@ -153,6 +160,7 @@ export const TASKS: Task[] = [
         status: 'to-do',
         assignedRole: 'Frontend',
         estimatedHours: 16,
+        effort: 'High',
         timeSpent: 0,
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -169,6 +177,7 @@ export const TASKS: Task[] = [
         status: 'to-do',
         assignedRole: 'Developer',
         estimatedHours: 10,
+        effort: 'Medium',
         timeSpent: 0,
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -183,6 +192,7 @@ export const TASKS: Task[] = [
         status: 'to-do',
         assignedRole: 'Admin',
         estimatedHours: 8,
+        effort: 'Low',
         timeSpent: 0,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -197,6 +207,7 @@ export const TASKS: Task[] = [
         status: 'done',
         assignedRole: 'Developer',
         estimatedHours: 20,
+        effort: 'High',
         timeSpent: 20,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -212,6 +223,7 @@ export const TASKS: Task[] = [
         status: 'done',
         assignedRole: 'Designer',
         estimatedHours: 4,
+        effort: 'Low',
         timeSpent: 4,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -316,4 +328,6 @@ export type TaskTypeLabel = 'Bug' | 'Task' | 'Story';
 export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task', 'Story'];
 export type Priority = 'Low' | 'Medium' | 'High';
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];
+
+export const EFFORT_LEVELS: Effort[] = ['Low', 'Medium', 'High'];
 

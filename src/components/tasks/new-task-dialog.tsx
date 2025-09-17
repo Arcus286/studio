@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -19,7 +20,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS, SPECIALIZED_ROLES } from '@/lib/data';
+import { TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, PROJECTS, SPECIALIZED_ROLES, EFFORT_LEVELS } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -37,7 +38,8 @@ const taskSchema = z.object({
   status: z.string().min(1, 'Please select a status.'),
   type: z.string().min(1, 'Please select a task type.'),
   priority: z.string().min(1, 'Please select a priority.'),
-  estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.'),
+  estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.').optional(),
+  effort: z.string().optional(),
   assignedRole: z.string().min(1, 'Please assign a role.'),
   deadline: z.date().optional(),
   storyId: z.string().optional(),
@@ -63,7 +65,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       status: 'to-do',
       type: 'Task',
       priority: 'Medium',
-      estimatedHours: 1,
+      effort: 'Medium',
       assignedRole: '',
       deadline: undefined,
       storyId: '',
@@ -105,8 +107,13 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
 
 
   const onSubmit = (data: TaskFormValues) => {
+    const effortToHoursMap = { Low: 4, Medium: 8, High: 16 };
+    const estimatedHours = data.effort ? effortToHoursMap[data.effort as keyof typeof effortToHoursMap] : data.estimatedHours || 0;
+
     const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
       ...data,
+      estimatedHours,
+      effort: data.effort as Task['effort'],
       assignedRole: data.assignedRole as SpecializedRole,
       priority: data.priority as Task['priority'],
       type: data.type as Task['type'],
@@ -128,7 +135,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       status: 'to-do',
       type: 'Task',
       priority: 'Medium',
-      estimatedHours: 1,
+      effort: 'Medium',
       assignedRole: '',
       deadline: undefined,
       storyId: '',
@@ -201,13 +208,14 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Parent Story (Optional)</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value || ''}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Link to a parent story" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="">None</SelectItem>
                           {stories.map(story => (
                             <SelectItem key={story.id} value={story.id}>{story.title}</SelectItem>
                           ))}
@@ -313,21 +321,30 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                   </FormItem>
                 )}
               />
+               <FormField
+                control={form.control}
+                name="effort"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Effort Estimate</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select effort" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {EFFORT_LEVELS.map(level => (
+                          <SelectItem key={level} value={level}>{level}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
              <div className="grid grid-cols-2 gap-4 items-end">
-                <FormField
-                    control={form.control}
-                    name="estimatedHours"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Time Estimate (Hours)</FormLabel>
-                        <FormControl>
-                            <Input type="number" min="0" step="0.5" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
                 <FormItem>
                     <FormLabel>Set Deadline by Sprints</FormLabel>
                     <Select onValueChange={handleSprintDeadlineChange}>
@@ -345,7 +362,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                         </SelectContent>
                     </Select>
                 </FormItem>
-                <div className="col-span-2">
+                <div className="col-span-1">
                     <FormField
                         control={form.control}
                         name="deadline"
