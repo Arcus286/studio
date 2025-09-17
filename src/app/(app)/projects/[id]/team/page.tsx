@@ -1,6 +1,4 @@
 
-'use client';
-
 import { notFound } from 'next/navigation';
 import { PROJECTS, USERS } from '@/lib/data';
 import {

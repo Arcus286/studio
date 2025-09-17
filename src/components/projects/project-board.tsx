@@ -6,23 +6,34 @@ import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
 import { useState, useMemo } from 'react';
 import type { Task, TaskStatus, Project, Sprint } from '@/lib/types';
 import { Input } from '../ui/input';
-import { Search } from 'lucide-react';
+import { Search, Flame } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { USERS } from '@/lib/data';
 import { useStore } from '@/lib/store';
+import { useSprintStore } from '@/lib/sprint-store';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 interface ProjectBoardProps {
     project: Project;
-    sprint: Sprint;
 }
 
-export function ProjectBoard({ project, sprint }: ProjectBoardProps) {
+export function ProjectBoard({ project }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<'title' | 'role' | 'user'>('title');
   const allTasks = useStore((state) => state.tasks);
+  const { sprints } = useSprintStore();
   
-  const sprintTasks = useMemo(() => allTasks.filter(t => t.sprintId === sprint.id), [allTasks, sprint.id]);
+  const activeSprint = useMemo(() => {
+    return sprints.find(s => s.projectId === project.id && s.status === 'active');
+  }, [sprints, project.id]);
+  
+  const sprintTasks = useMemo(() => {
+    if (!activeSprint) return [];
+    return allTasks.filter(t => t.sprintId === activeSprint.id)
+  }, [allTasks, activeSprint]);
 
   const handleAnalyticsClick = (status: TaskStatus | 'all') => {
     setHighlightedStatus(status);
@@ -52,6 +63,23 @@ export function ProjectBoard({ project, sprint }: ProjectBoardProps) {
     }
   });
 
+
+  if (!activeSprint) {
+    return (
+        <Alert>
+            <Flame className="h-4 w-4" />
+            <AlertTitle>No Active Sprint</AlertTitle>
+            <AlertDescription>
+              There is no active sprint for this project. Go to the sprints page to start one.
+            </AlertDescription>
+             <Button asChild className='mt-4'>
+                <Link href={`/projects/${project.id}/sprints`}>
+                    Go to Sprints
+                </Link>
+            </Button>
+        </Alert>
+    )
+  }
 
   return (
     <>

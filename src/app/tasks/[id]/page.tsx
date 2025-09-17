@@ -1,9 +1,4 @@
 
-'use client';
-
-// This page is not used in the new Kanban board flow,
-// but is kept for potential future use or direct task linking.
-
 import { TASKS } from "@/lib/data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
