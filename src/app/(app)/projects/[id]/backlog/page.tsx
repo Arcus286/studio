@@ -8,7 +8,8 @@ import Link from 'next/link';
 import { Backlog } from '@/components/sprints/backlog';
 
 export default function ProjectBacklogPage({ params }: { params: { id: string } }) {
-  const project = PROJECTS.find(p => p.id === params.id);
+  const { id } = params;
+  const project = PROJECTS.find(p => p.id === id);
 
   if (!project) {
     notFound();

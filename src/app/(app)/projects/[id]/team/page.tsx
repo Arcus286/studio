@@ -1,4 +1,6 @@
 
+'use client';
+
 import { notFound } from 'next/navigation';
 import { PROJECTS, USERS } from '@/lib/data';
 import {
@@ -15,7 +17,8 @@ import Link from 'next/link';
 
 
 export default function ProjectTeamPage({ params }: { params: { id: string } }) {
-    const project = PROJECTS.find(p => p.id === params.id);
+    const { id } = params;
+    const project = PROJECTS.find(p => p.id === id);
 
     if (!project) {
         notFound();

@@ -1,4 +1,6 @@
 
+'use client';
+
 // This page is not used in the new Kanban board flow,
 // but is kept for potential future use or direct task linking.
 
@@ -11,8 +13,9 @@ import { Separator } from "@/components/ui/separator";
 import { notFound } from "next/navigation";
 import { format, parseISO } from 'date-fns';
 
-export default async function TaskDetailPage({ params }: { params: { id: string } }) {
-  const task = TASKS.find(t => t.id === params.id);
+export default function TaskDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const task = TASKS.find(t => t.id === id);
 
   if (!task) {
     notFound();
