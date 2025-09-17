@@ -11,8 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 
-export default function ProjectSprintsPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function ProjectSprintsPage({ params: { id } }: { params: { id: string } }) {
   const { user } = useAuth();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const project = PROJECTS.find(p => p.id === id);

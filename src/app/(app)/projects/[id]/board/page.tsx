@@ -11,8 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export default function ProjectBoardPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function ProjectBoardPage({ params: { id } }: { params: { id: string } }) {
   const project = PROJECTS.find(p => p.id === id);
   const { sprints } = useSprintStore();
   

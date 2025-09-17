@@ -7,8 +7,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from 'next/link';
 import { Backlog } from '@/components/sprints/backlog';
 
-export default function ProjectBacklogPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function ProjectBacklogPage({ params: { id } }: { params: { id: string } }) {
   const project = PROJECTS.find(p => p.id === id);
 
   if (!project) {

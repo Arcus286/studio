@@ -13,8 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { notFound } from "next/navigation";
 import { format, parseISO } from 'date-fns';
 
-export default function TaskDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function TaskDetailPage({ params: { id } }: { params: { id: string } }) {
   const task = TASKS.find(t => t.id === id);
 
   if (!task) {

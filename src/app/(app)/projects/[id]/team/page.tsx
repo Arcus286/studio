@@ -16,8 +16,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from 'next/link';
 
 
-export default function ProjectTeamPage({ params }: { params: { id: string } }) {
-    const { id } = params;
+export default function ProjectTeamPage({ params: { id } }: { params: { id: string } }) {
     const project = PROJECTS.find(p => p.id === id);
 
     if (!project) {
