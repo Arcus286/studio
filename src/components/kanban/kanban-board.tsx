@@ -1,5 +1,5 @@
 'use client';
-import { DragDropContext, Droppable, Draggable, OnDragEndResponder } from '@hello-pangea/dnd';
+import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanColumn } from './kanban-column';
 import { useState } from 'react';
@@ -9,16 +9,20 @@ import { useToast } from '@/hooks/use-toast';
 import { KANBAN_COLUMNS } from '@/lib/data';
 
 type KanbanBoardProps = {
-  initialTasks: Task[];
+  tasks: Task[];
   highlightedStatus?: TaskStatus | 'all' | null;
 };
 
-export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProps) {
+export function KanbanBoard({ tasks: initialTasks, highlightedStatus }: KanbanBoardProps) {
   const { user } = useAuth();
   const [tasks, setTasks] = useState(initialTasks);
   const { toast } = useToast();
   const [timeLogTask, setTimeLogTask] = useState<Task | null>(null);
   const [columns, setColumns] = useState<KanbanColumnData[]>(KANBAN_COLUMNS);
+  
+  React.useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { source, destination } = result;
@@ -38,7 +42,7 @@ export function KanbanBoard({ initialTasks, highlightedStatus }: KanbanBoardProp
       return;
     }
 
-    updateTaskState(draggedTask, destColId, draggedTask.timeSpent);
+    updateTaskState(draggedTask, destColId as TaskStatus, draggedTask.timeSpent);
   };
   
   const handleTimeLog = (hours: number) => {
