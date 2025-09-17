@@ -1,4 +1,4 @@
-import { TASKS, PROJECTS } from '@/lib/data';
+import { PROJECTS } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
@@ -10,8 +10,6 @@ export default function ProjectBoardPage({ params }: { params: { id: string } })
   if (!project) {
     notFound();
   }
-
-  const projectTasks = TASKS.filter(t => t.projectId === project.id);
 
   return (
     <div className="space-y-6">
@@ -32,7 +30,7 @@ export default function ProjectBoardPage({ params }: { params: { id: string } })
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <ProjectBoard project={project} initialTasks={projectTasks} />
+        <ProjectBoard project={project} />
     </div>
   );
 }

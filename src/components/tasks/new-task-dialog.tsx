@@ -23,6 +23,9 @@ import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { DatePicker } from '../ui/date-picker';
+import { useStore } from '@/lib/store';
+import type { Task } from '@/lib/types';
+
 
 const taskSchema = z.object({
   projectId: z.string().min(1, 'Please select a project.'),
@@ -43,6 +46,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const currentProjectId = pathname.startsWith('/projects/') ? pathname.split('/')[2] : '';
+  const { addTask } = useStore();
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -51,7 +55,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       title: '',
       description: '',
       status: 'to-do',
-      type: '',
+      type: 'Task',
       priority: 'Medium',
       estimatedHours: 1,
       assignedRole: '',
@@ -60,12 +64,31 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   });
 
   const onSubmit = (data: TaskFormValues) => {
-    console.log('New task data:', data); // In real app, call server action
+    const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
+      ...data,
+      assignedRole: data.assignedRole as Task['assignedRole'],
+      priority: data.priority as Task['priority'],
+      type: data.type as Task['type'],
+      deadline: data.deadline?.toISOString(),
+    };
+
+    addTask(taskData);
+    
     toast({
       title: 'Task Created!',
       description: `"${data.title}" has been added to the board.`,
     });
-    form.reset();
+    form.reset({
+      projectId: currentProjectId,
+      title: '',
+      description: '',
+      status: 'to-do',
+      type: 'Task',
+      priority: 'Medium',
+      estimatedHours: 1,
+      assignedRole: '',
+      deadline: undefined,
+    });
     setIsOpen(false);
   };
 
@@ -185,7 +208,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a type" />
-                        </SelectTrigger>
+                        </Trigger>
                       </FormControl>
                       <SelectContent>
                         {TASK_TYPES.map(type => (

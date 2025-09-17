@@ -20,6 +20,7 @@ import { Separator } from '@/components/ui/separator';
 import { CalendarDays, Users, Bug, CalendarClock, Trash2 } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useStore } from '@/lib/store';
 
 type TaskDetailDialogProps = {
   isOpen: boolean;
@@ -39,6 +40,7 @@ const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task', className?: s
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialogProps) {
   const { user } = useAuth();
+  const { deleteTask } = useStore();
   const isManager = user?.role === 'Manager' || user?.role === 'Admin';
   const { toast } = useToast();
 
@@ -46,18 +48,17 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   const [description, setDescription] = useState(task.description);
   
   const handleSave = () => {
-    // In a real app, this would be a server action
+    // In a real app, this would be a server action to update the task
     console.log({ title, description });
     toast({
         title: 'Task Updated',
-        description: `"${title}" has been saved.`
+        description: `Changes to "${title}" have been saved locally.`
     });
     onOpenChange(false);
   };
   
    const handleDelete = () => {
-    // In a real app, this would be a server action
-    console.log('Deleting task:', task.id);
+    deleteTask(task.id);
     toast({
       variant: 'destructive',
       title: 'Task Deleted',

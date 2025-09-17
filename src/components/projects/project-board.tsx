@@ -2,22 +2,25 @@
 
 import { KanbanBoard } from '@/components/kanban/kanban-board';
 import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Task, TaskStatus, Project } from '@/lib/types';
 import { Input } from '../ui/input';
 import { Search } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { USERS } from '@/lib/data';
+import { useStore } from '@/lib/store';
 
 interface ProjectBoardProps {
     project: Project;
-    initialTasks: Task[];
 }
 
-export function ProjectBoard({ project, initialTasks }: ProjectBoardProps) {
+export function ProjectBoard({ project }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<'title' | 'role' | 'user'>('title');
+  const allTasks = useStore((state) => state.tasks);
+  
+  const projectTasks = useMemo(() => allTasks.filter(t => t.projectId === project.id), [allTasks, project.id]);
 
   const handleAnalyticsClick = (status: TaskStatus | 'all') => {
     setHighlightedStatus(status);
@@ -26,16 +29,14 @@ export function ProjectBoard({ project, initialTasks }: ProjectBoardProps) {
     }, 1500);
   };
   
-  const filteredTasks = initialTasks.filter(task => {
+  const filteredTasks = projectTasks.filter(task => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
 
-    // First, check if the search term matches the task ID.
-    if (task.id.toLowerCase() === term) {
+    if (task.id.toLowerCase().includes(term)) {
         return true;
     }
 
-    // If not, proceed with category-based filtering.
     switch (filterCategory) {
       case 'title':
         return task.title.toLowerCase().includes(term);
@@ -52,7 +53,7 @@ export function ProjectBoard({ project, initialTasks }: ProjectBoardProps) {
 
   return (
     <>
-        <DashboardAnalytics tasks={initialTasks} onCardClick={handleAnalyticsClick} />
+        <DashboardAnalytics tasks={projectTasks} onCardClick={handleAnalyticsClick} />
         <div className="flex flex-col sm:flex-row gap-4 my-6">
             <div className="relative flex-grow">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
