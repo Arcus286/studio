@@ -4,7 +4,7 @@
 import { KanbanBoard } from '@/components/kanban/kanban-board';
 import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
 import { useState, useMemo } from 'react';
-import type { Task, TaskStatus, Project } from '@/lib/types';
+import type { Task, TaskStatus, Project, Sprint } from '@/lib/types';
 import { Input } from '../ui/input';
 import { Search } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
@@ -13,15 +13,16 @@ import { useStore } from '@/lib/store';
 
 interface ProjectBoardProps {
     project: Project;
+    sprint: Sprint;
 }
 
-export function ProjectBoard({ project }: ProjectBoardProps) {
+export function ProjectBoard({ project, sprint }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState<'title' | 'role' | 'user'>('title');
   const allTasks = useStore((state) => state.tasks);
   
-  const projectTasks = useMemo(() => allTasks.filter(t => t.projectId === project.id), [allTasks, project.id]);
+  const sprintTasks = useMemo(() => allTasks.filter(t => t.sprintId === sprint.id), [allTasks, sprint.id]);
 
   const handleAnalyticsClick = (status: TaskStatus | 'all') => {
     setHighlightedStatus(status);
@@ -30,7 +31,7 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
     }, 1500);
   };
   
-  const filteredTasks = projectTasks.filter(task => {
+  const filteredTasks = sprintTasks.filter(task => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
 
@@ -54,7 +55,7 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
 
   return (
     <>
-        <DashboardAnalytics tasks={projectTasks} onCardClick={handleAnalyticsClick} />
+        <DashboardAnalytics tasks={sprintTasks} onCardClick={handleAnalyticsClick} />
         <div className="flex flex-col sm:flex-row gap-4 my-6">
             <div className="relative flex-grow">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

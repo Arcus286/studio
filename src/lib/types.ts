@@ -1,6 +1,8 @@
 
 export type UserType = 'Admin' | 'Manager' | 'User';
 export type Role = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager' | 'None';
+export type SpecializedRole = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager';
+
 
 export type User = {
   id: string;
@@ -42,10 +44,21 @@ export type Task = {
   type: TaskType;
   deadline?: string;
   storyId?: string;
+  sprintId?: string;
 };
 
 export type ProjectMember = {
     id: string;
+}
+
+export type Sprint = {
+  id: string;
+  projectId: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  status: 'upcoming' | 'active' | 'completed';
+  goal?: string;
 }
 
 export type Project = {
@@ -59,6 +72,7 @@ export type Project = {
     createdAt: string;
     issues: number;
     members: ProjectMember[]; // array of user ids
+    sprints: Sprint[];
 };
 
 export type Notification = {

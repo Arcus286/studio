@@ -1,5 +1,5 @@
 
-import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole } from './types';
+import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole, Sprint } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
@@ -16,6 +16,36 @@ export const KANBAN_COLUMNS: KanbanColumnData[] = [
     { id: 'done', title: 'Done', color: 'border-green-500' },
 ];
 
+export const SPRINTS: Sprint[] = [
+    {
+        id: 'SPRINT-1',
+        projectId: 'PROJ-1',
+        name: 'Sprint 1 - Authentication & Board',
+        startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'active',
+        goal: 'To deliver the core user authentication flow and a functional Kanban board.',
+    },
+    {
+        id: 'SPRINT-2',
+        projectId: 'PROJ-1',
+        name: 'Sprint 2 - Sprint Management',
+        startDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() + 22 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'upcoming',
+        goal: 'To build out the sprint planning and backlog management features.',
+    },
+     {
+        id: 'SPRINT-3',
+        projectId: 'PROJ-2',
+        name: 'Sprint 1 - Mobile Architecture',
+        startDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        endDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        status: 'completed',
+        goal: 'To finalize the mobile app architecture and design system.',
+    },
+];
+
 export const TASKS: Task[] = [
      {
         id: 'TASK-0',
@@ -30,6 +60,7 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Story',
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-1',
@@ -46,6 +77,7 @@ export const TASKS: Task[] = [
         type: 'Task',
         deadline: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
         storyId: 'TASK-0',
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-2',
@@ -62,6 +94,7 @@ export const TASKS: Task[] = [
         type: 'Task',
         deadline: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
         storyId: 'TASK-0',
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-3',
@@ -78,6 +111,7 @@ export const TASKS: Task[] = [
         type: 'Task',
         deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
         storyId: 'TASK-0',
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-4',
@@ -93,6 +127,7 @@ export const TASKS: Task[] = [
         priority: 'Medium',
         type: 'Task',
         deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-5',
@@ -108,6 +143,7 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Task',
         deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // Overdue
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-6',
@@ -123,6 +159,7 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Bug',
         deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+        sprintId: 'SPRINT-1'
     },
     {
         id: 'TASK-7',
@@ -151,35 +188,36 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Low',
         type: 'Task',
-        deadline: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString(),
     },
     {
         id: 'TASK-9',
         projectId: 'PROJ-2',
         title: 'Plan mobile app architecture',
         description: 'Outline the overall architecture for the native mobile apps, including technology stack and component breakdown.',
-        status: 'to-do',
+        status: 'done',
         assignedRole: 'Developer',
         estimatedHours: 20,
-        timeSpent: 0,
+        timeSpent: 20,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Task',
+        sprintId: 'SPRINT-3',
     },
     {
         id: 'TASK-10',
         projectId: 'PROJ-2',
         title: 'Design mobile splash screen',
         description: 'Create the initial splash screen and loading indicators for the mobile app.',
-        status: 'to-do',
+        status: 'done',
         assignedRole: 'Designer',
         estimatedHours: 4,
-        timeSpent: 0,
+        timeSpent: 4,
         createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
         type: 'Task',
+        sprintId: 'SPRINT-3',
     },
 ];
 
@@ -195,6 +233,7 @@ export const PROJECTS: Project[] = [
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 8,
         members: [{id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}, {id: '5'}],
+        sprints: SPRINTS.filter(s => s.projectId === 'PROJ-1'),
     },
     {
         id: 'PROJ-2',
@@ -207,6 +246,7 @@ export const PROJECTS: Project[] = [
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 3,
         members: [{id: '2'}, {id: '3'}, {id: '4'}],
+        sprints: SPRINTS.filter(s => s.projectId === 'PROJ-2'),
     },
     {
         id: 'PROJ-3',
@@ -219,6 +259,7 @@ export const PROJECTS: Project[] = [
         createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 2,
         members: [{id: '5'}, {id: '3'}],
+        sprints: [],
     }
 ];
 
@@ -263,7 +304,8 @@ export const NOTIFICATIONS: Notification[] = [
 
 export const USER_TYPES: UserType[] = ['Admin', 'Manager', 'User'];
 export const ROLES: Role[] = ['Frontend', 'Backend', 'Designer', 'Developer', 'Admin', 'Manager'];
-export const SPECIALIZED_ROLES: SpecializedRole[] = ['Frontend', 'Backend', 'Designer', 'Developer'];
+export const SPECIALIZED_ROLES: SpecializedRole[] = ['Frontend', 'Backend', 'Designer', 'Developer', 'Admin', 'Manager'];
+
 
 export type TaskTypeLabel = 'Bug' | 'Task' | 'Story';
 export const TASK_TYPES: TaskTypeLabel[] = ['Bug', 'Task', 'Story'];

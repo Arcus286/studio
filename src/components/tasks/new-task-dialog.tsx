@@ -39,6 +39,7 @@ const taskSchema = z.object({
   assignedRole: z.string().min(1, 'Please assign a role.'),
   deadline: z.date().optional(),
   storyId: z.string().optional(),
+  sprintId: z.string().optional(),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -63,6 +64,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       assignedRole: '',
       deadline: undefined,
       storyId: '',
+      sprintId: '',
     },
   });
 
@@ -79,6 +81,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
       storyId: data.storyId || undefined,
+      sprintId: data.sprintId || undefined,
     };
 
     addTask(taskData);

@@ -8,6 +8,7 @@ interface TaskStore {
   tasks: Task[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'>) => void;
   updateTask: (taskId: string, newStatus: string, timeSpent: number) => void;
+  assignTaskToSprint: (taskId: string, sprintId: string) => void;
   deleteTask: (taskId: string) => void;
   setTasks: (tasks: Task[]) => void;
 }
@@ -50,6 +51,11 @@ export const useStore = create<TaskStore>()(
             ),
           };
         }),
+      assignTaskToSprint: (taskId, sprintId) => set((state) => ({
+        tasks: state.tasks.map((task) =>
+            task.id === taskId ? { ...task, sprintId: sprintId, updatedAt: new Date().toISOString() } : task
+        ),
+      })),
       deleteTask: (taskId) =>
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== taskId),
