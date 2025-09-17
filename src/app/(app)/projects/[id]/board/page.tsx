@@ -12,12 +12,13 @@ import { Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ProjectBoardPage({ params }: { params: { id: string } }) {
-  const project = PROJECTS.find(p => p.id === params.id);
+  const { id } = params;
+  const project = PROJECTS.find(p => p.id === id);
   const { sprints } = useSprintStore();
   
   const activeSprint = useMemo(() => {
-    return sprints.find(s => s.projectId === params.id && s.status === 'active');
-  }, [sprints, params]);
+    return sprints.find(s => s.projectId === id && s.status === 'active');
+  }, [sprints, id]);
 
   if (!project) {
     notFound();
