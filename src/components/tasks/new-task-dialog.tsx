@@ -1,8 +1,7 @@
 
-
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -20,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TASK_TYPES, PRIORITIES, PROJECTS, SPECIALIZED_ROLES, EFFORT_LEVELS } from '@/lib/data';
+import { TASK_TYPES, PRIORITIES, SPECIALIZED_ROLES, EFFORT_LEVELS } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -29,6 +28,7 @@ import { useStore } from '@/lib/store';
 import type { Task, SpecializedRole } from '@/lib/types';
 import { useSprintStore } from '@/lib/sprint-store';
 import { add, differenceInMilliseconds } from 'date-fns';
+import { useProjectStore } from '@/lib/project-store';
 
 
 const taskSchema = z.object({
@@ -55,6 +55,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const currentProjectId = pathname.startsWith('/projects/') ? pathname.split('/')[2] : '';
   const { addTask, tasks, columns } = useStore();
   const { sprints } = useSprintStore();
+  const { projects } = useProjectStore();
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -169,7 +170,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {PROJECTS.map(project => (
+                      {projects.map(project => (
                         <SelectItem key={project.id} value={project.id}>{project.name}</SelectItem>
                       ))}
                     </SelectContent>
