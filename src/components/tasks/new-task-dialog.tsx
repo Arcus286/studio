@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -96,7 +95,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
         const totalDuration = sprintDuration * numSprints;
         const newDeadline = add(sprintStartDate, { milliseconds: totalDuration });
         
-        form.setValue('deadline', newDeadline, { shouldValidate: true });
+        form.setValue('deadline', newDeadline, { shouldValidate: true, shouldDirty: true });
     } else {
         toast({
             variant: 'destructive',
