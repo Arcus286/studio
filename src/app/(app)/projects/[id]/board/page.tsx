@@ -2,7 +2,6 @@
 'use client';
 
 import { useProjectStore } from '@/lib/project-store';
-import { notFound } from 'next/navigation';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
