@@ -253,12 +253,12 @@ export default function LandingPage() {
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                         Get in Touch
                     </h2>
-                    <p className="text-muted-foreground md:text-xl">
+                    <p className="text-muted-foreground mdTtext-xl">
                         Have questions or want to learn more? Send us a message.
                     </p>
                 </div>
                 <div className="mt-12 max-w-xl mx-auto">
-                    <form className="grid gap-4">
+                    <div className="grid gap-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Name</Label>
@@ -274,9 +274,11 @@ export default function LandingPage() {
                             <Textarea id="message" placeholder="Enter your message" className="min-h-[120px]" />
                         </div>
                         <div className="flex justify-center">
-                            <Button type="submit">Send Message</Button>
+                            <Button asChild>
+                                <a href="mailto:agilebridge25@gmail.com">Send Message</a>
+                            </Button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </section>
