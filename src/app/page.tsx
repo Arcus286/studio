@@ -94,7 +94,7 @@ export default function LandingPage() {
             aria-hidden="true"
             className="absolute inset-0 top-0 -z-10 h-full w-full bg-gradient-to-b from-primary/10 to-background"
           />
-          <div className="container px-4 md:px-6">
+          <div className="container px-8 md:px-12 lg:px-16">
             <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
               <div className="flex flex-col justify-center space-y-8 animate-fade-in-right">
                 <div className="space-y-4">
@@ -186,7 +186,7 @@ export default function LandingPage() {
         </section>
 
         <section id="features" className="py-20 md:py-24 lg:py-32 bg-muted/30">
-            <div className="container px-4 md:px-6">
+            <div className="container px-8 md:px-12 lg:px-16">
                 <div className="mx-auto max-w-3xl text-center space-y-4">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                         Features of <span className="text-primary">AgileBridge</span>
@@ -217,7 +217,7 @@ export default function LandingPage() {
         </section>
         
         <section id="how-it-works" className="py-20 md:py-24 lg:py-32">
-            <div className="container px-4 md:px-6">
+            <div className="container px-8 md:px-12 lg:px-16">
                 <div className="mx-auto max-w-3xl text-center space-y-4">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                         How <span className="text-primary">AgileBridge</span> Works
@@ -248,7 +248,7 @@ export default function LandingPage() {
         </section>
 
         <section id="contact" className="py-20 md:py-24 lg:py-32 bg-muted/30">
-            <div className="container px-4 md:px-6">
+            <div className="container px-8 md:px-12 lg:px-16">
                 <div className="mx-auto max-w-3xl text-center space-y-4">
                     <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                         Get in Touch
