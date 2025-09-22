@@ -80,32 +80,15 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const stories = tasks.filter(t => t.type === 'Story' && t.projectId === watchProjectId);
   const projectSprints = sprints.filter(s => s.projectId === watchProjectId && s.status !== 'completed');
 
-  const handleSprintDeadlineChange = (sprintCount: string) => {
-    const numSprints = parseInt(sprintCount, 10);
-    if (!watchProjectId || isNaN(numSprints) || numSprints === 0) {
-        form.setValue('deadline', undefined);
-        return;
-    };
-
-    const activeSprint = sprints.find(s => s.projectId === watchProjectId && s.status === 'active');
-    
-    if (activeSprint) {
-        const sprintStartDate = new Date(activeSprint.startDate);
-        const sprintEndDate = new Date(activeSprint.endDate);
-        const sprintDuration = differenceInMilliseconds(sprintEndDate, sprintStartDate);
-
-        const totalDuration = sprintDuration * numSprints;
-        const newDeadline = add(sprintStartDate, { milliseconds: totalDuration });
-        
-        form.setValue('deadline', newDeadline, { shouldValidate: true, shouldDirty: true });
+  const handleSprintChange = (sprintId: string) => {
+    const selectedSprint = sprints.find(s => s.id === sprintId);
+    if (selectedSprint) {
+        form.setValue('deadline', new Date(selectedSprint.endDate), { shouldValidate: true, shouldDirty: true });
     } else {
-        toast({
-            variant: 'destructive',
-            title: 'No Active Sprint',
-            description: 'Cannot calculate deadline without an active sprint for this project.',
-        });
+        form.setValue('deadline', undefined);
     }
-  };
+    form.setValue('sprintId', sprintId);
+  }
 
 
   const onSubmit = (data: TaskFormValues) => {
@@ -214,13 +197,14 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Sprint (Optional)</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || ''} disabled={!watchProjectId}>
+                  <Select onValueChange={handleSprintChange} value={field.value || ''} disabled={!watchProjectId}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Assign to a sprint" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
+                      <SelectItem value="">Backlog</SelectItem>
                       {projectSprints.map(sprint => (
                         <SelectItem key={sprint.id} value={sprint.id}>{sprint.name}</SelectItem>
                       ))}
@@ -373,39 +357,20 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                 )}
               />
             </div>
-             <div className="grid grid-cols-2 gap-4 items-end">
-                <FormItem>
-                    <FormLabel>Set Deadline by Sprints</FormLabel>
-                    <Select onValueChange={handleSprintDeadlineChange} disabled={!watchProjectId}>
+             <div className="grid grid-cols-1 gap-4 items-end">
+                <FormField
+                    control={form.control}
+                    name="deadline"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Deadline</FormLabel>
                         <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select sprints..." />
-                            </SelectTrigger>
+                            <DatePicker value={field.value} onSelect={field.onChange} />
                         </FormControl>
-                        <SelectContent>
-                             <SelectItem value="0">Clear</SelectItem>
-                             <SelectItem value="1">1 Sprint</SelectItem>
-                             <SelectItem value="2">2 Sprints</SelectItem>
-                             <SelectItem value="3">3 Sprints</SelectItem>
-                             <SelectItem value="4">4 Sprints</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </FormItem>
-                <div className="col-span-1">
-                    <FormField
-                        control={form.control}
-                        name="deadline"
-                        render={({ field }) => (
-                            <FormItem>
-                            <FormLabel>Deadline</FormLabel>
-                            <FormControl>
-                                <DatePicker value={field.value} onSelect={field.onChange} />
-                            </FormControl>
-                            <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
             </div>
             <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
