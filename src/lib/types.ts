@@ -55,6 +55,7 @@ export type Task = {
   storyId?: string;
   sprintId?: string;
   comments?: Comment[];
+  dependsOn?: string[];
 };
 
 export type ProjectMember = {
@@ -93,4 +94,5 @@ export type Notification = {
     read: boolean;
     taskId?: string;
 };
+
 

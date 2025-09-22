@@ -19,7 +19,7 @@ import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown, Layers, Flame } from 'lucide-react';
+import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown, Layers, Flame, Link2 } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStore } from '@/lib/store';
@@ -84,12 +84,15 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   
   const [sprintId, setSprintId] = useState(task.sprintId);
   const [storyId, setStoryId] = useState(task.storyId);
+  const [dependsOn, setDependsOn] = useState(task.dependsOn || []);
   const projectSprints = sprints.filter(s => s.projectId === task.projectId);
   const projectStories = tasks.filter(t => t.projectId === task.projectId && t.type === 'Story');
+  const availableDependencies = tasks.filter(t => t.projectId === task.projectId && t.id !== task.id && t.type !== 'Story');
 
   useEffect(() => {
     setSprintId(task.sprintId);
     setStoryId(task.storyId);
+    setDependsOn(task.dependsOn || []);
   }, [task]);
 
 
@@ -106,6 +109,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     updateTask(task.id, task.status, task.timeSpent, {
         sprintId: sprintId,
         storyId: storyId,
+        dependsOn: dependsOn,
     });
     toast({
         title: 'Task Updated',
@@ -202,6 +206,25 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 </Select>
                             </div>
                             </>
+                        )}
+                         {task.type !== 'Story' && (
+                            <div className="col-span-2">
+                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+                                <Link2 className="h-4 w-4" />
+                                Dependencies
+                                </h3>
+                                <Select onValueChange={(value) => setDependsOn(value ? [value] : [])} value={dependsOn[0] || ''}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Blocks which task?" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="">None</SelectItem>
+                                        {availableDependencies.map(dep => (
+                                            <SelectItem key={dep.id} value={dep.id}>{dep.title}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         )}
                     </div>
 

@@ -1,16 +1,18 @@
 
+
 'use client';
 
 import { useState } from 'react';
 import type { Task } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock, Layers, CircleDot } from 'lucide-react';
+import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock, Layers, CircleDot, Lock } from 'lucide-react';
 import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
 import { USERS } from '@/lib/data';
 import { format, isPast, differenceInDays } from 'date-fns';
 import { useStore } from '@/lib/store';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 type KanbanCardProps = {
   task: Task;
@@ -102,6 +104,11 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
     ? allTasks.filter(t => t.storyId === task.id && t.status === task.status) 
     : [];
 
+  const blockingTasks = (task.dependsOn || [])
+    .map(depId => allTasks.find(t => t.id === depId))
+    .filter(t => t && t.status !== 'done');
+  const isBlocked = blockingTasks.length > 0;
+
   const handleCardClick = () => {
     setDetailTask(task);
   }
@@ -155,7 +162,8 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
         className={cn(
           'transition-all bg-card/80 backdrop-blur-sm cursor-pointer',
           'hover:shadow-xl hover:ring-2 hover:ring-primary/50 hover:-translate-y-1',
-          isDragging && 'shadow-2xl scale-105 ring-2 ring-primary'
+          isDragging && 'shadow-2xl scale-105 ring-2 ring-primary',
+          isBlocked && 'opacity-70'
         )}
         onClick={handleCardClick}
       >
@@ -174,8 +182,23 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
            </div>
           <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
             <div className="flex items-center gap-3">
-                {task.deadline && <DeadlineDisplay deadline={task.deadline} />}
-                {!task.deadline && (
+                {isBlocked ? (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <div className="flex items-center gap-1.5 text-yellow-600">
+                                    <Lock className="h-4 w-4" />
+                                    <span>Blocked</span>
+                                </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Blocked by: {blockingTasks.map(t => t?.title).join(', ')}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                ) : task.deadline ? (
+                    <DeadlineDisplay deadline={task.deadline} />
+                ) : (
                     <div className="flex items-center gap-1 flex-shrink-0">
                         <Clock className="h-4 w-4" />
                         <span>{task.timeSpent}/{task.estimatedHours}h</span>

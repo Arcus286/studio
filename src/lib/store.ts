@@ -9,7 +9,7 @@ interface TaskStore {
   tasks: Task[];
   columns: KanbanColumnData[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'>) => void;
-  updateTask: (taskId: string, newStatus: string, timeSpent: number, updates?: Partial<Pick<Task, 'sprintId' | 'storyId'>>) => void;
+  updateTask: (taskId: string, newStatus: string, timeSpent: number, updates?: Partial<Pick<Task, 'sprintId' | 'storyId' | 'dependsOn'>>) => void;
   assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
   deleteTask: (taskId: string) => void;
   addComment: (taskId: string, comment: Omit<Task['comments'][0], 'id' | 'createdAt'>) => void;
@@ -35,6 +35,7 @@ export const useStore = create<TaskStore>()(
             assignedRole: task.assignedRole as Role,
             storyId: task.storyId || undefined,
             comments: [],
+            dependsOn: [],
           };
           return { tasks: [...state.tasks, newTask] };
         }),

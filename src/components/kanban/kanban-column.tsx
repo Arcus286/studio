@@ -1,9 +1,11 @@
 
+
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanCard } from './kanban-card';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
+import { useStore } from '@/lib/store';
 
 type KanbanColumnProps = {
   column: KanbanColumnData;
@@ -25,6 +27,7 @@ const titleColors: Record<string, string> = {
 
 export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnProps) {
   const { user } = useAuth();
+  const allTasks = useStore(state => state.tasks);
   
   // Filter out tasks that are children of a story in the current column
   const topLevelTasks = tasks.filter(task => {
@@ -60,7 +63,13 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
             )}
           >
             {topLevelTasks.map((task, index) => {
-              const isDraggable = user?.userType === 'Admin' || user?.userType === 'Manager' || (user?.userType === 'User' && user.role === task.assignedRole);
+              const blockingTasks = (task.dependsOn || [])
+                .map(depId => allTasks.find(t => t.id === depId))
+                .filter(t => t && t.status !== 'done');
+              const isBlocked = blockingTasks.length > 0;
+              
+              const isDraggable = (user?.userType === 'Admin' || user?.userType === 'Manager' || (user?.userType === 'User' && user.role === task.assignedRole)) && !isBlocked;
+              
               return (
               <Draggable key={task.id} draggableId={task.id} index={index} isDragDisabled={!isDraggable}>
                 {(provided, snapshot) => (
