@@ -1,7 +1,8 @@
 
+
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Task, Comment } from '@/lib/types';
 import {
   Dialog,
@@ -65,23 +66,32 @@ function CommentItem({ comment }: { comment: Comment }) {
     )
 }
 
-export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialogProps) {
+export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: TaskDetailDialogProps) {
   const { user } = useAuth();
-  const { deleteTask, columns, addComment } = useStore();
+  const { deleteTask, columns, addComment, tasks } = useStore();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
   const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
 
+  // This ensures we always have the latest task data from the store
+  const task = useStore(state => state.tasks.find(t => t.id === initialTask.id)) || initialTask;
+
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
+  
+  useEffect(() => {
+    setTitle(task.title);
+    setDescription(task.description);
+  }, [task]);
+
 
   const sortedComments = useMemo(() => {
     const comments = task.comments || [];
     return [...comments].sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return commentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        return commentSortOrder === 'asc' ? dateA - dateB : dateB - a;
     });
   }, [task.comments, commentSortOrder]);
   
