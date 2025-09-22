@@ -53,7 +53,7 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
     return task.id.toLowerCase().includes(term) ||
            task.title.toLowerCase().includes(term) ||
            task.assignedRole.toLowerCase().includes(term) ||
-           user?.username.toLowerCase().includes(term);
+           (user && user.username.toLowerCase().includes(term));
   });
 
 
