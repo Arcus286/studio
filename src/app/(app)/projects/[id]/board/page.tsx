@@ -5,8 +5,6 @@ import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
-import type { Project } from '@/lib/types';
-import { use } from 'react';
 
 function ProjectBoardPageContent({ id }: { id: string }) {
   const { projects } = useProjectStore();
