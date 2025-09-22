@@ -13,6 +13,7 @@ import { USERS } from '@/lib/data';
 import { format, isPast, differenceInDays } from 'date-fns';
 import { useStore } from '@/lib/store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 type KanbanCardProps = {
   task: Task;
@@ -208,7 +209,18 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
              <div className="flex items-center gap-2">
                 <PriorityIcon priority={task.priority} />
                 {assignedUser && (
-                    <span className="truncate w-16 text-right">{assignedUser.username}</span>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Avatar className="h-6 w-6">
+                                    <AvatarFallback>{assignedUser.username.charAt(0).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </TooltipTrigger>
+                             <TooltipContent>
+                                <p>{assignedUser.username}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 )}
             </div>
           </div>
