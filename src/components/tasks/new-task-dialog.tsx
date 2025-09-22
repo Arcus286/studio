@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -77,6 +78,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const watchProjectId = form.watch('projectId');
   
   const stories = tasks.filter(t => t.type === 'Story' && t.projectId === watchProjectId);
+  const projectSprints = sprints.filter(s => s.projectId === watchProjectId && s.status !== 'completed');
 
   const handleSprintDeadlineChange = (sprintCount: string) => {
     const numSprints = parseInt(sprintCount, 10);
@@ -109,8 +111,6 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const onSubmit = (data: TaskFormValues) => {
     const effortToHoursMap = { Low: 4, Medium: 8, High: 16 };
     const estimatedHours = data.effort ? effortToHoursMap[data.effort as keyof typeof effortToHoursMap] : data.estimatedHours || 0;
-    
-    const activeSprint = sprints.find(s => s.projectId === data.projectId && s.status === 'active');
 
     const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
       ...data,
@@ -121,14 +121,14 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
       storyId: data.storyId || undefined,
-      sprintId: activeSprint?.id || data.sprintId || undefined,
+      sprintId: data.sprintId || undefined,
     };
 
     addTask(taskData);
     
     toast({
       title: 'Task Created!',
-      description: `"${data.title}" has been added to the board.`,
+      description: `"${data.title}" has been added.`,
     });
     form.reset({
       projectId: currentProjectId,
@@ -141,6 +141,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       assignedRole: '',
       deadline: undefined,
       storyId: '',
+      sprintId: '',
     });
     setIsOpen(false);
   };
@@ -164,7 +165,11 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Project</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={(value) => {
+                      field.onChange(value);
+                      form.setValue('sprintId', '');
+                      form.setValue('storyId', '');
+                  }} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a project" />
@@ -203,6 +208,29 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                 )}
               />
             
+            <FormField
+              control={form.control}
+              name="sprintId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sprint (Optional)</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || ''} disabled={!watchProjectId}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Assign to a sprint" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {projectSprints.map(sprint => (
+                        <SelectItem key={sprint.id} value={sprint.id}>{sprint.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {watchType === 'Task' && (
                 <FormField
                   control={form.control}
@@ -210,7 +238,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Parent Story (Optional)</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ''}>
+                      <Select onValueChange={field.onChange} value={field.value || ''} disabled={!watchProjectId}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Link to a parent story" />
@@ -348,7 +376,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
              <div className="grid grid-cols-2 gap-4 items-end">
                 <FormItem>
                     <FormLabel>Set Deadline by Sprints</FormLabel>
-                    <Select onValueChange={handleSprintDeadlineChange}>
+                    <Select onValueChange={handleSprintDeadlineChange} disabled={!watchProjectId}>
                         <FormControl>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select sprints..." />

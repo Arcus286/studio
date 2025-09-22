@@ -9,7 +9,7 @@ interface TaskStore {
   tasks: Task[];
   columns: KanbanColumnData[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'>) => void;
-  updateTask: (taskId: string, newStatus: string, timeSpent: number) => void;
+  updateTask: (taskId: string, newStatus: string, timeSpent: number, updates?: Partial<Pick<Task, 'sprintId' | 'storyId'>>) => void;
   assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
   deleteTask: (taskId: string) => void;
   addComment: (taskId: string, comment: Omit<Task['comments'][0], 'id' | 'createdAt'>) => void;
@@ -38,7 +38,7 @@ export const useStore = create<TaskStore>()(
           };
           return { tasks: [...state.tasks, newTask] };
         }),
-      updateTask: (taskId, newStatus, timeSpent) =>
+      updateTask: (taskId, newStatus, timeSpent, updates) =>
         set((state) => {
            let newTimeSpent = timeSpent;
            const task = state.tasks.find(t => t.id === taskId);
@@ -53,7 +53,7 @@ export const useStore = create<TaskStore>()(
           return {
             tasks: state.tasks.map((task) =>
               task.id === taskId
-                ? { ...task, status: newStatus, timeSpent: newTimeSpent, updatedAt: new Date().toISOString(), storyId: task.storyId || undefined }
+                ? { ...task, status: newStatus, timeSpent: newTimeSpent, updatedAt: new Date().toISOString(), ...updates }
                 : task
             ),
           };

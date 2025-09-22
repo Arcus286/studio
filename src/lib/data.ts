@@ -5,9 +5,9 @@ import type { User, Task, Project, Notification, KanbanColumnData, Role, UserTyp
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
   { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', userType: 'Manager', role: 'Manager', status: 'active' },
-  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'userpassword', userType: 'User', role: 'Developer', status: 'active' },
-  { id: '4', username: 'Frontend User', email: 'frontend@taskflow.com', password: 'userpassword', userType: 'User', role: 'Frontend', status: 'active' },
-  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'userpassword', userType: 'User', role: 'Designer', status: 'active' },
+  { id: '3', username: 'Dev User', email: 'dev@taskflow.com', password: 'password', userType: 'User', role: 'Developer', status: 'active' },
+  { id: '4', username: 'Frontend User', email: 'frontend@taskflow.com', password: 'password', userType: 'User', role: 'Frontend', status: 'active' },
+  { id: '5', username: 'Design User', email: 'design@taskflow.com', password: 'password', userType: 'User', role: 'Designer', status: 'active' },
 ];
 
 export const KANBAN_COLUMNS: KanbanColumnData[] = [

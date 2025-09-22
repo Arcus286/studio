@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { Task, Comment } from '@/lib/types';
+import type { Task, Comment, Sprint } from '@/lib/types';
 import {
   Dialog,
   DialogContent,
@@ -19,13 +19,15 @@ import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown } from 'lucide-react';
+import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown, Layers, Flame } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStore } from '@/lib/store';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Textarea } from '../ui/textarea';
 import { ScrollArea } from '../ui/scroll-area';
+import { useSprintStore } from '@/lib/sprint-store';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type TaskDetailDialogProps = {
   isOpen: boolean;
@@ -33,13 +35,15 @@ type TaskDetailDialogProps = {
   task: Task;
 };
 
-const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task', className?: string }) => {
+const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task' | 'Story', className?: string }) => {
     const baseClassName = "h-5 w-5";
     switch (type) {
         case 'Bug':
             return <Bug className={cn(baseClassName, "text-red-500", className)} />;
         case 'Task':
             return <CircleDot className={cn(baseClassName, "text-blue-400", className)} />;
+        case 'Story':
+            return <Layers className={cn(baseClassName, "text-green-500", className)} />;
     }
 }
 
@@ -68,7 +72,8 @@ function CommentItem({ comment }: { comment: Comment }) {
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: TaskDetailDialogProps) {
   const { user } = useAuth();
-  const { deleteTask, columns, addComment, tasks } = useStore();
+  const { deleteTask, columns, addComment, tasks, updateTask } = useStore();
+  const { sprints } = useSprintStore();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
@@ -76,13 +81,15 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
 
   // This ensures we always have the latest task data from the store
   const task = useStore(state => state.tasks.find(t => t.id === initialTask.id)) || initialTask;
-
-  const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
   
+  const [sprintId, setSprintId] = useState(task.sprintId);
+  const [storyId, setStoryId] = useState(task.storyId);
+  const projectSprints = sprints.filter(s => s.projectId === task.projectId);
+  const projectStories = tasks.filter(t => t.projectId === task.projectId && t.type === 'Story');
+
   useEffect(() => {
-    setTitle(task.title);
-    setDescription(task.description);
+    setSprintId(task.sprintId);
+    setStoryId(task.storyId);
   }, [task]);
 
 
@@ -91,16 +98,18 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     return [...comments].sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return commentSortOrder === 'asc' ? dateA - dateB : dateB - a;
+        return commentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
   }, [task.comments, commentSortOrder]);
   
   const handleSave = () => {
-    // In a real app, this would be a server action to update the task
-    console.log({ title, description });
+    updateTask(task.id, task.status, task.timeSpent, {
+        sprintId: sprintId,
+        storyId: storyId,
+    });
     toast({
         title: 'Task Updated',
-        description: `Changes to "${title}" have been saved locally.`
+        description: `Changes to "${task.title}" have been saved.`
     });
     onOpenChange(false);
   };
@@ -136,7 +145,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                 <TaskTypeIcon type={task.type} className="h-6 w-6" />
              </div>
             <div>
-                <DialogTitle className="text-xl">{title}</DialogTitle>
+                <DialogTitle className="text-xl">{task.title}</DialogTitle>
                 <div className="flex items-center gap-2 mt-1">
                     <Badge variant="outline">{task.type}</Badge>
                     <Badge variant="secondary">{statusLabel}</Badge>
@@ -150,10 +159,51 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                 <div className="space-y-6">
                     <div>
                         <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
-                        <p className="text-sm text-foreground">{description}</p>
+                        <p className="text-sm text-foreground">{task.description}</p>
                     </div>
                     
                     <Separator />
+                    
+                    <div className="grid grid-cols-2 gap-6">
+                        {isManager && task.type !== 'Story' && (
+                            <>
+                            <div>
+                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+                                <Flame className="h-4 w-4" />
+                                Sprint
+                                </h3>
+                                <Select value={sprintId || ''} onValueChange={(value) => setSprintId(value === 'none' ? undefined : value)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Assign to a sprint..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">Backlog</SelectItem>
+                                        {projectSprints.map(s => (
+                                            <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
+                                <Layers className="h-4 w-4" />
+                                Parent Story
+                                </h3>
+                                <Select value={storyId || ''} onValueChange={(value) => setStoryId(value === 'none' ? undefined : value)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Link to a story..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="none">None</SelectItem>
+                                        {projectStories.map(s => (
+                                            <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            </>
+                        )}
+                    </div>
 
                     <div className="grid grid-cols-2 gap-6">
                         <div>

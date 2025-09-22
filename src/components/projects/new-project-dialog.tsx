@@ -33,6 +33,7 @@ import { USERS } from '@/lib/data';
 import { Checkbox } from '../ui/checkbox';
 import { useStore } from '@/lib/store';
 import { useProjectStore } from '@/lib/project-store';
+import { useAuth } from '@/hooks/use-auth';
 
 const optionalBuckets = [
     { id: 'under-development', title: 'Under Development' },
@@ -70,6 +71,10 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
   const { columns } = useStore();
   const { addProject } = useProjectStore();
+  const { allUsers } = useAuth();
+
+
+  const availableUsers = allUsers.filter(u => u.status === 'active' && u.userType !== 'Admin');
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -213,7 +218,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                                     </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                    {USERS.filter(u => u.status === 'active' && u.userType !== 'Admin').map(user => (
+                                    {availableUsers.map(user => (
                                         <SelectItem key={user.id} value={user.id}>{user.username} ({user.role})</SelectItem>
                                     ))}
                                     </SelectContent>
