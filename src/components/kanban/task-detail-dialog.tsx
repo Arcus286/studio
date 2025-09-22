@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Task, Comment } from '@/lib/types';
 import {
   Dialog,
@@ -18,7 +18,7 @@ import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send } from 'lucide-react';
+import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStore } from '@/lib/store';
@@ -71,9 +71,19 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
+  const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description);
+
+  const sortedComments = useMemo(() => {
+    const comments = task.comments || [];
+    return [...comments].sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return commentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+  }, [task.comments, commentSortOrder]);
   
   const handleSave = () => {
     // In a real app, this would be a server action to update the task
@@ -178,10 +188,20 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task }: TaskDetailDialo
                 </div>
             </div>
             <div className="col-span-3 p-6 flex flex-col bg-muted/50">
-                 <h3 className="text-base font-semibold mb-4">Comments</h3>
+                 <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base font-semibold">Comments</h3>
+                    <div className="flex gap-1">
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCommentSortOrder('desc')}>
+                            <ArrowDown className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCommentSortOrder('asc')}>
+                            <ArrowUp className="h-4 w-4" />
+                        </Button>
+                    </div>
+                 </div>
                  <ScrollArea className="flex-1 -mx-6 px-6">
                      <div className="space-y-4">
-                        {(task.comments || []).map(comment => (
+                        {sortedComments.map(comment => (
                             <CommentItem key={comment.id} comment={comment} />
                         ))}
                      </div>
