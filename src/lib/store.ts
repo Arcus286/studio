@@ -9,7 +9,7 @@ interface TaskStore {
   columns: KanbanColumnData[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'>) => void;
   updateTask: (taskId: string, newStatus: string, timeSpent: number) => void;
-  assignTaskToSprint: (taskId: string, sprintId: string) => void;
+  assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
   deleteTask: (taskId: string) => void;
   setTasks: (tasks: Task[]) => void;
   setColumns: (columns: KanbanColumnData[]) => void;

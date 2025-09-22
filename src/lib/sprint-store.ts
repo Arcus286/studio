@@ -7,7 +7,7 @@ import { useStore } from './store'; // Import the task store
 
 interface SprintStore {
   sprints: Sprint[];
-  addSprint: (sprint: Omit<Sprint, 'id' | 'status'>) => void;
+  addSprint: (sprint: Omit<Sprint, 'status'>) => void;
   startSprint: (sprintId: string, projectId: string) => void;
   completeSprint: (sprintId: string, projectId: string) => void;
   setSprints: (sprints: Sprint[]) => void;
@@ -22,7 +22,6 @@ export const useSprintStore = create<SprintStore>()(
         set((state) => {
           const newSprint: Sprint = {
             ...sprint,
-            id: `SPRINT-${state.sprints.length + 1}`,
             status: 'upcoming',
           };
           return { sprints: [...state.sprints, newSprint] };

@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
+import { isPast } from 'date-fns';
 
 interface ProjectBoardProps {
     project: Project;
@@ -32,7 +33,11 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
   
   const sprintTasks = useMemo(() => {
     if (!activeSprint) return [];
-    return allTasks.filter(t => t.sprintId === activeSprint.id)
+    // Filter out overdue tasks from the project board view
+    return allTasks.filter(t => {
+      const isOverdue = t.deadline ? isPast(new Date(t.deadline)) : false;
+      return t.sprintId === activeSprint.id && !isOverdue;
+    });
   }, [allTasks, activeSprint]);
     
   const projectMembers = useMemo(() => {
@@ -56,6 +61,21 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
            task.assignedRole.toLowerCase().includes(term) ||
            (user && user.username.toLowerCase().includes(term));
   });
+
+  if (!activeSprint) {
+    return (
+        <Alert>
+          <Flame className="h-4 w-4" />
+          <AlertTitle>No Active Sprint</AlertTitle>
+          <AlertDescription>
+            There is no sprint currently active for this project. You can start a sprint from the sprints page.
+            <Button asChild variant="link" className="p-0 h-auto ml-1">
+                <Link href={`/projects/${project.id}/sprints`}>Go to Sprints</Link>
+            </Button>
+          </AlertDescription>
+        </Alert>
+    )
+  }
 
   return (
     <>

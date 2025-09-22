@@ -28,10 +28,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from '../ui/calendar';
-import { format } from 'date-fns';
+import { format, isPast } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
+import { Checkbox } from '../ui/checkbox';
+import { useStore } from '@/lib/store';
 
 const sprintSchema = z.object({
   name: z.string().min(1, 'Sprint name is required.'),
@@ -40,6 +42,7 @@ const sprintSchema = z.object({
       from: z.date({ required_error: 'Start date is required.'}),
       to: z.date({ required_error: 'End date is required.'}),
   }),
+  isFutureSprint: z.boolean().optional(),
 });
 
 type SprintFormValues = z.infer<typeof sprintSchema>;
@@ -48,28 +51,45 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const { addSprint } = useSprintStore();
+  const { tasks, assignTaskToSprint } = useStore();
 
   const form = useForm<SprintFormValues>({
     resolver: zodResolver(sprintSchema),
     defaultValues: {
       name: '',
       goal: '',
+      isFutureSprint: false,
     },
   });
 
   const onSubmit = (data: SprintFormValues) => {
+    const newSprintId = `SPRINT-${Date.now()}`;
     addSprint({
+        id: newSprintId,
         projectId: projectId,
         name: data.name,
         goal: data.goal,
         startDate: data.dates.from.toISOString(),
         endDate: data.dates.to.toISOString(),
     });
+
+    if (data.isFutureSprint) {
+        tasks.forEach(task => {
+            if (task.deadline && isPast(new Date(task.deadline))) {
+                assignTaskToSprint(task.id, undefined); // Move to backlog
+            }
+        });
+        toast({
+            title: 'Future Sprint Created!',
+            description: `"${data.name}" has been created and overdue tasks moved to backlog.`,
+        });
+    } else {
+        toast({
+          title: 'Sprint Created!',
+          description: `"${data.name}" has been added to the project.`,
+        });
+    }
     
-    toast({
-      title: 'Sprint Created!',
-      description: `"${data.name}" has been added to the project.`,
-    });
     form.reset();
     setIsOpen(false);
   };
@@ -156,6 +176,28 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
                     <Textarea placeholder="What is the main goal of this sprint?" {...field} />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="isFutureSprint"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Mark as Future Sprint
+                    </FormLabel>
+                    <p className="text-sm text-muted-foreground">
+                      If selected, any overdue tasks or stories will be moved to the backlog.
+                    </p>
+                  </div>
                 </FormItem>
               )}
             />
