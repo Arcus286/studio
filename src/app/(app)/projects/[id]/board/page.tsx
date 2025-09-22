@@ -1,12 +1,10 @@
-
-'use client';
-
 import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
 
 function ProjectBoardPageContent({ id }: { id: string }) {
+  'use client';
   const { projects } = useProjectStore();
   const project = projects.find(p => p.id === id);
 
