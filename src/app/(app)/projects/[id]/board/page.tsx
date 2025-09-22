@@ -7,7 +7,14 @@ import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
 import type { Project } from '@/lib/types';
 
-function ProjectBoardPageContent({ project }: { project: Project }) {
+function ProjectBoardPageContent({ id }: { id: string }) {
+  const { projects } = useProjectStore();
+  const project = projects.find(p => p.id === id);
+
+  if (!project) {
+    return <div>Loading project...</div>;
+  }
+  
   return (
     <div className="space-y-6">
         <Breadcrumb>
@@ -35,12 +42,5 @@ function ProjectBoardPageContent({ project }: { project: Project }) {
 
 
 export default function ProjectBoardPage({ params }: { params: { id: string } }) {
-  const { projects } = useProjectStore();
-  const project = projects.find(p => p.id === params.id);
-
-  if (!project) {
-    return <div>Loading project...</div>;
-  }
-
-  return <ProjectBoardPageContent project={project} />
+  return <ProjectBoardPageContent id={params.id} />
 }
