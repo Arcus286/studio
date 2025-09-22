@@ -33,6 +33,7 @@ function ProjectBoardPageContent({ project }: { project: Project }) {
   );
 }
 
+
 export default function ProjectBoardPage({ params }: { params: { id: string } }) {
   const { projects } = useProjectStore();
   const project = projects.find(p => p.id === params.id);
