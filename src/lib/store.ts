@@ -50,7 +50,7 @@ export const useStore = create<TaskStore>()(
           return {
             tasks: state.tasks.map((task) =>
               task.id === taskId
-                ? { ...task, status: newStatus, timeSpent: newTimeSpent, updatedAt: new Date().toISOString() }
+                ? { ...task, status: newStatus, timeSpent: newTimeSpent, updatedAt: new Date().toISOString(), storyId: task.storyId || undefined }
                 : task
             ),
           };

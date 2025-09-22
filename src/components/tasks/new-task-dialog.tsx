@@ -24,7 +24,7 @@ import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { DatePicker } from '../ui/date-picker';
 import { useStore } from '@/lib/store';
-import type { Task, SpecializedRole } from '@/lib/types';
+import type { Task, SpecializedRole, Sprint } from '@/lib/types';
 import { useSprintStore } from '@/lib/sprint-store';
 import { add, differenceInMilliseconds } from 'date-fns';
 import { useProjectStore } from '@/lib/project-store';
@@ -109,6 +109,8 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const onSubmit = (data: TaskFormValues) => {
     const effortToHoursMap = { Low: 4, Medium: 8, High: 16 };
     const estimatedHours = data.effort ? effortToHoursMap[data.effort as keyof typeof effortToHoursMap] : data.estimatedHours || 0;
+    
+    const activeSprint = sprints.find(s => s.projectId === data.projectId && s.status === 'active');
 
     const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
       ...data,
@@ -119,7 +121,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
       storyId: data.storyId || undefined,
-      sprintId: data.sprintId || undefined,
+      sprintId: activeSprint?.id || data.sprintId || undefined,
     };
 
     addTask(taskData);
