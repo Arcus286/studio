@@ -46,14 +46,14 @@ export const useSprintStore = create<SprintStore>()(
         const sprintToComplete = get().sprints.find(s => s.id === sprintId);
 
         if (sprintToComplete) {
-            const unfinishedTasks = tasks.filter(
-                (task) => task.sprintId === sprintId && task.status !== 'done'
+            const sprintTasks = tasks.filter(
+                (task) => task.sprintId === sprintId
             );
             
-            // Move unfinished tasks back to the backlog (by unsetting sprintId)
+            // Move all of the sprint's tasks back to the backlog (by unsetting sprintId)
             const updatedTasks = tasks.map(task => 
-                unfinishedTasks.some(ut => ut.id === task.id) 
-                    ? { ...task, sprintId: undefined, status: 'to-do' as 'to-do' } 
+                sprintTasks.some(ut => ut.id === task.id) 
+                    ? { ...task, sprintId: undefined } 
                     : task
             );
 
