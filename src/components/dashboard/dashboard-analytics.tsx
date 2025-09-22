@@ -5,6 +5,7 @@ import type { Task, TaskStatus } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/use-auth';
+import { differenceInDays } from 'date-fns';
 
 type DashboardAnalyticsProps = {
   tasks: Task[];
@@ -28,6 +29,10 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
   
   const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
+  const tasksAddedLastWeek = filteredTasks.filter(
+    (task) => differenceInDays(new Date(), new Date(task.createdAt)) <= 7
+  ).length;
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <Card className="bg-card-purple border-purple-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('all')}>
@@ -37,7 +42,9 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
         </CardHeader>
         <CardContent>
           <div className="text-4xl font-bold">{totalTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">+12% from last week</Badge>
+          <Badge variant="outline" className="mt-2 text-xs font-normal">
+            +{tasksAddedLastWeek} created this week
+          </Badge>
         </CardContent>
       </Card>
       <Card className="bg-card-orange border-orange-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('to-do')}>
