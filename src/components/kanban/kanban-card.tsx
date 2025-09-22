@@ -134,7 +134,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
             >
                 <CardContent className="p-3 space-y-2">
                     <div className="flex justify-between items-start cursor-pointer" onClick={handleCardClick}>
-                        <p className="font-semibold text-foreground pr-2 flex items-center gap-2">
+                        <p className="font-semibold text-foreground pr-2 flex items-center gap-2 truncate">
                             <TaskTypeIcon type={task.type} />
                             {task.title}
                         </p>
@@ -169,7 +169,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
       >
         <CardContent className="p-4 space-y-3">
           <div className="flex justify-between items-start">
-            <p className="font-semibold text-foreground pr-2">{task.title}</p>
+            <p className="font-semibold text-foreground pr-2 truncate">{task.title}</p>
             <Badge variant="outline" className="shrink-0">{task.id}</Badge>
           </div>
           <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>

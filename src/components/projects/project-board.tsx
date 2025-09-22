@@ -51,35 +51,24 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
     }, 1500);
   };
   
-  const filteredTasks = sprintTasks.filter(task => {
+  const filteredTasks = (activeSprint ? sprintTasks : allTasks).filter(task => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     const user = USERS.find(u => u.role === task.assignedRole);
+    const sprint = sprints.find(s => s.id === task.sprintId);
+    const story = allTasks.find(t => t.id === task.storyId);
 
     return task.id.toLowerCase().includes(term) ||
            task.title.toLowerCase().includes(term) ||
-           task.assignedRole.toLowerCase().includes(term) ||
-           (user && user.username.toLowerCase().includes(term));
+           task.type.toLowerCase().includes(term) ||
+           (user && user.username.toLowerCase().includes(term)) ||
+           (sprint && sprint.name.toLowerCase().includes(term)) ||
+           (story && story.title.toLowerCase().includes(term));
   });
-
-  if (!activeSprint) {
-    return (
-        <Alert>
-          <Flame className="h-4 w-4" />
-          <AlertTitle>No Active Sprint</AlertTitle>
-          <AlertDescription>
-            There is no sprint currently active for this project. You can start a sprint from the sprints page.
-            <Button asChild variant="link" className="p-0 h-auto ml-1">
-                <Link href={`/projects/${project.id}/sprints`}>Go to Sprints</Link>
-            </Button>
-          </AlertDescription>
-        </Alert>
-    )
-  }
 
   return (
     <>
-        <DashboardAnalytics tasks={sprintTasks} onCardClick={handleAnalyticsClick} />
+        <DashboardAnalytics tasks={activeSprint ? sprintTasks : []} onCardClick={handleAnalyticsClick} />
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 my-6">
             <div className="flex items-center gap-2">
                 <TooltipProvider>
