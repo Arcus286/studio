@@ -57,24 +57,6 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
            (user && user.username.toLowerCase().includes(term));
   });
 
-
-  if (!activeSprint) {
-    return (
-        <Alert>
-            <Flame className="h-4 w-4" />
-            <AlertTitle>No Active Sprint</AlertTitle>
-            <AlertDescription>
-              There is no active sprint for this project. Go to the sprints page to start one.
-            </AlertDescription>
-             <Button asChild className='mt-4'>
-                <Link href={`/projects/${project.id}/sprints`}>
-                    Go to Sprints
-                </Link>
-            </Button>
-        </Alert>
-    )
-  }
-
   return (
     <>
         <DashboardAnalytics tasks={sprintTasks} onCardClick={handleAnalyticsClick} />
