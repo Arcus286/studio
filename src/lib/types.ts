@@ -30,6 +30,12 @@ export type Priority = 'Low' | 'Medium' | 'High';
 export type Effort = 'Low' | 'Medium' | 'High';
 export type TaskType = 'Bug' | 'Task' | 'Story';
 
+export type Comment = {
+    id: string;
+    userId: string;
+    message: string;
+    createdAt: string;
+}
 
 export type Task = {
   id: string;
@@ -48,6 +54,7 @@ export type Task = {
   deadline?: string;
   storyId?: string;
   sprintId?: string;
+  comments?: Comment[];
 };
 
 export type ProjectMember = {

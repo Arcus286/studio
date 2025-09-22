@@ -1,6 +1,6 @@
 
 
-import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole, Sprint, Effort } from './types';
+import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole, Sprint, Effort, Comment } from './types';
 
 export const USERS: User[] = [
   { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
@@ -47,6 +47,13 @@ export const SPRINTS: Sprint[] = [
     },
 ];
 
+const COMMENTS: Comment[] = [
+    { id: 'C1', userId: '2', message: 'The designs look great. Is the assets folder ready?', createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'C2', userId: '5', message: 'Yes, I have uploaded all the SVGs to the shared drive.', createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
+    { id: 'C3', userId: '4', message: 'Thanks! I will start implementing this today.', createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() },
+];
+
+
 export const TASKS: Task[] = [
      {
         id: 'TASK-0',
@@ -80,7 +87,8 @@ export const TASKS: Task[] = [
         type: 'Task',
         deadline: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
         storyId: 'TASK-0',
-        sprintId: 'SPRINT-1'
+        sprintId: 'SPRINT-1',
+        comments: COMMENTS,
     },
     {
         id: 'TASK-2',

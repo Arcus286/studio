@@ -1,4 +1,5 @@
 
+
 import { create } from 'zustand';
 import type { Task, Role, KanbanColumnData } from './types';
 import { TASKS as initialTasks, KANBAN_COLUMNS as initialColumns } from './data';
@@ -11,6 +12,7 @@ interface TaskStore {
   updateTask: (taskId: string, newStatus: string, timeSpent: number) => void;
   assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
   deleteTask: (taskId: string) => void;
+  addComment: (taskId: string, comment: Omit<Task['comments'][0], 'id' | 'createdAt'>) => void;
   setTasks: (tasks: Task[]) => void;
   setColumns: (columns: KanbanColumnData[]) => void;
 }
@@ -32,6 +34,7 @@ export const useStore = create<TaskStore>()(
             timeSpent: 0,
             assignedRole: task.assignedRole as Role,
             storyId: task.storyId || undefined,
+            comments: [],
           };
           return { tasks: [...state.tasks, newTask] };
         }),
@@ -63,6 +66,23 @@ export const useStore = create<TaskStore>()(
       deleteTask: (taskId) =>
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== taskId),
+        })),
+      addComment: (taskId, comment) =>
+        set((state) => ({
+            tasks: state.tasks.map((task) => {
+                if (task.id === taskId) {
+                    const newComment = {
+                        ...comment,
+                        id: `C${(task.comments?.length || 0) + 1}-${taskId}`,
+                        createdAt: new Date().toISOString(),
+                    };
+                    return {
+                        ...task,
+                        comments: [...(task.comments || []), newComment],
+                    };
+                }
+                return task;
+            }),
         })),
     }),
     {
