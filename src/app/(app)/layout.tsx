@@ -25,6 +25,8 @@ import {
   ChevronRight,
   ClipboardList,
   Flame,
+  MoreHorizontal,
+  Pencil,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
@@ -36,6 +38,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NewProjectDialog } from '@/components/projects/new-project-dialog';
 import { useProjectStore } from '@/lib/project-store';
+import { EditProjectDialog } from '@/components/projects/edit-project-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
@@ -113,16 +118,36 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                 <div className="ml-4 space-y-1 mt-1">
                   {projects.map(project => (
                       <SidebarMenuItem key={project.id}>
-                        <SidebarMenuButton
-                          asChild
-                          size="sm"
-                          isActive={pathname.startsWith(`/projects/${project.id}`)}
-                        >
-                          <Link href={`/projects/${project.id}/board`}>
-                            <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: project.color }}></span>
-                            {project.name}
-                          </Link>
-                        </SidebarMenuButton>
+                        <div className="flex items-center w-full group">
+                           <SidebarMenuButton
+                              asChild
+                              size="sm"
+                              isActive={pathname.startsWith(`/projects/${project.id}`)}
+                              className="flex-1"
+                            >
+                              <Link href={`/projects/${project.id}/board`}>
+                                <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: project.color }}></span>
+                                {project.name}
+                              </Link>
+                            </SidebarMenuButton>
+                            {isManager && (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                   <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                                      <MoreHorizontal className="h-4 w-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <EditProjectDialog project={project}>
+                                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                          <Pencil className="mr-2 h-4 w-4" />
+                                          Edit
+                                      </DropdownMenuItem>
+                                  </EditProjectDialog>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
+                        </div>
                       </SidebarMenuItem>
                   ))}
                 </div>
