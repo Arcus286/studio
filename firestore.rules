@@ -1,0 +1,47 @@
+/**
+ * @fileoverview Firestore Security Rules for TaskFlow project.
+ *
+ * Core Philosophy:
+ * This ruleset allows authenticated users to read all tasks.
+ * It does NOT enforce any specific data shapes for tasks, allowing for rapid prototyping.
+ *
+ * Data Structure:
+ * All tasks are stored in a top-level `/tasks/{taskId}` collection.
+ *
+ * Key Security Decisions:
+ * - Authenticated users can read all tasks (public read).
+ * - No user-specific data segregation.
+ * - Tasks documents must be created, updated, and deleted only by authenticated users.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Controls access to individual task documents. Allows any authenticated user to read tasks. All authenticated users can create, update, and delete tasks.
+     * @path /tasks/{taskId}
+     * @allow (get, list) - Any authenticated user can read any task.
+     *   Example: User with any auth can read /tasks/some_task_id.
+     * @allow (create) - Any authenticated user can create a new task.
+     *   Example: User with auth 'uid123' can create a new task document.
+     * @allow (update) - Any authenticated user can update an existing task.
+     *   Example: User with auth 'uid123' can update /tasks/some_task_id.
+     * @allow (delete) - Any authenticated user can delete an existing task.
+     *   Example: User with auth 'uid123' can delete /tasks/some_task_id.
+     * @deny (create, update, delete) - Unauthenticated users cannot create, update or delete tasks.
+     *   Example: An unauthenticated user cannot perform any write operation.
+     * @principle Allows public read access, while any authenticated user can write any data.
+     */
+    match /tasks/{taskId} {
+      allow get, list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    // Helper function to determine if a user is signed in.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+  }
+}
