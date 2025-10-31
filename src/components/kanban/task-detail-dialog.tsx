@@ -101,7 +101,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     return [...comments].sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return commentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        return commentSortOrder === 'asc' ? dateA - dateB : dateB - a;
     });
   }, [task.comments, commentSortOrder]);
   
@@ -213,12 +213,12 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 <Link2 className="h-4 w-4" />
                                 Dependencies
                                 </h3>
-                                <Select onValueChange={(value) => setDependsOn(value ? [value] : [])} value={dependsOn[0] || ''}>
+                                <Select onValueChange={(value) => setDependsOn(value === 'none' ? [] : [value])} value={dependsOn[0] || 'none'}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Blocks which task?" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">None</SelectItem>
+                                        <SelectItem value="none">None</SelectItem>
                                         {availableDependencies.map(dep => (
                                             <SelectItem key={dep.id} value={dep.id}>{dep.title}</SelectItem>
                                         ))}
