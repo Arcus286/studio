@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import * as React from 'react'
-import { useProjectStore } from '@/lib/project-store'
+import * as React from 'react';
+import { useProjectStore } from '@/lib/project-store';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,16 +9,17 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import Link from 'next/link'
-import { ProjectBoard } from '@/components/projects/project-board'
+} from '@/components/ui/breadcrumb';
+import Link from 'next/link';
+import { ProjectBoard } from '@/components/projects/project-board';
 
 function ProjectBoardPageContent({ id }: { id: string }) {
-  const { projects } = useProjectStore()
-  const project = projects.find((p) => p.id === id)
+  const { projects } = useProjectStore();
+  const project = projects.find((p) => p.id === id);
 
   if (!project) {
-    return <div>Loading project...</div>
+    // This can happen on initial load while the store is hydrating
+    return <div>Loading project...</div>;
   }
 
   return (
@@ -43,16 +44,14 @@ function ProjectBoardPageContent({ id }: { id: string }) {
 
       <ProjectBoard project={project} />
     </div>
-  )
+  );
 }
+
 
 export default function ProjectBoardPage({
   params,
 }: {
-  params: Promise<{ id: string }>
+  params: { id: string };
 }) {
-  // ✅ unwrap the async params with React.use()
-  const { id } = React.use(params)
-
-  return <ProjectBoardPageContent id={id} />
+  return <ProjectBoardPageContent id={params.id} />;
 }

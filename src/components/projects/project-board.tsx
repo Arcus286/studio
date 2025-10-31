@@ -71,6 +71,11 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
            (story && story.title.toLowerCase().includes(term));
   });
 
+  if (!isClient) {
+    // You can return a loading skeleton here if you want
+    return null;
+  }
+
   return (
     <>
         <DashboardAnalytics tasks={activeSprint ? sprintTasks : []} onCardClick={handleAnalyticsClick} />
@@ -101,7 +106,7 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
                 />
             </div>
         </div>
-        {isClient && <KanbanBoard tasks={filteredTasks} highlightedStatus={highlightedStatus} />}
+        <KanbanBoard tasks={filteredTasks} highlightedStatus={highlightedStatus} />
     </>
   );
 }
