@@ -90,12 +90,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Your account is pending approval.");
     }
     
-    if (foundUser && (!foundUser.password || foundUser.password === password)) {
+    // Correctly check password
+    if (foundUser.password === password) {
         localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(foundUser));
         setUser(foundUser);
         router.push('/dashboard');
     } else {
-        console.error("Login failed: User not found or password incorrect");
+        console.error("Login failed: Password incorrect");
         throw new Error("Invalid credentials");
     }
   };
