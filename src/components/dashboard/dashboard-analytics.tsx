@@ -5,7 +5,7 @@ import type { Task, TaskStatus } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/use-auth';
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, isPast } from 'date-fns';
 
 type DashboardAnalyticsProps = {
   tasks: Task[];
@@ -15,21 +15,26 @@ type DashboardAnalyticsProps = {
 export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardAnalyticsProps) {
   const { user } = useAuth();
 
-  const filteredTasks =
+  const userFilteredTasks =
     user?.userType === 'Admin' || user?.userType === 'Manager'
       ? tasks
       : tasks.filter((task) => task.assignedRole === user?.role);
 
-  const totalTasks = filteredTasks.length;
-  const doneTasks = filteredTasks.filter((t) => t.status === 'done').length;
-  const inProgressTasks = filteredTasks.filter(
+  const notOverdueTasks = userFilteredTasks.filter(task => {
+    if (!task.deadline) return true; // Keep tasks without deadlines
+    return !isPast(new Date(task.deadline));
+  });
+
+  const totalTasks = notOverdueTasks.length;
+  const doneTasks = notOverdueTasks.filter((t) => t.status === 'done').length;
+  const inProgressTasks = notOverdueTasks.filter(
     (t) => t.status === 'in-progress'
   ).length;
-  const todoTasks = filteredTasks.filter((t) => t.status === 'to-do').length;
+  const todoTasks = notOverdueTasks.filter((t) => t.status === 'to-do').length;
   
   const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
-  const tasksAddedLastWeek = filteredTasks.filter(
+  const tasksAddedLastWeek = notOverdueTasks.filter(
     (task) => differenceInDays(new Date(), new Date(task.createdAt)) <= 7
   ).length;
 
