@@ -3,7 +3,7 @@
 
 import { KanbanBoard } from '@/components/kanban/kanban-board';
 import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Task, TaskStatus, Project, Sprint } from '@/lib/types';
 import { Input } from '../ui/input';
 import { Search, Flame } from 'lucide-react';
@@ -26,6 +26,11 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const allTasks = useStore((state) => state.tasks);
   const { sprints } = useSprintStore();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   const activeSprint = useMemo(() => {
     return sprints.find(s => s.projectId === project.id && s.status === 'active');
@@ -96,7 +101,7 @@ export function ProjectBoard({ project }: ProjectBoardProps) {
                 />
             </div>
         </div>
-        <KanbanBoard tasks={filteredTasks} highlightedStatus={highlightedStatus} />
+        {isClient && <KanbanBoard tasks={filteredTasks} highlightedStatus={highlightedStatus} />}
     </>
   );
 }
