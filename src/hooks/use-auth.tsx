@@ -14,7 +14,7 @@ interface AuthContextType {
   login: (usernameOrEmail: string, password?: string) => void;
   logout: () => void;
   isLoading: boolean;
-  addUser: (user: Omit<User, 'id' | 'userType' | 'status' | 'password' | 'role'> & { password?: string }) => void;
+  addUser: (user: Omit<User, 'id' | 'userType' | 'status' | 'role'>) => void;
   approveUser: (userId: string) => void;
   rejectUser: (userId: string) => void;
   updateUser: (userId: string, data: Partial<User>) => void;
@@ -107,7 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
   
-  const addUser = (newUser: Omit<User, 'id' | 'userType'| 'status' | 'password' | 'role'> & { password?: string }) => {
+  const addUser = (newUser: Omit<User, 'id' | 'userType'| 'status' | 'role'>) => {
     const userExists = users.some(u => u.email === newUser.email || u.username === newUser.username);
     if(userExists) {
         throw new Error("User with this email or username already exists.");
