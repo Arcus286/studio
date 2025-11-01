@@ -103,8 +103,8 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       priority: data.priority as Task['priority'],
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
-      storyId: data.storyId || undefined,
-      sprintId: data.sprintId || undefined,
+      storyId: data.storyId === 'none' ? undefined : data.storyId,
+      sprintId: data.sprintId === 'none' ? undefined : data.sprintId,
     };
 
     addTask(taskData);
@@ -204,7 +204,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">Backlog</SelectItem>
+                      <SelectItem value="none">Backlog</SelectItem>
                       {projectSprints.map(sprint => (
                         <SelectItem key={sprint.id} value={sprint.id}>{sprint.name}</SelectItem>
                       ))}
@@ -229,6 +229,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
+                          <SelectItem value="none">None</SelectItem>
                           {stories.map(story => (
                             <SelectItem key={story.id} value={story.id}>{story.title}</SelectItem>
                           ))}
