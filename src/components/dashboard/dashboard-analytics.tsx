@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/use-auth';
 import { differenceInDays, isPast } from 'date-fns';
+import { useProjectStore } from '@/lib/project-store';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 type DashboardAnalyticsProps = {
   tasks: Task[];
@@ -14,6 +16,7 @@ type DashboardAnalyticsProps = {
 
 export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardAnalyticsProps) {
   const { user } = useAuth();
+  const { projects } = useProjectStore();
 
   const userFilteredTasks =
     user?.userType === 'Admin' || user?.userType === 'Manager'
@@ -38,20 +41,47 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
     (task) => differenceInDays(new Date(), new Date(task.createdAt)) <= 7
   ).length;
 
+  const issuesByProject = notOverdueTasks.reduce((acc, task) => {
+    const project = projects.find(p => p.id === task.projectId);
+    const projectName = project?.name || 'Unknown Project';
+    acc[projectName] = (acc[projectName] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <Card className="bg-card-purple border-purple-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('all')}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Total Issues</CardTitle>
-          <div className="h-4 w-4 rounded-sm bg-primary" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold">{totalTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">
-            +{tasksAddedLastWeek} created this week
-          </Badge>
-        </CardContent>
-      </Card>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+             <Card className="bg-card-purple border-purple-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('all')}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Issues</CardTitle>
+                <div className="h-4 w-4 rounded-sm bg-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold">{totalTasks}</div>
+                <Badge variant="outline" className="mt-2 text-xs font-normal">
+                  +{tasksAddedLastWeek} created this week
+                </Badge>
+              </CardContent>
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="p-2">
+              <h4 className="font-semibold mb-2 text-center">Issues per Project</h4>
+              <ul className="space-y-1 text-sm">
+                {Object.entries(issuesByProject).map(([projectName, count]) => (
+                  <li key={projectName} className="flex justify-between">
+                    <span>{projectName}:</span>
+                    <span className="font-bold ml-4">{count}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
       <Card className="bg-card-orange border-orange-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('to-do')}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
