@@ -14,6 +14,23 @@ type DashboardAnalyticsProps = {
   onCardClick?: (status: TaskStatus | 'all') => void;
 };
 
+function TooltipList({ data }: { data: Record<string, number> }) {
+  if (Object.keys(data).length === 0) {
+    return <p className="text-center text-sm">No issues for this status.</p>;
+  }
+
+  return (
+    <ul className="space-y-1 text-sm">
+      {Object.entries(data).map(([projectName, count]) => (
+        <li key={projectName} className="flex justify-between">
+          <span>{projectName}:</span>
+          <span className="font-bold ml-4">{count}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardAnalyticsProps) {
   const { user } = useAuth();
   const { projects } = useProjectStore();
@@ -41,12 +58,24 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
     (task) => differenceInDays(new Date(), new Date(task.createdAt)) <= 7
   ).length;
 
-  const issuesByProject = notOverdueTasks.reduce((acc, task) => {
-    const project = projects.find(p => p.id === task.projectId);
-    const projectName = project?.name || 'Unknown Project';
-    acc[projectName] = (acc[projectName] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const createBreakdown = (status?: TaskStatus) => {
+    const tasksToConsider = status
+      ? notOverdueTasks.filter(t => t.status === status)
+      : notOverdueTasks;
+
+    return tasksToConsider.reduce((acc, task) => {
+      const project = projects.find(p => p.id === task.projectId);
+      const projectName = project?.name || 'Unknown Project';
+      acc[projectName] = (acc[projectName] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }
+
+  const issuesByProject = createBreakdown();
+  const issuesByProjectToDo = createBreakdown('to-do');
+  const issuesByProjectInProgress = createBreakdown('in-progress');
+  const issuesByProjectDone = createBreakdown('done');
+
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -69,49 +98,75 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
           <TooltipContent>
             <div className="p-2">
               <h4 className="font-semibold mb-2 text-center">Issues per Project</h4>
-              <ul className="space-y-1 text-sm">
-                {Object.entries(issuesByProject).map(([projectName, count]) => (
-                  <li key={projectName} className="flex justify-between">
-                    <span>{projectName}:</span>
-                    <span className="font-bold ml-4">{count}</span>
-                  </li>
-                ))}
-              </ul>
+              <TooltipList data={issuesByProject} />
             </div>
           </TooltipContent>
         </Tooltip>
-      </TooltipProvider>
 
-      <Card className="bg-card-orange border-orange-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('to-do')}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
-          <div className="h-4 w-4 rounded-sm bg-orange-500" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold">{todoTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">Ready to start</Badge>
-        </CardContent>
-      </Card>
-      <Card className="bg-card-blue border-blue-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('in-progress')}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
-          <div className="h-4 w-4 rounded-sm bg-blue-500" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold">{inProgressTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">Active work</Badge>
-        </CardContent>
-      </Card>
-       <Card className="bg-card-green border-green-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('done')}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
-          <div className="h-4 w-4 rounded-sm bg-green-500" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold">{doneTasks}</div>
-          <Badge variant="outline" className="mt-2 text-xs font-normal">{completionRate}% completion rate</Badge>
-        </CardContent>
-      </Card>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card className="bg-card-orange border-orange-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('to-do')}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">To Do</CardTitle>
+                <div className="h-4 w-4 rounded-sm bg-orange-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold">{todoTasks}</div>
+                <Badge variant="outline" className="mt-2 text-xs font-normal">Ready to start</Badge>
+              </CardContent>
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="p-2">
+                <h4 className="font-semibold mb-2 text-center">"To Do" per Project</h4>
+                <TooltipList data={issuesByProjectToDo} />
+            </div>
+          </TooltipContent>
+        </Tooltip>
+        
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card className="bg-card-blue border-blue-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('in-progress')}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">In Progress</CardTitle>
+                <div className="h-4 w-4 rounded-sm bg-blue-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold">{inProgressTasks}</div>
+                <Badge variant="outline" className="mt-2 text-xs font-normal">Active work</Badge>
+              </CardContent>
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+              <div className="p-2">
+                <h4 className="font-semibold mb-2 text-center">"In Progress" per Project</h4>
+                <TooltipList data={issuesByProjectInProgress} />
+            </div>
+          </TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Card className="bg-card-green border-green-500/20 cursor-pointer rounded-xl" onClick={() => onCardClick('done')}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
+                <div className="h-4 w-4 rounded-sm bg-green-500" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-4xl font-bold">{doneTasks}</div>
+                <Badge variant="outline" className="mt-2 text-xs font-normal">{completionRate}% completion rate</Badge>
+              </CardContent>
+            </Card>
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="p-2">
+                <h4 className="font-semibold mb-2 text-center">"Completed" per Project</h4>
+                <TooltipList data={issuesByProjectDone} />
+            </div>
+          </TooltipContent>
+        </Tooltip>
+
+      </TooltipProvider>
     </div>
   );
 }
