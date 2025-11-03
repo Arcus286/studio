@@ -46,13 +46,9 @@ const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' | 'Story' }) => {
 }
 
 const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: string }) => {
-    if (status === 'done') {
-        return null;
-    }
-
     const dueDate = new Date(deadline);
     const isOverdue = isPast(dueDate) && status !== 'done';
-
+    
     const color = isOverdue ? 'text-red-500' : 'text-muted-foreground';
 
     return (
@@ -68,9 +64,8 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task
     const { tasks } = useStore();
     const parentStory = tasks.find(t => t.id === task.storyId);
     
-    // Do not render child if its parent story is in the same column
-    if (parentStory && parentStory.status === task.status) {
-        return null;
+    if (!parentStory) {
+      return null;
     }
 
     const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
