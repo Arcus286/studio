@@ -29,9 +29,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Palette, Plus, Trash2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { ROLES, USERS } from '@/lib/data';
 import { useProjectStore } from '@/lib/project-store';
 import type { Project } from '@/lib/types';
+import { useAuth } from '@/hooks/use-auth';
 
 const projectSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
@@ -58,6 +58,9 @@ export function EditProjectDialog({ project, children }: { project: Project; chi
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
   const { updateProject } = useProjectStore();
+  const { allUsers } = useAuth();
+
+  const availableUsers = allUsers.filter(u => u.status === 'active' && u.userType !== 'Admin');
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -188,7 +191,7 @@ export function EditProjectDialog({ project, children }: { project: Project; chi
                                         </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                        {USERS.filter(u => u.status === 'active' && u.userType !== 'Admin').map(user => (
+                                        {availableUsers.map(user => (
                                             <SelectItem key={user.id} value={user.id}>{user.username} ({user.role})</SelectItem>
                                         ))}
                                         </SelectContent>
