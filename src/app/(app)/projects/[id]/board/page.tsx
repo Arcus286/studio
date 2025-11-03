@@ -42,7 +42,7 @@ export default function ProjectBoardPage({
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Active Sprint</BreadcrumbPage>
+            <BreadcrumbPage>Board</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
