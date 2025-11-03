@@ -20,6 +20,7 @@ export default function SignupPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [signupSuccess, setSignupSuccess] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
     const { addUser } = useAuth();
@@ -122,7 +123,14 @@ export default function SignupPage() {
                         <div className="grid gap-2">
                             <Label htmlFor="password">Password</Label>
                             <div className="relative">
-                                <Input id="password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                <Input 
+                                    id="password" 
+                                    type={showPassword ? "text" : "password"} 
+                                    value={password} 
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    onFocus={() => setIsPasswordFocused(true)}
+                                    required 
+                                />
                                 <Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground" onClick={() => setShowPassword(!showPassword)}>
                                     {showPassword ? <EyeOff /> : <Eye />}
                                 </Button>
@@ -133,9 +141,11 @@ export default function SignupPage() {
                             <Input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                         </div>
 
-                        <div className="mt-2">
-                            <PasswordStrength checks={passwordChecks} />
-                        </div>
+                        {isPasswordFocused && (
+                            <div className="mt-2">
+                                <PasswordStrength checks={passwordChecks} />
+                            </div>
+                        )}
                         
                         <Button type="submit" className="w-full mt-2">Create account</Button>
                     </form>
