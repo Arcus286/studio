@@ -179,7 +179,6 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
                     <TaskTypeIcon type={task.type} />
                     {task.type}
                 </Badge>
-                <Badge variant="secondary" className="flex-shrink-0">{task.assignedRole}</Badge>
            </div>
           <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
             <div className="flex items-center gap-3">
