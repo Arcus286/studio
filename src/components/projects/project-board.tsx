@@ -114,8 +114,8 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   };
 
   const filteredTasks = sprintTasks.filter(task => {
-    const isOverdue = task.deadline ? isPast(new Date(task.deadline)) : false;
-    if (isOverdue && !showOverdue) {
+    const isOverdueTask = task.deadline ? isPast(new Date(task.deadline)) : false;
+    if (isOverdueTask && !showOverdue) {
         return false;
     }
 
