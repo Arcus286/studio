@@ -54,7 +54,12 @@ const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: strin
     return (
         <div className={cn("flex items-center gap-1.5", color)}>
             <CalendarClock className="h-4 w-4" />
-            <span>{format(dueDate, "MMM d")}</span>
+            <span>
+                 {isOverdue 
+                    ? `Overdue by ${differenceInDays(new Date(), dueDate)} days`
+                    : format(dueDate, "MMM d")
+                }
+            </span>
         </div>
     )
 }
