@@ -12,7 +12,6 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { USERS } from '@/lib/data';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
@@ -48,7 +47,8 @@ const TaskTypeIcon = ({ type, className }: { type: 'Bug' | 'Task' | 'Story', cla
 }
 
 function CommentItem({ comment }: { comment: Comment }) {
-    const user = USERS.find(u => u.id === comment.userId);
+    const { allUsers } = useAuth();
+    const user = allUsers.find(u => u.id === comment.userId);
 
     if (!user) return null;
 
@@ -71,7 +71,7 @@ function CommentItem({ comment }: { comment: Comment }) {
 }
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: TaskDetailDialogProps) {
-  const { user } = useAuth();
+  const { user, allUsers } = useAuth();
   const { deleteTask, columns, addComment, tasks, updateTask } = useStore();
   const { sprints } = useSprintStore();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
@@ -135,7 +135,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   }
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
-  const assignedUser = USERS.find(u => u.id === task.assignedUserId);
+  const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
   const statusLabel = columns.find(c => c.id === task.status)?.title || task.status;
   const isOverdue = task.deadline && isPast(new Date(task.deadline));
 
@@ -258,14 +258,19 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                             <Users className="h-4 w-4" />
                             Assigned To
                         </h3>
-                         {assignedUser && (
+                         {assignedUser ? (
                             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                                <Avatar className="h-10 w-10">
+                                    <AvatarFallback>{assignedUser.username.charAt(0)}</AvatarFallback>
+                                </Avatar>
                                 <div className="flex-1">
                                     <p className="font-semibold text-foreground">{assignedUser.username}</p>
                                     <p className="text-xs text-muted-foreground">{assignedUser.email}</p>
                                 </div>
                                 <Badge variant="outline">{assignedUser.role}</Badge>
                             </div>
+                        ) : (
+                            <p className="text-sm text-muted-foreground">Not assigned</p>
                         )}
                     </div>
                 </div>
