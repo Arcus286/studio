@@ -115,7 +115,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
   const { tasks: allTasks } = useStore();
   
   const childTasks = task.type === 'Story' 
-    ? allTasks.filter(t => t.storyId === task.id && t.status === task.status) 
+    ? allTasks.filter(t => t.storyId === task.id) 
     : [];
 
   const blockingTasks = (task.dependsOn || [])
