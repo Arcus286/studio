@@ -45,9 +45,9 @@ const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' | 'Story' }) => {
     }
 }
 
-const DeadlineDisplay = ({ deadline }: { deadline: string }) => {
+const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: string }) => {
     const dueDate = new Date(deadline);
-    const isOverdue = isPast(dueDate) && differenceInDays(new Date(), dueDate) > 0;
+    const isOverdue = isPast(dueDate) && differenceInDays(new Date(), dueDate) > 0 && status !== 'done';
     const days = differenceInDays(dueDate, new Date());
 
     let text, color;
@@ -210,7 +210,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
                         </Tooltip>
                     </TooltipProvider>
                 ) : task.deadline ? (
-                    <DeadlineDisplay deadline={task.deadline} />
+                    <DeadlineDisplay deadline={task.deadline} status={task.status} />
                 ) : (
                     <div className="flex items-center gap-1 flex-shrink-0">
                         <Clock className="h-4 w-4" />
