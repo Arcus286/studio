@@ -88,7 +88,18 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task
             </div>
             <div className="flex items-center gap-2">
                 {assignedUser && (
-                     <Badge variant="outline" className="text-xs">{assignedUser.username}</Badge>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <Avatar className="h-6 w-6">
+                                    <AvatarFallback>{assignedUser.username.charAt(0).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>{assignedUser.username}</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 )}
                  <PriorityIcon priority={task.priority} />
             </div>
