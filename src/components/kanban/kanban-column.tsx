@@ -29,17 +29,9 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
   const { user } = useAuth();
   const allTasks = useStore(state => state.tasks);
   
-  // A task is a top-level task if it's not a story, or if it is a story.
-  // Child tasks of stories are rendered inside the KanbanCard for the story.
-  const topLevelTasks = tasks.filter(task => {
-    if (task.storyId) {
-      // It's a child task. Don't render it at the top level.
-      // It will be rendered inside its parent story card.
-      return false;
-    }
-    // It's a Story or a standalone Task/Bug, so render it.
-    return true;
-  });
+  // A task is a top-level task if it does not have a storyId.
+  // Child tasks (those with a storyId) are rendered inside the KanbanCard for their parent story.
+  const topLevelTasks = tasks.filter(task => !task.storyId);
 
 
   return (
