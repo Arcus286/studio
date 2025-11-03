@@ -3,7 +3,10 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import type { Task, Comment, Sprint } from '@/lib/types';
+import type { Task, Comment } from '@/lib/types';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import {
   Dialog,
   DialogContent,
@@ -11,6 +14,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
@@ -18,7 +23,7 @@ import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown, Layers, Flame, Link2 } from 'lucide-react';
+import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown, Layers, Flame, Link2, Clock, Pencil, GripVertical } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useStore } from '@/lib/store';
@@ -27,6 +32,28 @@ import { Textarea } from '../ui/textarea';
 import { ScrollArea } from '../ui/scroll-area';
 import { useSprintStore } from '@/lib/sprint-store';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { PRIORITIES, TASK_TYPES } from '@/lib/data';
+import { DatePicker } from '../ui/date-picker';
+import { useProjectStore } from '@/lib/project-store';
+
+
+const taskDetailSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().min(1, 'Description is required'),
+  status: z.string(),
+  priority: z.string(),
+  type: z.string(),
+  assignedUserId: z.string().optional(),
+  deadline: z.date().optional(),
+  sprintId: z.string().optional(),
+  storyId: z.string().optional(),
+  dependsOn: z.array(z.string()).optional(),
+  estimatedHours: z.coerce.number(),
+  timeSpent: z.coerce.number(),
+});
+
+type TaskDetailFormValues = z.infer<typeof taskDetailSchema>;
+
 
 type TaskDetailDialogProps = {
   isOpen: boolean;
@@ -74,42 +101,50 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   const { user, allUsers } = useAuth();
   const { deleteTask, columns, addComment, tasks, updateTask } = useStore();
   const { sprints } = useSprintStore();
+  const { projects } = useProjectStore();
+
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
   const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // This ensures we always have the latest task data from the store
-  const task = useStore(state => state.tasks.find(t => t.id === initialTask.id)) || initialTask;
+  const task = useStore(state => state.tasks.find(t => t.id === initialTask.id));
   
-  const [sprintId, setSprintId] = useState(task.sprintId);
-  const [storyId, setStoryId] = useState(task.storyId);
-  const [dependsOn, setDependsOn] = useState(task.dependsOn || []);
-  const projectSprints = sprints.filter(s => s.projectId === task.projectId);
-  const projectStories = tasks.filter(t => t.projectId === task.projectId && t.type === 'Story');
-  const availableDependencies = tasks.filter(t => t.projectId === task.projectId && t.id !== task.id && t.type !== 'Story');
+  const form = useForm<TaskDetailFormValues>({
+      resolver: zodResolver(taskDetailSchema),
+      defaultValues: {},
+  });
 
   useEffect(() => {
-    setSprintId(task.sprintId);
-    setStoryId(task.storyId);
-    setDependsOn(task.dependsOn || []);
-  }, [task]);
-
-
+    if (task) {
+        form.reset({
+            ...task,
+            deadline: task.deadline ? new Date(task.deadline) : undefined,
+        });
+    }
+  }, [task, form]);
+  
+  const project = projects.find(p => p.id === task?.projectId);
+  const projectSprints = sprints.filter(s => s.projectId === task?.projectId);
+  const projectStories = tasks.filter(t => t.projectId === task?.projectId && t.type === 'Story');
+  const availableDependencies = tasks.filter(t => t.projectId === task?.projectId && t.id !== task?.id && t.type !== 'Story');
+  const projectMembers = allUsers.filter(u => project?.members.some(m => m.id === u.id));
+  
   const sortedComments = useMemo(() => {
-    const comments = task.comments || [];
-    return [...comments].sort((a, b) => {
+    if (!task || !task.comments) return [];
+    return [...task.comments].sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return commentSortOrder === 'asc' ? dateA - dateB : dateB - a;
+        return commentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
     });
-  }, [task.comments, commentSortOrder]);
+  }, [task?.comments, commentSortOrder]);
   
-  const handleSave = () => {
-    updateTask(task.id, task.status, task.timeSpent, {
-        sprintId: sprintId,
-        storyId: storyId,
-        dependsOn: dependsOn,
+  const handleSave = (data: TaskDetailFormValues) => {
+    if (!task) return;
+    updateTask(task.id, {
+        ...data,
+        deadline: data.deadline?.toISOString(),
     });
     toast({
         title: 'Task Updated',
@@ -119,6 +154,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   };
   
    const handleDelete = () => {
+    if (!task) return;
     deleteTask(task.id);
     toast({
       variant: 'destructive',
@@ -129,9 +165,13 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   };
 
   const handleAddComment = () => {
-    if (!newComment.trim() || !user) return;
+    if (!newComment.trim() || !user || !task) return;
     addComment(task.id, { userId: user.id, message: newComment.trim() });
     setNewComment('');
+  }
+  
+  if (!task) {
+    return null;
   }
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
@@ -143,188 +183,297 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0">
-        <DialogHeader className="p-6 pb-4 border-b">
-          <div className="flex items-center gap-3">
-             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
-                <TaskTypeIcon type={task.type} className="h-6 w-6" />
-             </div>
-            <div>
-                <DialogTitle className="text-xl">{task.title}</DialogTitle>
-                <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="outline">{task.type}</Badge>
-                    <Badge variant="secondary">{statusLabel}</Badge>
-                </div>
-            </div>
-          </div>
-        </DialogHeader>
-        
-        <div className="grid grid-cols-10 flex-1 overflow-hidden">
-            <div className="col-span-7 border-r p-6 overflow-y-auto">
-                <div className="space-y-6">
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSave)} className="flex flex-col h-full">
+                <DialogHeader className="p-6 pb-4 border-b">
+                <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+                        <TaskTypeIcon type={task.type} className="h-6 w-6" />
+                    </div>
                     <div>
-                        <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
-                        <p className="text-sm text-foreground">{task.description}</p>
-                    </div>
-                    
-                    <Separator />
-                    
-                    <div className="grid grid-cols-2 gap-6">
-                        {isManager && task.type !== 'Story' && (
-                            <>
-                            <div>
-                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
-                                <Flame className="h-4 w-4" />
-                                Sprint
-                                </h3>
-                                <Select value={sprintId || ''} onValueChange={(value) => setSprintId(value === 'none' ? undefined : value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Assign to a sprint..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">Backlog</SelectItem>
-                                        {projectSprints.map(s => (
-                                            <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div>
-                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
-                                <Layers className="h-4 w-4" />
-                                Parent Story
-                                </h3>
-                                <Select value={storyId || ''} onValueChange={(value) => setStoryId(value === 'none' ? undefined : value)}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Link to a story..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">None</SelectItem>
-                                        {projectStories.map(s => (
-                                            <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            </>
-                        )}
-                         {task.type !== 'Story' && (
-                            <div className="col-span-2">
-                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-2">
-                                <Link2 className="h-4 w-4" />
-                                Dependencies
-                                </h3>
-                                <Select onValueChange={(value) => setDependsOn(value === 'none' ? [] : [value])} value={dependsOn[0] || 'none'}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Blocks which task?" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="none">None</SelectItem>
-                                        {availableDependencies.map(dep => (
-                                            <SelectItem key={dep.id} value={dep.id}>{dep.title}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-6">
-                        <div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-3">Task Progress</h3>
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-muted-foreground">{task.timeSpent}h / {task.estimatedHours}h</span>
-                                <span className="text-sm font-semibold">{Math.round(progressPercentage)}%</span>
-                            </div>
-                            <Progress value={progressPercentage} className="h-2" />
-                        </div>
-                         {task.deadline && (
-                            <div>
-                                <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3">
-                                    <CalendarClock className="h-4 w-4" />
-                                    Deadline
-                                </h3>
-                                <div className={cn("text-sm", isOverdue ? "text-red-500 font-semibold" : "text-foreground")}>
-                                   {format(parseISO(task.deadline), "MMMM d, yyyy")}
-                                   {isOverdue && " (Overdue)"}
-                                </div>
-                            </div>
-                         )}
-                    </div>
-
-                    <Separator />
-
-                    <div>
-                        <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3">
-                            <Users className="h-4 w-4" />
-                            Assigned To
-                        </h3>
-                         {assignedUser ? (
-                            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                                <Avatar className="h-10 w-10">
-                                    <AvatarFallback>{assignedUser.username.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div className="flex-1">
-                                    <p className="font-semibold text-foreground">{assignedUser.username}</p>
-                                    <p className="text-xs text-muted-foreground">{assignedUser.email}</p>
-                                </div>
-                                <Badge variant="outline">{assignedUser.role}</Badge>
-                            </div>
+                        {isManager ? (
+                            <FormField
+                                control={form.control}
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input {...field} className="text-xl font-semibold p-0 border-none focus-visible:ring-0" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         ) : (
-                            <p className="text-sm text-muted-foreground">Not assigned</p>
+                            <DialogTitle className="text-xl">{task.title}</DialogTitle>
                         )}
+                        <div className="flex items-center gap-2 mt-1">
+                            <Badge variant="outline">{task.id}</Badge>
+                            <Badge variant="secondary">{statusLabel}</Badge>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="col-span-3 p-6 flex flex-col bg-muted/50">
-                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-base font-semibold">Comments</h3>
-                    <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCommentSortOrder('desc')}>
-                            <ArrowDown className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCommentSortOrder('asc')}>
-                            <ArrowUp className="h-4 w-4" />
-                        </Button>
-                    </div>
-                 </div>
-                 <ScrollArea className="flex-1 -mx-6 px-6">
-                     <div className="space-y-4">
-                        {sortedComments.map(comment => (
-                            <CommentItem key={comment.id} comment={comment} />
-                        ))}
-                     </div>
-                 </ScrollArea>
-                 <div className="mt-4 flex gap-2">
-                     <Textarea 
-                        placeholder="Add a comment..." 
-                        className="flex-1"
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        rows={2}
-                     />
-                     <Button size="icon" onClick={handleAddComment} disabled={!newComment.trim()}>
-                        <Send className="h-4 w-4" />
-                     </Button>
-                 </div>
-            </div>
-        </div>
+                </DialogHeader>
+                
+                <div className="grid grid-cols-10 flex-1 overflow-hidden">
+                    <div className="col-span-7 border-r p-6 overflow-y-auto space-y-6">
+                        <div>
+                            <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
+                            {isManager ? (
+                                <FormField
+                                    control={form.control}
+                                    name="description"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Textarea {...field} className="text-sm" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            ) : (
+                                <p className="text-sm text-foreground">{task.description}</p>
+                            )}
+                        </div>
+                        
+                        <Separator />
+                        
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                             <FormField
+                                control={form.control}
+                                name="assignedUserId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Users className="h-4 w-4" /> Assigned To</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a user" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {projectMembers.map(user => (
+                                                    <SelectItem key={user.id} value={user.id}>{user.username}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="status"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><GripVertical className="h-4 w-4" /> Status</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select a status" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {columns.map(col => (
+                                                    <SelectItem key={col.id} value={col.id}>{col.title}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="priority"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><ArrowUp className="h-4 w-4" /> Priority</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select priority" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {PRIORITIES.map(p => (
+                                                    <SelectItem key={p} value={p}>{p}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="type"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Pencil className="h-4 w-4" /> Task Type</FormLabel>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select type" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {TASK_TYPES.map(t => (
+                                                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="deadline"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><CalendarClock className="h-4 w-4" /> Deadline</FormLabel>
+                                        <FormControl>
+                                            <DatePicker value={field.value} onSelect={field.onChange} disabled={!isManager} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            
+                            {task.type !== 'Story' && (
+                                <>
+                                 <FormField
+                                    control={form.control}
+                                    name="sprintId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Flame className="h-4 w-4" /> Sprint</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                                <FormControl><SelectTrigger><SelectValue placeholder="Assign to sprint" /></SelectTrigger></FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="none">Backlog</SelectItem>
+                                                    {projectSprints.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+                                 <FormField
+                                    control={form.control}
+                                    name="storyId"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Layers className="h-4 w-4" /> Parent Story</FormLabel>
+                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                                <FormControl><SelectTrigger><SelectValue placeholder="Link to story" /></SelectTrigger></FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    {projectStories.map(s => <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+                                 <FormField
+                                    control={form.control}
+                                    name="dependsOn"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Link2 className="h-4 w-4" /> Dependencies</FormLabel>
+                                            <Select onValueChange={(value) => field.onChange(value === 'none' ? [] : [value])} value={field.value?.[0] || 'none'} disabled={!isManager}>
+                                                <FormControl><SelectTrigger><SelectValue placeholder="Blocks which task?" /></SelectTrigger></FormControl>
+                                                <SelectContent>
+                                                    <SelectItem value="none">None</SelectItem>
+                                                    {availableDependencies.map(dep => <SelectItem key={dep.id} value={dep.id}>{dep.title}</SelectItem>)}
+                                                </SelectContent>
+                                            </Select>
+                                        </FormItem>
+                                    )}
+                                />
+                                </>
+                             )}
+                        </div>
 
-        <DialogFooter className="p-6 bg-muted/30 border-t flex justify-between items-center">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <CalendarDays className="h-4 w-4" />
-                <span>Created on {format(parseISO(task.createdAt), "MMM d, yyyy")}</span>
-            </div>
-             <div className="flex items-center gap-2">
-                {isManager && (
-                  <>
-                    <Button variant="destructive" onClick={handleDelete}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete
-                    </Button>
-                    <Button onClick={handleSave}>Save Changes</Button>
-                  </>
-                )}
-             </div>
-        </DialogFooter>
+                         <div className="grid grid-cols-2 gap-6">
+                            <FormField
+                                control={form.control}
+                                name="timeSpent"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Clock className="h-4 w-4" /> Time Spent (hours)</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" {...field} readOnly={!isManager}/>
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                             <FormField
+                                control={form.control}
+                                name="estimatedHours"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Clock className="h-4 w-4" /> Time Estimated (hours)</FormLabel>
+                                        <FormControl>
+                                            <Input type="number" {...field} readOnly={!isManager}/>
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="col-span-2">
+                                <Progress value={progressPercentage} className="h-2" />
+                            </div>
+                         </div>
+                    </div>
+                    
+                    <div className="col-span-3 p-6 flex flex-col bg-muted/50">
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-base font-semibold">Comments</h3>
+                            <div className="flex gap-1">
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCommentSortOrder('desc')}>
+                                    <ArrowDown className="h-4 w-4" />
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setCommentSortOrder('asc')}>
+                                    <ArrowUp className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </div>
+                        <ScrollArea className="flex-1 -mx-6 px-6">
+                            <div className="space-y-4">
+                                {sortedComments.map(comment => (
+                                    <CommentItem key={comment.id} comment={comment} />
+                                ))}
+                            </div>
+                        </ScrollArea>
+                        <div className="mt-4 flex gap-2">
+                            <Textarea 
+                                placeholder="Add a comment..." 
+                                className="flex-1"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                rows={2}
+                            />
+                            <Button size="icon" onClick={handleAddComment} disabled={!newComment.trim()}>
+                                <Send className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+            <DialogFooter className="p-6 bg-muted/30 border-t flex justify-between items-center">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <CalendarDays className="h-4 w-4" />
+                    <span>Created on {format(parseISO(task.createdAt), "MMM d, yyyy")}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    {isManager && (
+                    <>
+                        <Button variant="destructive" type="button" onClick={handleDelete}>
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                        </Button>
+                        <Button type="submit">Save Changes</Button>
+                    </>
+                    )}
+                </div>
+            </DialogFooter>
+        </form>
+      </Form>
       </DialogContent>
     </Dialog>
   );
