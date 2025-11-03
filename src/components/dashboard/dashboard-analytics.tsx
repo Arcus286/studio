@@ -40,28 +40,23 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
       ? tasks
       : tasks.filter((task) => task.assignedUserId === user?.id);
 
-  const notOverdueTasks = userFilteredTasks.filter(task => {
-    if (!task.deadline) return true; // Keep tasks without deadlines
-    return !isPast(new Date(task.deadline));
-  });
-
-  const totalTasks = notOverdueTasks.length;
-  const doneTasks = notOverdueTasks.filter((t) => t.status === 'done').length;
-  const inProgressTasks = notOverdueTasks.filter(
+  const totalTasks = userFilteredTasks.length;
+  const doneTasks = userFilteredTasks.filter((t) => t.status === 'done').length;
+  const inProgressTasks = userFilteredTasks.filter(
     (t) => t.status === 'in-progress'
   ).length;
-  const todoTasks = notOverdueTasks.filter((t) => t.status === 'to-do').length;
+  const todoTasks = userFilteredTasks.filter((t) => t.status === 'to-do').length;
   
   const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
-  const tasksAddedLastWeek = notOverdueTasks.filter(
+  const tasksAddedLastWeek = userFilteredTasks.filter(
     (task) => differenceInDays(new Date(), new Date(task.createdAt)) <= 7
   ).length;
 
   const createBreakdown = (status?: TaskStatus) => {
     const tasksToConsider = status
-      ? notOverdueTasks.filter(t => t.status === status)
-      : notOverdueTasks;
+      ? userFilteredTasks.filter(t => t.status === status)
+      : userFilteredTasks;
 
     return tasksToConsider.reduce((acc, task) => {
       const project = projects.find(p => p.id === task.projectId);

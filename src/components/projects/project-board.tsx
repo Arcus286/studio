@@ -29,6 +29,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Checkbox } from '../ui/checkbox';
+import { Label } from '../ui/label';
 
 interface ProjectBoardProps {
   project: Project;
@@ -82,6 +84,7 @@ function AllMembersDialog({ members }: { members: User[] }) {
 function ProjectBoardContent({ project }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showOverdue, setShowOverdue] = useState(true);
   const allTasks = useStore((state) => state.tasks);
   const { sprints } = useSprintStore();
   const { allUsers } = useAuth();
@@ -111,9 +114,10 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   };
 
   const filteredTasks = sprintTasks.filter(task => {
-    // Explicitly filter out overdue tasks from being displayed on the board
     const isOverdue = task.deadline ? isPast(new Date(task.deadline)) : false;
-    if (isOverdue) return false;
+    if (isOverdue && !showOverdue) {
+        return false;
+    }
 
     if (!searchTerm) return true;
 
@@ -155,14 +159,20 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
             )}
           </TooltipProvider>
         </div>
-        <div className="relative w-full sm:w-auto sm:min-w-[300px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder={`Search tasks...`}
-            className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className='flex items-center gap-4'>
+            <div className="flex items-center space-x-2">
+                <Checkbox id="show-overdue" checked={showOverdue} onCheckedChange={(checked) => setShowOverdue(Boolean(checked))} />
+                <Label htmlFor="show-overdue" className="text-sm font-medium">Show Overdue</Label>
+            </div>
+            <div className="relative w-full sm:w-auto sm:min-w-[300px]">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                    placeholder={`Search tasks...`}
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
         </div>
       </div>
       <KanbanBoard tasks={filteredTasks} highlightedStatus={highlightedStatus} />
