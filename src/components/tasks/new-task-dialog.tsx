@@ -92,7 +92,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
     } else {
         form.setValue('deadline', undefined);
     }
-    form.setValue('sprintId', sprintId);
+    form.setValue('sprintId', sprintId === 'none' ? undefined : sprintId);
   }
 
 
@@ -227,7 +227,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Parent Story (Optional)</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value || ''} disabled={!watchProjectId}>
+                      <Select onValueChange={(value) => field.onChange(value === 'none' ? undefined : value)} value={field.value || ''} disabled={!watchProjectId}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Link to a parent story" />
