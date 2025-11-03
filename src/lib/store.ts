@@ -26,9 +26,15 @@ export const useStore = create<TaskStore>()(
       setColumns: (columns) => set({ columns }),
       addTask: (task) =>
         set((state) => {
+          const taskNumbers = state.tasks
+            .map((t) => parseInt(t.id.replace('TASK-', ''), 10))
+            .filter((n) => !isNaN(n));
+          const maxId = Math.max(0, ...taskNumbers);
+          const newId = `TASK-${maxId + 1}`;
+
           const newTask: Task = {
             ...task,
-            id: `TASK-${state.tasks.length + 1}`,
+            id: newId,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             timeSpent: 0,
