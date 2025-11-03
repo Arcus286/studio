@@ -12,12 +12,17 @@ import { PasswordStrength } from '@/components/password-strength';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { Role } from '@/lib/types';
+
+const availableRoles: Role[] = ['Backend', 'Frontend', 'Developer', 'Designer'];
 
 export default function SignupPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [role, setRole] = useState<Role | ''>('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [signupSuccess, setSignupSuccess] = useState(false);
@@ -43,6 +48,11 @@ export default function SignupPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!role) {
+            toast({ variant: 'destructive', title: 'Error', description: 'Please select a role.' });
+            return;
+        }
+
         if (password !== confirmPassword) {
             toast({ variant: 'destructive', title: 'Error', description: 'Passwords do not match.' });
             return;
@@ -54,7 +64,7 @@ export default function SignupPage() {
         }
 
         try {
-            addUser({ username, email, password });
+            addUser({ username, email, password, role });
             setSignupSuccess(true);
         } catch (error) {
             toast({ variant: 'destructive', title: 'Error', description: (error as Error).message });
@@ -120,6 +130,19 @@ export default function SignupPage() {
                         <div className="grid gap-2">
                             <Label htmlFor="email">Email</Label>
                             <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                        </div>
+                         <div className="grid gap-2">
+                            <Label htmlFor="role">Choose your role</Label>
+                            <Select onValueChange={(value: Role) => setRole(value)} value={role}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {availableRoles.map(r => (
+                                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="password">Password</Label>
