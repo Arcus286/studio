@@ -47,16 +47,18 @@ const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' | 'Story' }) => {
 
 const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: string }) => {
     const dueDate = new Date(deadline);
-    const isOverdue = isPast(dueDate) && status !== 'done';
-    
+    const isDone = status === 'done';
+    const isOverdue = isPast(dueDate);
+
     let color = 'text-muted-foreground';
     let text = format(dueDate, "MMM d");
 
-    if (status === 'done') {
+    if (isDone) {
         color = 'text-green-500';
     } else if (isOverdue) {
+        const daysOverdue = differenceInDays(new Date(), dueDate);
         color = 'text-red-500';
-        text = `Overdue (was ${format(dueDate, "MMM d")})`;
+        text = `${format(dueDate, "MMM d")} - Overdue by ${daysOverdue} day${daysOverdue === 1 ? '' : 's'}`;
     }
 
     return (
