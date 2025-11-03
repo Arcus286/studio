@@ -50,6 +50,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Effect to manage the currently logged-in user
   useEffect(() => {
+    // Only run this effect if the users array has been populated
+    if (users.length === 0) return;
+
     try {
       const storedUser = localStorage.getItem(CURRENT_USER_STORAGE_KEY);
       if (storedUser) {
@@ -58,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (freshUser && freshUser.status === 'active') {
           setUser(freshUser);
         } else {
+          // If user is no longer valid (e.g. deleted or not active), log them out
           localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
           setUser(null);
         }
@@ -67,11 +71,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
       setUser(null);
     } finally {
-      if(users.length > 0) {
-        setIsLoading(false);
-      }
+      // We are done loading once we have checked for a user.
+      setIsLoading(false);
     }
-  }, [users]);
+  }, [users]); // This effect now correctly depends on the `users` state
   
   const updateUsersState = (newUsers: User[]) => {
       setUsers(newUsers);
