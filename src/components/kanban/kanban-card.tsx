@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock, Layers, CircleDot, Lock } from 'lucide-react';
 import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
-import { USERS } from '@/lib/data';
+import { useAuth } from '@/hooks/use-auth';
 import { format, isPast, differenceInDays } from 'date-fns';
 import { useStore } from '@/lib/store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
@@ -76,7 +76,8 @@ const DeadlineDisplay = ({ deadline }: { deadline: string }) => {
 }
 
 const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task) => void }) => {
-    const assignedUser = USERS.find(u => u.role === task.assignedRole);
+    const { allUsers } = useAuth();
+    const assignedUser = allUsers.find(u => u.role === task.assignedRole);
     return (
         <div 
             className="flex items-center justify-between p-2 rounded-md bg-card/50 hover:bg-card cursor-pointer"
@@ -109,7 +110,8 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task
 
 export function KanbanCard({ task, isDragging }: KanbanCardProps) {
   const [detailTask, setDetailTask] = useState<Task | null>(null);
-  const assignedUser = USERS.find(u => u.role === task.assignedRole);
+  const { allUsers } = useAuth();
+  const assignedUser = allUsers.find(u => u.role === task.assignedRole);
   const { tasks: allTasks } = useStore();
   
   const childTasks = task.type === 'Story' 
