@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { Notifications } from './notifications';
 import { ThemeToggle } from './theme-toggle';
 import { NewTaskDialog } from '../tasks/new-task-dialog';
+import { AdminDialog } from '../admin/admin-dialog';
 
 type HeaderProps = {
   showSearch?: boolean;
@@ -57,12 +58,12 @@ export function Header({ showSearch = true }: HeaderProps) {
       <ThemeToggle />
 
       {isAdmin && (
-        <Button variant="ghost" size="icon" asChild>
-          <Link href="/admin">
-            <Users className="h-5 w-5" />
-            <span className="sr-only">Admin Panel</span>
-          </Link>
-        </Button>
+        <AdminDialog>
+            <Button variant="ghost" size="icon">
+                <Users className="h-5 w-5" />
+                <span className="sr-only">Admin Panel</span>
+            </Button>
+        </AdminDialog>
       )}
       
       <DropdownMenu>
@@ -78,9 +79,11 @@ export function Header({ showSearch = true }: HeaderProps) {
           <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {isAdmin && (
-            <DropdownMenuItem asChild>
-              <Link href="/admin">Admin Panel</Link>
-            </DropdownMenuItem>
+            <AdminDialog>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                  Admin Panel
+              </DropdownMenuItem>
+            </AdminDialog>
           )}
           <DropdownMenuItem asChild>
             <Link href="/settings">Settings</Link>
