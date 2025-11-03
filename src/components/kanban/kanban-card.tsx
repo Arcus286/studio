@@ -56,7 +56,7 @@ const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: strin
             <CalendarClock className="h-4 w-4" />
             <span>
                  {isOverdue 
-                    ? `Overdue by ${differenceInDays(new Date(), dueDate)} days`
+                    ? `Overdue (was ${format(dueDate, "MMM d")})`
                     : format(dueDate, "MMM d")
                 }
             </span>
