@@ -49,17 +49,20 @@ const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: strin
     const dueDate = new Date(deadline);
     const isOverdue = isPast(dueDate) && status !== 'done';
     
-    const color = isOverdue ? 'text-red-500' : 'text-muted-foreground';
+    let color = 'text-muted-foreground';
+    let text = format(dueDate, "MMM d");
+
+    if (status === 'done') {
+        color = 'text-green-500';
+    } else if (isOverdue) {
+        color = 'text-red-500';
+        text = `Overdue (was ${format(dueDate, "MMM d")})`;
+    }
 
     return (
         <div className={cn("flex items-center gap-1.5", color)}>
             <CalendarClock className="h-4 w-4" />
-            <span>
-                 {isOverdue 
-                    ? `Overdue (was ${format(dueDate, "MMM d")})`
-                    : format(dueDate, "MMM d")
-                }
-            </span>
+            <span>{text}</span>
         </div>
     )
 }
