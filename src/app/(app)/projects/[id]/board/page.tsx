@@ -14,13 +14,9 @@ import {
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
 
-export default function ProjectBoardPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+function ProjectBoardPageContent({ projectId }: { projectId: string }) {
   const { projects } = useProjectStore();
-  const project = projects.find((p) => p.id === params.id);
+  const project = projects.find((p) => p.id === projectId);
 
   if (!project) {
     // This can happen on initial load while the store is hydrating
@@ -50,4 +46,12 @@ export default function ProjectBoardPage({
       <ProjectBoard project={project} />
     </div>
   );
+}
+
+export default function ProjectBoardPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  return <ProjectBoardPageContent projectId={params.id} />;
 }
