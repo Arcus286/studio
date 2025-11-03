@@ -1,6 +1,6 @@
 
 'use client';
-import { notFound } from 'next/navigation';
+import * as React from 'react';
 import { useProjectStore } from '@/lib/project-store';
 import { USERS } from '@/lib/data';
 import {
@@ -16,7 +16,8 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from 'next/link';
 
 
-export default function ProjectTeamPage({ params: { id } }: { params: { id: string } }) {
+export default function ProjectTeamPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = React.use(params);
     const { projects } = useProjectStore();
     const project = projects.find(p => p.id === id);
 

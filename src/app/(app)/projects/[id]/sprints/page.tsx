@@ -1,6 +1,6 @@
 
 'use client';
-import { notFound } from 'next/navigation';
+import * as React from 'react';
 import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
@@ -12,9 +12,16 @@ import { useAuth } from '@/hooks/use-auth';
 import type { Project } from '@/lib/types';
 
 
-function SprintsPageContent({ project }: { project: Project }) {
+export default function ProjectSprintsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params);
+  const { projects } = useProjectStore();
+  const project = projects.find(p => p.id === id);
   const { user } = useAuth();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
+
+  if (!project) {
+    return <div>Loading project...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -48,16 +55,4 @@ function SprintsPageContent({ project }: { project: Project }) {
       <SprintList projectId={project.id} />
     </div>
   )
-}
-
-
-export default function ProjectSprintsPage({ params }: { params: { id: string } }) {
-  const { projects } = useProjectStore();
-  const project = projects.find(p => p.id === params.id);
-
-  if (!project) {
-    return <div>Loading project...</div>;
-  }
-
-  return <SprintsPageContent project={project} />;
 }

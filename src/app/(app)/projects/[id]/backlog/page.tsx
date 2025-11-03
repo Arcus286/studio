@@ -1,21 +1,19 @@
 
 'use client';
 
-import { notFound } from 'next/navigation';
+import * as React from 'react';
 import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { Backlog } from '@/components/sprints/backlog';
 
-export default function ProjectBacklogPage({ params: { id } }: { params: { id: string } }) {
+export default function ProjectBacklogPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = React.use(params);
   const { projects } = useProjectStore();
   const project = projects.find(p => p.id === id);
 
   if (!project) {
-    // We could show a loading state or a "not found" message.
-    // For now, returning null or a loading spinner might be best
-    // while the store hydrates on the client.
-    // notFound() should be used carefully on client components.
+    // This can happen on initial load while the store is hydrating
     return <div>Loading project...</div>; 
   }
 
