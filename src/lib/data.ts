@@ -238,6 +238,104 @@ export const TASKS: Task[] = [
         type: 'Task',
         sprintId: 'SPRINT-3',
     },
+     {
+        id: 'TASK-11',
+        projectId: 'PROJ-1',
+        title: 'User role management feature',
+        description: 'Implement functionality for admins to manage user roles and permissions.',
+        status: 'in-review',
+        assignedUserId: '1',
+        estimatedHours: 24,
+        effort: 'High',
+        timeSpent: 18,
+        createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date().toISOString(),
+        priority: 'High',
+        type: 'Story',
+        sprintId: 'SPRINT-1'
+    },
+    {
+        id: 'TASK-12',
+        projectId: 'PROJ-1',
+        title: 'Design admin dashboard for roles',
+        description: 'Create mockups for the user management interface in the admin dashboard.',
+        status: 'done',
+        assignedUserId: '5',
+        estimatedHours: 6,
+        effort: 'Low',
+        timeSpent: 6,
+        createdAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+        priority: 'Medium',
+        type: 'Task',
+        storyId: 'TASK-11',
+        sprintId: 'SPRINT-1'
+    },
+    {
+        id: 'TASK-13',
+        projectId: 'PROJ-1',
+        title: 'API for updating user roles',
+        description: 'Build the backend endpoint for administrators to update user roles and permissions.',
+        status: 'in-progress',
+        assignedUserId: '3',
+        estimatedHours: 8,
+        effort: 'Medium',
+        timeSpent: 4,
+        createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date().toISOString(),
+        priority: 'High',
+        type: 'Task',
+        storyId: 'TASK-11',
+        sprintId: 'SPRINT-1'
+    },
+    {
+        id: 'TASK-14',
+        projectId: 'PROJ-1',
+        title: 'Frontend for admin role management',
+        description: 'Implement the UI for the admin dashboard to allow role changes.',
+        status: 'to-do',
+        assignedUserId: '4',
+        estimatedHours: 10,
+        effort: 'Medium',
+        timeSpent: 0,
+        createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        priority: 'Medium',
+        type: 'Task',
+        storyId: 'TASK-11',
+        sprintId: 'SPRINT-2', // For next sprint
+        dependsOn: ['TASK-13']
+    },
+    {
+        id: 'TASK-15',
+        projectId: 'PROJ-1',
+        title: 'Login button unresponsive on Safari',
+        description: 'The main login button is not firing the click event on Safari browsers, blocking user sign-in.',
+        status: 'to-do',
+        assignedUserId: '4',
+        estimatedHours: 2,
+        effort: 'Low',
+        timeSpent: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        priority: 'High',
+        type: 'Bug'
+    },
+    {
+        id: 'TASK-16',
+        projectId: 'PROJ-1',
+        title: 'Fix mobile layout for dashboard',
+        description: 'The dashboard analytics cards are overflowing on small mobile screens.',
+        status: 'in-progress',
+        assignedUserId: '4',
+        estimatedHours: 3,
+        effort: 'Low',
+        timeSpent: 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        priority: 'Medium',
+        type: 'Bug'
+    }
 ];
 
 export const PROJECTS: Project[] = [
@@ -337,3 +435,5 @@ export type Priority = 'Low' | 'Medium' | 'High';
 export const PRIORITIES: Priority[] = ['Low', 'Medium', 'High'];
 
 export const EFFORT_LEVELS: Effort[] = ['Low', 'Medium', 'High'];
+
+    
