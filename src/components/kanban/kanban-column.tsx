@@ -29,12 +29,15 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
   const { user } = useAuth();
   const allTasks = useStore(state => state.tasks);
   
-  // Filter out tasks that are children of a story in the current column
+  // A task is a top-level task if it's not a story, or if it is a story.
+  // Child tasks of stories are rendered inside the KanbanCard for the story.
   const topLevelTasks = tasks.filter(task => {
     if (task.storyId) {
-        const parentStory = tasks.find(t => t.id === task.storyId);
-        return !parentStory || parentStory.status !== column.id;
+      // It's a child task. Don't render it at the top level.
+      // It will be rendered inside its parent story card.
+      return false;
     }
+    // It's a Story or a standalone Task/Bug, so render it.
     return true;
   });
 
