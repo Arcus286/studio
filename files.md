@@ -151,3 +151,5 @@ This document outlines the file and directory structure of the AgileBridge appli
 ├── tailwind.config.ts
 └── tsconfig.json
 ```
+
+Additionally, you'll need a `firestore.rules` file and a `docs/backend.json` if you plan on using the Firebase features, but for running the app locally with its current client-side data, the list above is what you need. After creating these files and installing the dependencies with `npm install`, you'll be able to run it.
