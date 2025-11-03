@@ -46,8 +46,12 @@ const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' | 'Story' }) => {
 }
 
 const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: string }) => {
+    if (status === 'done') {
+        return null;
+    }
+
     const dueDate = new Date(deadline);
-    const isOverdue = isPast(dueDate) && differenceInDays(new Date(), dueDate) > 0 && status !== 'done';
+    const isOverdue = isPast(dueDate) && differenceInDays(new Date(), dueDate) >= 0;
     const days = differenceInDays(dueDate, new Date());
 
     let text, color;
