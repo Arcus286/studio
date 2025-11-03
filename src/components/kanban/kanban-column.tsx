@@ -29,9 +29,17 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
   const { user } = useAuth();
   const allTasks = useStore(state => state.tasks);
   
-  // A task is a top-level task if it does not have a storyId.
-  // Child tasks (those with a storyId) are rendered inside the KanbanCard for their parent story.
-  const topLevelTasks = tasks.filter(task => !task.storyId);
+  // A task is a "top-level" task for this column if:
+  // 1. It has no parent story (`!t.storyId`).
+  // 2. Or, its parent story is NOT in the current column. This prevents rendering it twice.
+  const topLevelTasksInColumn = tasks.filter(t => {
+    if (!t.storyId) {
+      return true; // Always show tasks without a parent.
+    }
+    const parentStory = allTasks.find(story => story.id === t.storyId);
+    // Only show the child task as a standalone card if its parent is NOT in this column.
+    return parentStory?.status !== column.id;
+  });
 
 
   return (
@@ -57,7 +65,7 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
               snapshot.isDraggingOver ? 'bg-black/10' : 'bg-transparent'
             )}
           >
-            {topLevelTasks.map((task, index) => {
+            {topLevelTasksInColumn.map((task, index) => {
               const blockingTasks = (task.dependsOn || [])
                 .map(depId => allTasks.find(t => t.id === depId))
                 .filter(t => t && t.status !== 'done');
