@@ -51,36 +51,28 @@ const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: strin
     }
 
     const dueDate = new Date(deadline);
-    const isOverdue = isPast(dueDate) && differenceInDays(new Date(), dueDate) >= 0;
-    const days = differenceInDays(dueDate, new Date());
+    const isOverdue = isPast(dueDate) && status !== 'done';
 
-    let text, color;
-
-    if (isOverdue) {
-        text = 'Overdue';
-        color = 'text-red-500';
-    } else if (days === 0) {
-        text = 'Due today';
-        color = 'text-yellow-500';
-    } else if (days === 1) {
-        text = 'Due tomorrow';
-        color = 'text-yellow-500';
-    } else {
-        text = `Due in ${days} days`;
-        color = 'text-muted-foreground';
-    }
+    const color = isOverdue ? 'text-red-500' : 'text-muted-foreground';
 
     return (
         <div className={cn("flex items-center gap-1.5", color)}>
             <CalendarClock className="h-4 w-4" />
             <span>{format(dueDate, "MMM d")}</span>
-            <span className="hidden md:inline">- {text}</span>
         </div>
     )
 }
 
 const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task) => void }) => {
     const { allUsers } = useAuth();
+    const { tasks } = useStore();
+    const parentStory = tasks.find(t => t.id === task.storyId);
+    
+    // Do not render child if its parent story is in the same column
+    if (parentStory && parentStory.status === task.status) {
+        return null;
+    }
+
     const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
     return (
         <div 
@@ -160,7 +152,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
                     </div>
                      <div className="pl-6 space-y-1">
                         {childTasks.length > 0 ? (
-                            childTasks.map(child => (
+                             childTasks.map(child => (
                                 <ChildTask key={child.id} task={child} onTaskClick={handleChildTaskClick} />
                             ))
                         ) : (
