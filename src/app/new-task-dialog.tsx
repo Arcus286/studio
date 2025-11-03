@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ROLES, TASK_TYPES, PRIORITIES, KANBAN_COLUMNS } from '@/lib/data';
+import { ROLES, TASK_TYPES, PRIORITIES, KANBAN_COLUMNS, USERS } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { ArrowLeft, PlusCircle } from 'lucide-react';
@@ -24,7 +25,7 @@ const taskSchema = z.object({
   type: z.string().min(1, 'Please select a task type.'),
   priority: z.string().min(1, 'Please select a priority.'),
   estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.'),
-  assignedRole: z.string().min(1, 'Please assign a role.'),
+  assignedUserId: z.string().min(1, 'Please assign a user.'),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -41,7 +42,7 @@ export function NewTaskForm() {
       type: '',
       priority: 'Medium',
       estimatedHours: 1,
-      assignedRole: '',
+      assignedUserId: '',
     },
   });
 
@@ -89,7 +90,7 @@ export function NewTaskForm() {
                     />
                     <FormField
                         control={form.control}
-                        name="assignedRole"
+                        name="assignedUserId"
                         render={({ field }) => (
                             <FormItem>
                             <FormLabel>Which course/project?</FormLabel>
@@ -100,8 +101,8 @@ export function NewTaskForm() {
                                     </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        {ROLES.filter(r => r !== 'Admin').map(role => (
-                                            <SelectItem key={role} value={role}>{role} Project</SelectItem>
+                                        {USERS.filter(u => u.status === 'active').map(user => (
+                                            <SelectItem key={user.id} value={user.id}>{user.username}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>

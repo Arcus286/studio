@@ -38,7 +38,7 @@ export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardA
   const userFilteredTasks =
     user?.userType === 'Admin' || user?.userType === 'Manager'
       ? tasks
-      : tasks.filter((task) => task.assignedRole === user?.role);
+      : tasks.filter((task) => task.assignedUserId === user?.id);
 
   const notOverdueTasks = userFilteredTasks.filter(task => {
     if (!task.deadline) return true; // Keep tasks without deadlines

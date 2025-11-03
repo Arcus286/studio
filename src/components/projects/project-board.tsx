@@ -1,3 +1,4 @@
+
 'use client';
 
 import { KanbanBoard } from '@/components/kanban/kanban-board';
@@ -7,7 +8,7 @@ import type { Task, TaskStatus, Project, User } from '@/lib/types';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Search, MoreHorizontal } from 'lucide-react';
-import { USERS } from '@/lib/data';
+import { useAuth } from '@/hooks/use-auth';
 import { useStore } from '@/lib/store';
 import { useSprintStore } from '@/lib/sprint-store';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -83,6 +84,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const allTasks = useStore((state) => state.tasks);
   const { sprints } = useSprintStore();
+  const { allUsers } = useAuth();
 
   const activeSprint = useMemo(() => {
     return sprints.find(s => s.projectId === project.id && s.status === 'active');
@@ -94,8 +96,8 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   }, [allTasks, activeSprint]);
 
   const projectMembers = useMemo(() => {
-    return USERS.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));
-  }, [project]);
+    return allUsers.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));
+  }, [project, allUsers]);
   
   const visibleMembers = projectMembers.slice(0, 15);
   const hiddenMembersCount = projectMembers.length - visibleMembers.length;
@@ -116,7 +118,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
     if (!searchTerm) return true;
 
     const term = searchTerm.toLowerCase();
-    const user = USERS.find(u => u.role === task.assignedRole);
+    const user = allUsers.find(u => u.id === task.assignedUserId);
     const sprint = sprints.find(s => s.id === task.sprintId);
     const story = allTasks.find(t => t.id === task.storyId);
 

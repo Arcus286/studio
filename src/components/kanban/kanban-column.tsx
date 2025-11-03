@@ -68,7 +68,7 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
                 .filter(t => t && t.status !== 'done');
               const isBlocked = blockingTasks.length > 0;
               
-              const isDraggable = (user?.userType === 'Admin' || user?.userType === 'Manager' || (user?.userType === 'User' && user.role === task.assignedRole)) && !isBlocked;
+              const isDraggable = (user?.userType === 'Admin' || user?.userType === 'Manager' || user?.id === task.assignedUserId) && !isBlocked;
               
               return (
               <Draggable key={task.id} draggableId={task.id} index={index} isDragDisabled={!isDraggable}>

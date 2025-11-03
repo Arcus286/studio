@@ -77,7 +77,7 @@ const DeadlineDisplay = ({ deadline }: { deadline: string }) => {
 
 const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task) => void }) => {
     const { allUsers } = useAuth();
-    const assignedUser = allUsers.find(u => u.role === task.assignedRole);
+    const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
     return (
         <div 
             className="flex items-center justify-between p-2 rounded-md bg-card/50 hover:bg-card cursor-pointer"
@@ -111,7 +111,7 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task
 export function KanbanCard({ task, isDragging }: KanbanCardProps) {
   const [detailTask, setDetailTask] = useState<Task | null>(null);
   const { allUsers } = useAuth();
-  const assignedUser = allUsers.find(u => u.role === task.assignedRole);
+  const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
   const { tasks: allTasks } = useStore();
   
   const childTasks = task.type === 'Story' 

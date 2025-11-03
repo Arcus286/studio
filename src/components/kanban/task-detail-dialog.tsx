@@ -135,7 +135,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   }
   
   const progressPercentage = task.estimatedHours > 0 ? (task.timeSpent / task.estimatedHours) * 100 : 0;
-  const assignedUser = USERS.find(u => u.role === task.assignedRole);
+  const assignedUser = USERS.find(u => u.id === task.assignedUserId);
   const statusLabel = columns.find(c => c.id === task.status)?.title || task.status;
   const isOverdue = task.deadline && isPast(new Date(task.deadline));
 
@@ -256,7 +256,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                     <div>
                         <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3">
                             <Users className="h-4 w-4" />
-                            Team Members (1)
+                            Assigned To
                         </h3>
                          {assignedUser && (
                             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">

@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Bug, CircleDot } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useStore } from '@/lib/store';
+import { USERS } from '@/lib/data';
 
 type RecentActivityProps = {
   tasks: Task[];
@@ -26,14 +27,14 @@ const TaskTypeIcon = ({ type }: { type: TaskTypeLabel }) => {
 
 
 export function RecentActivity({ tasks }: RecentActivityProps) {
-  const { user } = useAuth();
+  const { user, allUsers } = useAuth();
   const { columns } = useStore();
 
   const recentTasks = useMemo(() => {
     const filtered =
       user?.userType === 'Admin' || user?.userType === 'Manager'
         ? tasks
-        : tasks.filter((task) => task.assignedRole === user?.role);
+        : tasks.filter((task) => task.assignedUserId === user?.id);
     
     return filtered
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
@@ -47,6 +48,7 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
             <div className="space-y-6">
             {recentTasks.map((task) => {
                 const statusLabel = columns.find(c => c.id === task.status)?.title || task.status;
+                const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
                 return (
                 <div key={task.id} className="flex items-start gap-4">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted mt-1">
@@ -58,7 +60,7 @@ export function RecentActivity({ tasks }: RecentActivityProps) {
                             {formatDistanceToNow(new Date(task.updatedAt), { addSuffix: true })}
                         </p>
                         <div className="mt-2 flex items-center gap-2">
-                             <Badge variant="outline">{task.assignedRole}</Badge>
+                             <Badge variant="outline">{assignedUser?.username || 'Unassigned'}</Badge>
                              <Badge variant="secondary">{statusLabel}</Badge>
                         </div>
                     </div>

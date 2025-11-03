@@ -1,5 +1,6 @@
 
-import { TASKS } from "@/lib/data";
+
+import { TASKS, USERS } from "@/lib/data";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -14,6 +15,8 @@ export default function TaskDetailPage({ params: { id } }: { params: { id: strin
   if (!task) {
     notFound();
   }
+  
+  const assignedUser = USERS.find(u => u.id === task.assignedUserId);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
@@ -50,8 +53,8 @@ export default function TaskDetailPage({ params: { id } }: { params: { id: strin
                         <p>{format(parseISO(task.createdAt), "MMMM d, yyyy")}</p>
                     </div>
                      <div>
-                        <h3 className="font-medium text-foreground">Assigned Role</h3>
-                        <p>{task.assignedRole}</p>
+                        <h3 className="font-medium text-foreground">Assigned User</h3>
+                        <p>{assignedUser?.username || 'Unassigned'}</p>
                     </div>
                      <div>
                         <h3 className="font-medium text-foreground">Time Estimate</h3>

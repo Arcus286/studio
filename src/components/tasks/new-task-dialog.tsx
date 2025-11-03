@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState } from 'react';
@@ -19,16 +20,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { TASK_TYPES, PRIORITIES, SPECIALIZED_ROLES, EFFORT_LEVELS } from '@/lib/data';
+import { TASK_TYPES, PRIORITIES, EFFORT_LEVELS } from '@/lib/data';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { DatePicker } from '../ui/date-picker';
 import { useStore } from '@/lib/store';
-import type { Task, SpecializedRole, Sprint } from '@/lib/types';
+import type { Task, Sprint } from '@/lib/types';
 import { useSprintStore } from '@/lib/sprint-store';
 import { add, differenceInMilliseconds } from 'date-fns';
 import { useProjectStore } from '@/lib/project-store';
+import { useAuth } from '@/hooks/use-auth';
 
 
 const taskSchema = z.object({
@@ -40,7 +42,7 @@ const taskSchema = z.object({
   priority: z.string().min(1, 'Please select a priority.'),
   estimatedHours: z.coerce.number().min(0.5, 'Estimated hours must be at least 0.5.').optional(),
   effort: z.string().optional(),
-  assignedRole: z.string().min(1, 'Please assign a role.'),
+  assignedUserId: z.string().min(1, 'Please assign a user.'),
   deadline: z.date().optional(),
   storyId: z.string().optional(),
   sprintId: z.string().optional(),
@@ -56,6 +58,8 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const { addTask, tasks, columns } = useStore();
   const { sprints } = useSprintStore();
   const { projects } = useProjectStore();
+  const { allUsers } = useAuth();
+
 
   const form = useForm<TaskFormValues>({
     resolver: zodResolver(taskSchema),
@@ -67,7 +71,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       type: 'Task',
       priority: 'Medium',
       effort: 'Medium',
-      assignedRole: '',
+      assignedUserId: '',
       deadline: undefined,
       storyId: '',
       sprintId: '',
@@ -79,6 +83,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   
   const stories = tasks.filter(t => t.type === 'Story' && t.projectId === watchProjectId);
   const projectSprints = sprints.filter(s => s.projectId === watchProjectId && s.status !== 'completed');
+  const projectMembers = allUsers.filter(u => projects.find(p => p.id === watchProjectId)?.members.some(m => m.id === u.id));
 
   const handleSprintChange = (sprintId: string) => {
     const selectedSprint = sprints.find(s => s.id === sprintId);
@@ -99,7 +104,6 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       ...data,
       estimatedHours,
       effort: data.effort as Task['effort'],
-      assignedRole: data.assignedRole as SpecializedRole,
       priority: data.priority as Task['priority'],
       type: data.type as Task['type'],
       deadline: data.deadline?.toISOString(),
@@ -121,7 +125,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
       type: 'Task',
       priority: 'Medium',
       effort: 'Medium',
-      assignedRole: '',
+      assignedUserId: '',
       deadline: undefined,
       storyId: '',
       sprintId: '',
@@ -152,6 +156,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
                       field.onChange(value);
                       form.setValue('sprintId', '');
                       form.setValue('storyId', '');
+                      form.setValue('assignedUserId', '');
                   }} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger>
@@ -270,19 +275,19 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
-                name="assignedRole"
+                name="assignedUserId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Assign To</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!watchProjectId}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a role" />
+                          <SelectValue placeholder="Select a user" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {SPECIALIZED_ROLES.map(role => (
-                          <SelectItem key={role} value={role}>{role}</SelectItem>
+                        {projectMembers.map(user => (
+                          <SelectItem key={user.id} value={user.id}>{user.username}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>

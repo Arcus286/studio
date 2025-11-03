@@ -32,7 +32,7 @@ export const useStore = create<TaskStore>()(
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
             timeSpent: 0,
-            assignedRole: task.assignedRole as Role,
+            assignedUserId: task.assignedUserId,
             storyId: task.storyId || undefined,
             comments: [],
             dependsOn: [],

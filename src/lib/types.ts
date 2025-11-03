@@ -43,7 +43,7 @@ export type Task = {
   title: string;
   description: string;
   status: TaskStatus;
-  assignedRole: Role;
+  assignedUserId?: string;
   estimatedHours: number;
   effort?: Effort;
   timeSpent: number;
@@ -94,5 +94,6 @@ export type Notification = {
     read: boolean;
     taskId?: string;
 };
+
 
 
