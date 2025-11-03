@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { Role } from '@/lib/types';
 
-const availableRoles: Role[] = ['Backend', 'Frontend', 'Developer', 'Designer'];
+const availableRoles: Role[] = ['Frontend', 'Backend', 'Developer'];
 
 export default function SignupPage() {
     const [username, setUsername] = useState('');

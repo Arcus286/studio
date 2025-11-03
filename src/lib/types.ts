@@ -1,8 +1,7 @@
 
-
 export type UserType = 'Admin' | 'Manager' | 'User';
-export type Role = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager' | 'None';
-export type SpecializedRole = 'Frontend' | 'Backend' | 'Designer' | 'Developer' | 'Admin' | 'Manager';
+export type Role = 'Frontend' | 'Backend' | 'Developer' | 'Project Manager' | 'Admin' | 'None';
+export type SpecializedRole = 'Frontend' | 'Backend' | 'Developer' | 'Project Manager' | 'Admin';
 
 
 export type User = {
@@ -94,6 +93,3 @@ export type Notification = {
     read: boolean;
     taskId?: string;
 };
-
-
-
