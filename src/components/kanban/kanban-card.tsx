@@ -48,23 +48,26 @@ const TaskTypeIcon = ({ type }: { type: 'Bug' | 'Task' | 'Story' }) => {
 const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: string }) => {
     const dueDate = new Date(deadline);
     const isDone = status === 'done';
-    const isOverdue = isPast(dueDate);
-
+    const isOverdue = isPast(dueDate) && !isDone;
+    
     let color = 'text-muted-foreground';
-    let text = format(dueDate, "MMM d");
-
-    if (isDone) {
+    if(isDone) {
         color = 'text-green-500';
     } else if (isOverdue) {
-        const daysOverdue = differenceInDays(new Date(), dueDate);
         color = 'text-red-500';
-        text = `${format(dueDate, "MMM d")} - Overdue by ${daysOverdue} day${daysOverdue === 1 ? '' : 's'}`;
     }
+
+    const daysOverdue = differenceInDays(new Date(), dueDate);
 
     return (
         <div className={cn("flex items-center gap-1.5", color)}>
             <CalendarClock className="h-4 w-4" />
-            <span>{text}</span>
+            <span>
+                {isOverdue 
+                    ? `${format(dueDate, "MMM d")} - Overdue by ${daysOverdue} day${daysOverdue === 1 ? '' : 's'}`
+                    : format(dueDate, "MMM d")
+                }
+            </span>
         </div>
     )
 }
@@ -84,11 +87,11 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task
             className="flex items-center justify-between p-2 rounded-md bg-card/50 hover:bg-card cursor-pointer"
             onClick={() => onTaskClick(task)}
         >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
                 <TaskTypeIcon type={task.type} />
-                <span className="text-xs font-medium truncate">{task.title}</span>
+                <span className="text-xs font-medium">{task.title}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
                 {assignedUser && (
                     <TooltipProvider>
                         <Tooltip>
@@ -148,8 +151,8 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
                 )}
             >
                 <CardContent className="p-3 space-y-2">
-                    <div className="flex justify-between items-start cursor-pointer" onClick={handleCardClick}>
-                        <p className="font-semibold text-foreground pr-2 flex items-center gap-2 truncate">
+                    <div className="flex justify-between items-start cursor-pointer min-w-0" onClick={handleCardClick}>
+                        <p className="font-semibold text-foreground pr-2 flex items-center gap-2">
                             <TaskTypeIcon type={task.type} />
                             {task.title}
                         </p>
