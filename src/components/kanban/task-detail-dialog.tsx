@@ -19,7 +19,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { format, parseISO, isPast, formatDistanceToNow } from 'date-fns';
+import { format, parseISO, isPast, formatDistanceToNow, differenceInDays } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
@@ -136,7 +136,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     return [...task.comments].sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return commentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        return commentSortOrder === 'asc' ? dateA - dateB : dateB - a;
     });
   }, [task?.comments, commentSortOrder]);
   
@@ -186,33 +186,35 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSave)} className="flex flex-col h-full">
                 <DialogHeader className="p-6 pb-4 border-b">
-                <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
-                        <TaskTypeIcon type={task.type} className="h-6 w-6" />
-                    </div>
-                    <div>
-                        {isManager ? (
-                            <FormField
-                                control={form.control}
-                                name="title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input {...field} className="text-xl font-semibold p-0 border-none focus-visible:ring-0" />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        ) : (
-                            <DialogTitle className="text-xl">{task.title}</DialogTitle>
-                        )}
-                        <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="outline">{task.id}</Badge>
-                            <Badge variant="secondary">{statusLabel}</Badge>
-                        </div>
-                    </div>
-                </div>
+                  <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+                          <TaskTypeIcon type={task.type} className="h-6 w-6" />
+                      </div>
+                      <div>
+                          <DialogTitle className="text-xl">
+                            {isManager ? (
+                                <FormField
+                                    control={form.control}
+                                    name="title"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Input {...field} className="text-xl font-semibold p-0 border-none focus-visible:ring-0" />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            ) : (
+                                task.title
+                            )}
+                          </DialogTitle>
+                          <div className="flex items-center gap-2 mt-1">
+                              <Badge variant="outline">{task.id}</Badge>
+                              <Badge variant="secondary">{statusLabel}</Badge>
+                          </div>
+                      </div>
+                  </div>
                 </DialogHeader>
                 
                 <div className="grid grid-cols-10 flex-1 overflow-hidden">
