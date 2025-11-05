@@ -30,14 +30,17 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
   const allTasks = useStore(state => state.tasks);
   
   // A task is a "top-level" task for this column if:
-  // 1. It has no parent story (`!t.storyId`).
-  // 2. Or, its parent story is NOT in the current column. This prevents rendering it twice.
+  // 1. It is a Story. Stories are always top-level containers.
+  // 2. It has no parent story (`!t.storyId`).
+  // 3. Or, its parent story is NOT in the current column. This prevents rendering child tasks as standalone cards when the story is in the same column.
   const topLevelTasksInColumn = tasks.filter(t => {
+    if (t.type === 'Story') {
+      return true;
+    }
     if (!t.storyId) {
-      return true; // Always show tasks without a parent.
+      return true; 
     }
     const parentStory = allTasks.find(story => story.id === t.storyId);
-    // Only show the child task as a standalone card if its parent is NOT in this column.
     return parentStory?.status !== column.id;
   });
 
