@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -29,12 +30,13 @@ const profileSchema = z.object({
   designation: z.string().optional(),
   phoneNumber: z.string().optional(),
   bio: z.string().optional(),
+  avatarUrl: z.string().url('Please enter a valid URL.').optional().or(z.literal('')),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export function EditProfileForm() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { toast } = useToast();
 
   const form = useForm<ProfileFormValues>({
@@ -43,12 +45,13 @@ export function EditProfileForm() {
       designation: user?.designation || '',
       phoneNumber: user?.phoneNumber || '',
       bio: user?.bio || '',
+      avatarUrl: user?.avatarUrl || '',
     },
   });
 
   const onSubmit = (data: ProfileFormValues) => {
-    // In a real app, you would call a server action to update the user
-    console.log('Updated profile data:', data);
+    if (!user) return;
+    updateUser(user.id, data);
     toast({
       title: 'Profile Updated',
       description: 'Your personal details have been saved successfully.',
@@ -66,6 +69,19 @@ export function EditProfileForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="avatarUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Avatar URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://example.com/avatar.png" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}

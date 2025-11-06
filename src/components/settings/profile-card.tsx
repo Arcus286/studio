@@ -4,6 +4,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, Phone } from "lucide-react";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function ProfileCard() {
   const { user } = useAuth();
@@ -19,9 +21,12 @@ export function ProfileCard() {
     <Card>
       <CardContent className="p-6 text-center">
         <div className="relative inline-block">
-            <div className="w-24 h-24 mx-auto mb-4 border-4 border-primary/20 rounded-full flex items-center justify-center bg-muted text-4xl font-bold">
-                {user.username?.charAt(0).toUpperCase()}
-            </div>
+            <Avatar className="w-24 h-24 mx-auto mb-4 border-4 border-primary/20 text-4xl font-bold">
+                {user.avatarUrl ? (
+                    <AvatarImage src={user.avatarUrl} alt={user.username} />
+                ) : null}
+                <AvatarFallback>{user.username?.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
         </div>
         <h2 className="text-2xl font-bold">{user.username}</h2>
         <p className="text-muted-foreground">{user.email}</p>

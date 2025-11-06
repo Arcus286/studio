@@ -15,6 +15,7 @@ export type User = {
   designation?: string;
   phoneNumber?: string;
   bio?: string;
+  avatarUrl?: string;
 };
 
 export type KanbanColumnData = {

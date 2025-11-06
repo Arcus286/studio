@@ -2,11 +2,11 @@
 import type { User, Task, Project, Notification, KanbanColumnData, Role, UserType, SpecializedRole, Sprint, Effort, Comment } from './types';
 
 export const USERS: User[] = [
-  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.' },
-  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', userType: 'Manager', role: 'PM', status: 'active' },
-  { id: '3', username: 'dev-user', email: 'dev@taskflow.com', password: 'password', userType: 'User', role: 'Developer', status: 'active' },
-  { id: '4', username: 'frontend-user', email: 'frontend@taskflow.com', password: 'password', userType: 'User', role: 'Frontend', status: 'active' },
-  { id: '5', username: 'design-user', email: 'design@taskflow.com', password: 'password', userType: 'User', role: 'Developer', status: 'active' },
+  { id: '1', username: 'admin', email: 'admin@taskflow.com', password: 'Admin@123', userType: 'Admin', role: 'Admin', status: 'active', designation: 'Project Lead', phoneNumber: '+1 (555) 123-4567', bio: 'I am the administrator for the AgileBridge platform.', avatarUrl: 'https://i.pravatar.cc/150?u=1' },
+  { id: '2', username: 'Project Manager', email: 'pm@taskflow.com', password: 'pmpassword', userType: 'Manager', role: 'PM', status: 'active', avatarUrl: 'https://i.pravatar.cc/150?u=2' },
+  { id: '3', username: 'dev-user', email: 'dev@taskflow.com', password: 'password', userType: 'User', role: 'Developer', status: 'active', avatarUrl: 'https://i.pravatar.cc/150?u=3' },
+  { id: '4', username: 'frontend-user', email: 'frontend@taskflow.com', password: 'password', userType: 'User', role: 'Frontend', status: 'active', avatarUrl: 'https://i.pravatar.cc/150?u=4' },
+  { id: '5', username: 'design-user', email: 'design@taskflow.com', password: 'password', userType: 'User', role: 'Developer', status: 'active', avatarUrl: 'https://i.pravatar.cc/150?u=5' },
 ];
 
 export const KANBAN_COLUMNS: KanbanColumnData[] = [
