@@ -73,7 +73,7 @@ const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: strin
     )
 }
 
-const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task) => void }) => {
+const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (e: React.MouseEvent, task: Task) => void }) => {
     const { allUsers } = useAuth();
     const { tasks } = useStore();
     const parentStory = tasks.find(t => t.id === task.storyId);
@@ -86,7 +86,7 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (task: Task
     return (
         <div 
             className="flex items-center justify-between p-2 rounded-md bg-card/50 hover:bg-card cursor-pointer"
-            onClick={() => onTaskClick(task)}
+            onClick={(e) => onTaskClick(e, task)}
         >
             <div className="flex items-center gap-2 min-w-0">
                 <TaskTypeIcon type={task.type} />
@@ -135,7 +135,8 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
     setDetailTask(task);
   }
   
-  const handleChildTaskClick = (child: Task) => {
+  const handleChildTaskClick = (e: React.MouseEvent, child: Task) => {
+    e.stopPropagation();
     setDetailTask(child);
   }
 
