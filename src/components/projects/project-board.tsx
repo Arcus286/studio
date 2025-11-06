@@ -7,13 +7,13 @@ import { useState, useMemo, useEffect } from 'react';
 import type { Task, TaskStatus, Project, User } from '@/lib/types';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Flame, Calendar, Info } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useStore } from '@/lib/store';
 import { useSprintStore } from '@/lib/sprint-store';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
-import { isPast } from 'date-fns';
+import { isPast, format, formatDistance } from 'date-fns';
 import {
   Dialog,
   DialogContent,
@@ -31,6 +31,9 @@ import {
 } from '@/components/ui/table';
 import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
+import { Card, CardContent, CardHeader } from '../ui/card';
+import { Badge } from '../ui/badge';
+
 
 interface ProjectBoardProps {
   project: Project;
@@ -137,7 +140,42 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
 
   return (
     <>
-      <DashboardAnalytics tasks={sprintTasks} onCardClick={handleAnalyticsClick} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <div className="lg:col-span-2">
+            <DashboardAnalytics tasks={sprintTasks} onCardClick={handleAnalyticsClick} />
+        </div>
+        <div className="lg:col-span-1">
+             {activeSprint ? (
+                <Card className="bg-primary/5 border-primary/20 h-full">
+                    <CardHeader className="pb-3">
+                        <div className="flex items-center gap-3">
+                            <Flame className="h-5 w-5 text-primary" />
+                            <h3 className="font-semibold text-primary">Active Sprint</h3>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                        <h4 className="font-bold text-lg">{activeSprint.name}</h4>
+                        <Badge variant="outline">{activeSprint.id}</Badge>
+                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Calendar className="h-4 w-4" />
+                            <span>{format(new Date(activeSprint.startDate), 'MMM d')} - {format(new Date(activeSprint.endDate), 'MMM d, yyyy')}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground italic">
+                            {formatDistance(new Date(activeSprint.endDate), new Date(), { addSuffix: true })} remaining
+                        </p>
+                    </CardContent>
+                </Card>
+            ) : (
+                <Card className="bg-muted/50 border-dashed h-full flex flex-col justify-center items-center">
+                    <CardContent className="text-center p-6">
+                         <Info className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                        <h3 className="font-semibold">No Active Sprint</h3>
+                        <p className="text-sm text-muted-foreground">The board is currently showing items from the backlog.</p>
+                    </CardContent>
+                </Card>
+            )}
+        </div>
+      </div>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 my-6">
         <div className="flex items-center gap-2">
           <TooltipProvider>
