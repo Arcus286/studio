@@ -7,7 +7,7 @@ import { useState, useMemo, useEffect } from 'react';
 import type { Task, TaskStatus, Project, User } from '@/lib/types';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Search, MoreHorizontal } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useStore } from '@/lib/store';
 import { useSprintStore } from '@/lib/sprint-store';
@@ -46,13 +46,11 @@ const generateColor = (seed: string) => {
 };
 
 
-function AllMembersDialog({ members }: { members: User[] }) {
+function AllMembersDialog({ members, children }: { members: User[], children: React.ReactNode }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
+        {children}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -102,7 +100,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
     return allUsers.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));
   }, [project, allUsers]);
   
-  const visibleMembers = projectMembers.slice(0, 15);
+  const visibleMembers = projectMembers.slice(0, 5);
   const hiddenMembersCount = projectMembers.length - visibleMembers.length;
 
 
@@ -155,7 +153,11 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
               </Tooltip>
             ))}
             {hiddenMembersCount > 0 && (
-                <AllMembersDialog members={projectMembers} />
+                <AllMembersDialog members={projectMembers}>
+                     <Avatar>
+                        <AvatarFallback>+{hiddenMembersCount}</AvatarFallback>
+                    </Avatar>
+                </AllMembersDialog>
             )}
           </TooltipProvider>
         </div>
