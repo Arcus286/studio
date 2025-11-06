@@ -6,7 +6,7 @@ import { useState } from 'react';
 import type { Task } from '@/lib/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock, Layers, CircleDot, Lock } from 'lucide-react';
+import { Clock, ArrowUp, ArrowDown, Minus, Bug, CalendarClock, Layers, CircleDot, Lock, Flame } from 'lucide-react';
 import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
@@ -14,6 +14,7 @@ import { format, isPast, differenceInDays } from 'date-fns';
 import { useStore } from '@/lib/store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { useSprintStore } from '@/lib/sprint-store';
 
 type KanbanCardProps = {
   task: Task;
@@ -117,6 +118,7 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
   const { allUsers } = useAuth();
   const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
   const { tasks: allTasks } = useStore();
+  const { sprints } = useSprintStore();
   
   const childTasks = task.type === 'Story' 
     ? allTasks.filter(t => t.storyId === task.id) 
@@ -126,6 +128,8 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
     .map(depId => allTasks.find(t => t.id === depId))
     .filter(t => t && t.status !== 'done');
   const isBlocked = blockingTasks.length > 0;
+  
+  const sprint = task.sprintId ? sprints.find(s => s.id === task.sprintId) : null;
 
   const handleCardClick = () => {
     setDetailTask(task);
@@ -196,6 +200,12 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
                     <TaskTypeIcon type={task.type} />
                     {task.type}
                 </Badge>
+                {sprint && (
+                    <Badge variant="secondary" className="flex items-center gap-1">
+                        <Flame className="h-3 w-3" />
+                        {sprint.name}
+                    </Badge>
+                )}
            </div>
           <div className="flex justify-between items-center text-sm text-muted-foreground pt-2">
             <div className="flex items-center gap-3">
