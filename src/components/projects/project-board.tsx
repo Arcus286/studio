@@ -33,6 +33,7 @@ import { Checkbox } from '../ui/checkbox';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Badge } from '../ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 
 interface ProjectBoardProps {
@@ -90,17 +91,21 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   const { sprints } = useSprintStore();
   const { allUsers } = useAuth();
 
-  const activeSprint = useMemo(() => {
-    return sprints.find(s => s.projectId === project.id && s.status === 'active');
+  const { activeSprint, upcomingSprints } = useMemo(() => {
+    const projectSprints = sprints.filter(s => s.projectId === project.id);
+    const active = projectSprints.find(s => s.status === 'active');
+    const upcoming = projectSprints.filter(s => s.status === 'upcoming');
+    return { activeSprint: active, upcomingSprints: upcoming };
   }, [sprints, project.id]);
+  
+  const [sprintFilter, setSprintFilter] = useState<string>(activeSprint?.id || 'backlog');
 
-  const sprintTasks = useMemo(() => {
-    if (!activeSprint) {
-        // If no active sprint, show all tasks for the project that are not in any sprint
-        return allTasks.filter(t => t.projectId === project.id && !t.sprintId);
+  const tasksToDisplay = useMemo(() => {
+    if (sprintFilter === 'backlog') {
+      return allTasks.filter(t => t.projectId === project.id && !t.sprintId);
     }
-    return allTasks.filter(t => t.sprintId === activeSprint.id);
-  }, [allTasks, activeSprint, project.id]);
+    return allTasks.filter(t => t.sprintId === sprintFilter);
+  }, [allTasks, project.id, sprintFilter]);
 
   const projectMembers = useMemo(() => {
     return allUsers.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));
@@ -117,7 +122,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
     }, 1500);
   };
 
-  const filteredTasks = sprintTasks.filter(task => {
+  const filteredTasks = tasksToDisplay.filter(task => {
     const isOverdueTask = task.deadline ? isPast(new Date(task.deadline)) : false;
     if (isOverdueTask && !showOverdue) {
         return false;
@@ -142,7 +147,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
     <>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
-            <DashboardAnalytics tasks={sprintTasks} onCardClick={handleAnalyticsClick} />
+            <DashboardAnalytics tasks={tasksToDisplay} onCardClick={handleAnalyticsClick} />
         </div>
         <div className="lg:col-span-1">
              {activeSprint ? (
@@ -202,12 +207,26 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
             )}
           </TooltipProvider>
         </div>
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-4 flex-wrap'>
             <div className="flex items-center space-x-2">
                 <Checkbox id="show-overdue" checked={showOverdue} onCheckedChange={(checked) => setShowOverdue(Boolean(checked))} />
                 <Label htmlFor="show-overdue" className="text-sm font-medium">Show Overdue</Label>
             </div>
-            <div className="relative w-full sm:w-auto sm:min-w-[300px]">
+            <div className='w-full sm:w-auto sm:min-w-[200px]'>
+              <Select value={sprintFilter} onValueChange={setSprintFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by sprint..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="backlog">Backlog</SelectItem>
+                  {activeSprint && <SelectItem value={activeSprint.id}>{activeSprint.name} (Active)</SelectItem>}
+                  {upcomingSprints.map(s => (
+                    <SelectItem key={s.id} value={s.id}>{s.name} (Upcoming)</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="relative w-full sm:w-auto sm:min-w-[250px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                     placeholder={`Search tasks...`}
