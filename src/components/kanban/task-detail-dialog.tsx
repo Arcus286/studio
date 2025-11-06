@@ -99,7 +99,7 @@ function CommentItem({ comment }: { comment: Comment }) {
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: TaskDetailDialogProps) {
   const { user, allUsers } = useAuth();
-  const { deleteTask, columns, addComment, tasks, updateTask } = useStore();
+  const { deleteTask, columns, addComment, tasks, updateTask, assignTaskToSprint } = useStore();
   const { sprints } = useSprintStore();
   const { projects } = useProjectStore();
 
@@ -142,9 +142,14 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   
   const handleSave = (data: TaskDetailFormValues) => {
     if (!task) return;
+    
+    const sprintId = data.sprintId === 'none' ? undefined : data.sprintId;
+    assignTaskToSprint(task.id, sprintId);
+    
     updateTask(task.id, {
         ...data,
         deadline: data.deadline?.toISOString(),
+        sprintId: sprintId,
     });
     toast({
         title: 'Task Updated',
@@ -347,7 +352,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Flame className="h-4 w-4" /> Sprint</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                            <Select onValueChange={field.onChange} value={field.value ?? 'none'} disabled={!isManager}>
                                                 <FormControl><SelectTrigger><SelectValue placeholder="Assign to sprint" /></SelectTrigger></FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="none">Backlog</SelectItem>
