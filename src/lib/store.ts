@@ -27,11 +27,14 @@ export const useStore = create<TaskStore>()(
       addTask: (task) =>
         set((state) => {
           const prefix = task.type.toUpperCase();
-          const taskOfType = state.tasks.filter(t => t.id.startsWith(`${prefix}-`));
-          const maxId = taskOfType.reduce((max, t) => {
-              const num = parseInt(t.id.split('-')[1], 10);
-              return isNaN(num) ? max : Math.max(max, num);
+          
+          // Find the highest numeric ID across all tasks to ensure uniqueness.
+          const maxId = state.tasks.reduce((max, t) => {
+              const parts = t.id.split('-');
+              const num = parseInt(parts[parts.length - 1], 10);
+              return !isNaN(num) ? Math.max(max, num) : max;
           }, 0);
+
           const newId = `${prefix}-${String(maxId + 1).padStart(3, '0')}`;
 
           const newTask: Task = {
