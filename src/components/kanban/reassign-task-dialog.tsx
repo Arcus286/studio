@@ -17,23 +17,26 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Label } from '../ui/label';
 import { useAuth } from '@/hooks/use-auth';
 import { useProjectStore } from '@/lib/project-store';
+import { Input } from '../ui/input';
 
 type ReassignTaskDialogProps = {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (taskId: string, newStatus: TaskStatus, newUserId: string | undefined) => void;
+  onConfirm: (taskId: string, newStatus: TaskStatus, newUserId: string | undefined, timeSpent?: number) => void;
   task: Task | null;
   newStatus?: TaskStatus | null;
 };
 
 export function ReassignTaskDialog({ isOpen, onClose, onConfirm, task, newStatus }: ReassignTaskDialogProps) {
   const [assignedUserId, setAssignedUserId] = useState<string | undefined>(undefined);
+  const [timeSpent, setTimeSpent] = useState<number>(0);
   const { allUsers } = useAuth();
   const { projects } = useProjectStore();
 
   useEffect(() => {
     if (task) {
       setAssignedUserId(task.assignedUserId);
+      setTimeSpent(task.timeSpent);
     }
   }, [task]);
   
@@ -43,7 +46,7 @@ export function ReassignTaskDialog({ isOpen, onClose, onConfirm, task, newStatus
   const projectMembers = allUsers.filter(u => project?.members.some(m => m.id === u.id));
 
   const handleConfirm = () => {
-    onConfirm(task.id, newStatus, assignedUserId);
+    onConfirm(task.id, newStatus, assignedUserId, timeSpent);
   };
 
   return (
@@ -52,21 +55,34 @@ export function ReassignTaskDialog({ isOpen, onClose, onConfirm, task, newStatus
         <AlertDialogHeader>
           <AlertDialogTitle className="break-all">Move Task: "{task.title}"</AlertDialogTitle>
           <AlertDialogDescription>
-            You are moving this task to a new status. You can also re-assign it to a different user.
+            You are moving this task to a new status. You can also re-assign it and log time spent.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <div className="grid gap-4 my-4">
-            <Label htmlFor="assignee">Assign To</Label>
-            <Select onValueChange={setAssignedUserId} value={assignedUserId}>
-                <SelectTrigger id="assignee">
-                    <SelectValue placeholder="Select a user" />
-                </SelectTrigger>
-                <SelectContent>
-                    {projectMembers.map(user => (
-                        <SelectItem key={user.id} value={user.id}>{user.username}</SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+        <div className="grid gap-6 my-4">
+            <div className="grid gap-2">
+                <Label htmlFor="assignee">Assign To</Label>
+                <Select onValueChange={setAssignedUserId} value={assignedUserId}>
+                    <SelectTrigger id="assignee">
+                        <SelectValue placeholder="Select a user" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {projectMembers.map(user => (
+                            <SelectItem key={user.id} value={user.id}>{user.username}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+             <div className="grid gap-2">
+                <Label htmlFor="time-spent">Hours Spent</Label>
+                <Input
+                  id="time-spent"
+                  type="number"
+                  value={timeSpent}
+                  onChange={(e) => setTimeSpent(Number(e.target.value))}
+                  min="0"
+                  max={task.estimatedHours}
+                />
+            </div>
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

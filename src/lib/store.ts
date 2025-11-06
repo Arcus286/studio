@@ -26,16 +26,13 @@ export const useStore = create<TaskStore>()(
       setColumns: (columns) => set({ columns }),
       addTask: (task) =>
         set((state) => {
-          const prefix = task.type.toUpperCase();
-          
-          // Find the highest numeric ID across all tasks to ensure uniqueness.
           const maxId = state.tasks.reduce((max, t) => {
               const parts = t.id.split('-');
               const num = parseInt(parts[parts.length - 1], 10);
               return !isNaN(num) ? Math.max(max, num) : max;
           }, 0);
 
-          const newId = `${prefix}-${String(maxId + 1).padStart(3, '0')}`;
+          const newId = `${task.type.toUpperCase()}-${String(maxId + 1).padStart(3, '0')}`;
 
           const newTask: Task = {
             ...task,
@@ -54,7 +51,9 @@ export const useStore = create<TaskStore>()(
         set((state) => {
            let newTimeSpent = updates.timeSpent;
            const task = state.tasks.find(t => t.id === taskId);
-           if (task) {
+
+           // Automatic time logging only if timeSpent is not explicitly provided in the update
+           if (task && updates.timeSpent === undefined) {
              if (updates.status === 'done') {
                 newTimeSpent = task.estimatedHours;
              } else if (updates.status === 'to-do') {

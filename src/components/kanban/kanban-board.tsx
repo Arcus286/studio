@@ -34,10 +34,10 @@ export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
     setReassignTask({ task: draggedTask, newStatus: destColId });
   };
   
-  const handleReassign = (taskId: string, newStatus: TaskStatus, newUserId: string | undefined) => {
+  const handleReassign = (taskId: string, newStatus: TaskStatus, newUserId: string | undefined, timeSpent?: number) => {
     const task = tasks.find(t => t.id === taskId);
     if (task) {
-        updateTask(taskId, { status: newStatus, assignedUserId: newUserId });
+        updateTask(taskId, { status: newStatus, assignedUserId: newUserId, timeSpent: timeSpent });
         const destColumn = columns.find(c => c.id === newStatus);
         toast({
             title: `Task "${task.title}" moved`,
