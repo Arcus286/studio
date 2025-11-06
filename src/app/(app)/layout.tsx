@@ -158,17 +158,32 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             {isProjectPage && projectId && (
               <div className="ml-4 mt-2">
                 <SidebarGroupLabel>Project Tools</SidebarGroupLabel>
-                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname.includes('/sprints')}
-                  >
-                    <Link href={`/projects/${projectId}/sprints`}>
-                      <Flame />
-                      Sprints
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                 {isManager && (
+                   <>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname.includes('/sprints')}
+                      >
+                        <Link href={`/projects/${projectId}/sprints`}>
+                          <Flame />
+                          Sprints
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                        asChild
+                        isActive={pathname.includes('/backlog')}
+                        >
+                        <Link href={`/projects/${projectId}/backlog`}>
+                            <ClipboardList />
+                            Backlog
+                        </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                   </>
+                 )}
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     asChild
@@ -177,17 +192,6 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                     <Link href={`/projects/${projectId}/board`}>
                       <KanbanSquare />
                       Board
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={pathname.includes('/backlog')}
-                  >
-                    <Link href={`/projects/${projectId}/backlog`}>
-                      <ClipboardList />
-                      Backlog
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

@@ -7,11 +7,17 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import Link from 'next/link';
 import { Backlog } from '@/components/sprints/backlog';
 import { useSprintStore } from '@/lib/sprint-store';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import Loading from '@/app/loading';
 
 export default function ProjectBacklogPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
   const { projects } = useProjectStore();
   const { sprints } = useSprintStore();
   const project = projects.find(p => p.id === id);
@@ -25,6 +31,18 @@ export default function ProjectBacklogPage({ params }: { params: Promise<{ id: s
   }, [sprints, project]);
   
   const [sprintFilter, setSprintFilter] = useState<string>('backlog');
+
+  useEffect(() => {
+    if (!isLoading && user?.userType !== 'Admin' && user?.userType !== 'Manager') {
+      router.replace('/dashboard');
+    }
+  }, [user, isLoading, router]);
+
+
+  if (isLoading || !user || (user.userType !== 'Admin' && user.userType !== 'Manager')) {
+    return <Loading />;
+  }
+
 
   if (!project) {
     // This can happen on initial load while the store is hydrating

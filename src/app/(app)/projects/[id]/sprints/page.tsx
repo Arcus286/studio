@@ -10,14 +10,28 @@ import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import type { Project } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import Loading from '@/app/loading';
+import { useEffect } from 'react';
 
 
 export default function ProjectSprintsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const { projects } = useProjectStore();
   const project = projects.find(p => p.id === id);
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
+  
+  useEffect(() => {
+    if (!isLoading && !isManager) {
+      router.replace('/dashboard');
+    }
+  }, [user, isLoading, isManager, router]);
+
+  if (isLoading || !user || !isManager) {
+    return <Loading />;
+  }
 
   if (!project) {
     return <div>Loading project...</div>;
