@@ -53,25 +53,31 @@ export const useSprintStore = create<SprintStore>()(
         const sprintToComplete = get().sprints.find(s => s.id === sprintId);
 
         if (sprintToComplete) {
-            const sprintTasks = tasks.filter(
-                (task) => task.sprintId === sprintId
-            );
-            
-            // Move all of the sprint's tasks back to the backlog (by unsetting sprintId)
-            const updatedTasks = tasks.map(task => 
-                sprintTasks.some(ut => ut.id === task.id) 
-                    ? { ...task, sprintId: undefined } 
-                    : task
-            );
+            const sprintTasks = tasks.filter((task) => task.sprintId === sprintId);
+            const doneTasks = sprintTasks.filter(t => t.status === 'done');
+            const completionPercentage = sprintTasks.length > 0 ? (doneTasks.length / sprintTasks.length) * 100 : 0;
 
+            // Move unfinished tasks back to the backlog
+            const updatedTasks = tasks.map(task => {
+                if (task.sprintId === sprintId && task.status !== 'done') {
+                    return { ...task, sprintId: undefined };
+                }
+                return task;
+            });
             setTasks(updatedTasks);
+            
+            set((state) => ({
+              sprints: state.sprints.map((s) =>
+                s.id === sprintId ? { 
+                    ...s, 
+                    status: 'completed' as 'completed',
+                    completedIssues: doneTasks.length,
+                    totalIssues: sprintTasks.length,
+                    completionPercentage: completionPercentage,
+                } : s
+              ),
+            }));
         }
-
-        set((state) => ({
-          sprints: state.sprints.map((s) =>
-            s.id === sprintId ? { ...s, status: 'completed' as 'completed' } : s
-          ),
-        }));
       },
     }),
     {

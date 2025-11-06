@@ -101,7 +101,6 @@ export function SprintList({ projectId }: SprintListProps) {
   const projectSprints = useMemo(() => {
     const sprintsForProject = sprints.filter(s => s.projectId === projectId);
     
-    // Set the first active/upcoming sprint to be open by default
     const firstOpenable = sprintsForProject.find(s => s.status === 'active' || s.status === 'upcoming');
     if (firstOpenable && !openSprint) {
         setOpenSprint(firstOpenable.id);
@@ -110,6 +109,9 @@ export function SprintList({ projectId }: SprintListProps) {
     return sprintsForProject.sort((a, b) => {
         if (a.status === 'active' && b.status !== 'active') return -1;
         if (b.status === 'active' && a.status !== 'active') return 1;
+        
+        if (a.status === 'completed' && b.status !== 'completed') return 1;
+        if (b.status === 'completed' && a.status !== 'completed') return -1;
         
         const dateA = new Date(a.startDate).getTime();
         const dateB = new Date(b.startDate).getTime();
@@ -124,7 +126,11 @@ export function SprintList({ projectId }: SprintListProps) {
       {projectSprints.map(sprint => {
         const sprintTasks = tasks.filter(t => t.sprintId === sprint.id);
         const doneTasks = sprintTasks.filter(t => t.status === 'done').length;
-        const completion = sprintTasks.length > 0 ? (doneTasks / sprintTasks.length) * 100 : 0;
+        
+        const isCompleted = sprint.status === 'completed';
+        const completion = isCompleted ? sprint.completionPercentage ?? 0 : (sprintTasks.length > 0 ? (doneTasks / sprintTasks.length) * 100 : 0);
+        const totalIssues = isCompleted ? sprint.totalIssues ?? 0 : sprintTasks.length;
+        const completedIssues = isCompleted ? sprint.completedIssues ?? 0 : doneTasks;
         
         const statusColors = {
             active: 'border-primary',
@@ -169,7 +175,7 @@ export function SprintList({ projectId }: SprintListProps) {
                   )}
                 <div>
                   <div className="flex justify-between items-center mb-1 text-sm">
-                    <span className="font-medium text-muted-foreground">Progress ({doneTasks}/{sprintTasks.length} tasks)</span>
+                    <span className="font-medium text-muted-foreground">Progress ({completedIssues}/{totalIssues} tasks)</span>
                     <span className="font-bold">{Math.round(completion)}%</span>
                   </div>
                   <Progress value={completion} className="h-2" />

@@ -69,6 +69,9 @@ export type Sprint = {
   endDate: string;
   status: 'upcoming' | 'active' | 'completed';
   goal?: string;
+  completedIssues?: number;
+  totalIssues?: number;
+  completionPercentage?: number;
 }
 
 export type Project = {
