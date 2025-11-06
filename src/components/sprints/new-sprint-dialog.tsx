@@ -27,7 +27,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from '../ui/calendar';
-import { format, isPast } from 'date-fns';
+import { format, isPast, add } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
@@ -49,6 +49,7 @@ type SprintFormValues = z.infer<typeof sprintSchema>;
 export function NewSprintDialog({ children, projectId }: { children: React.ReactNode, projectId: string }) {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const { addSprint } = useSprintStore();
   const { tasks, assignTaskToSprint } = useStore();
 
@@ -60,6 +61,21 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
       isFutureSprint: false,
     },
   });
+  
+  const handleDateSelect = (range: DateRange | undefined, onChange: (range: DateRange) => void) => {
+    if (range) {
+        if (range.from && !range.to) {
+            // If only a start date is selected, auto-populate end date 2 weeks later
+            range.to = add(range.from, { weeks: 2 });
+        }
+        onChange(range as DateRange);
+
+        if (range.from && range.to) {
+            setIsCalendarOpen(false); // Close calendar once range is selected
+        }
+    }
+  }
+
 
   const onSubmit = (data: SprintFormValues) => {
     addSprint({
@@ -123,7 +139,7 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Sprint Dates</FormLabel>
-                   <Popover>
+                   <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                         <PopoverTrigger asChild>
                         <Button
                             id="date"
@@ -154,7 +170,7 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
                             mode="range"
                             defaultMonth={field.value?.from}
                             selected={field.value as DateRange}
-                            onSelect={field.onChange}
+                            onSelect={(range) => handleDateSelect(range, field.onChange)}
                             numberOfMonths={2}
                         />
                         </PopoverContent>
