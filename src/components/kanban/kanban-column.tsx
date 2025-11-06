@@ -6,6 +6,7 @@ import { KanbanCard } from './kanban-card';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import { useStore } from '@/lib/store';
+import { useMemo } from 'react';
 
 type KanbanColumnProps = {
   column: KanbanColumnData;
@@ -29,20 +30,30 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
   const { user } = useAuth();
   const allTasks = useStore(state => state.tasks);
   
-  // A task is a "top-level" task for this column if:
-  // 1. It is a Story. Stories are always top-level containers.
-  // 2. It has no parent story (`!t.storyId`).
-  // 3. Or, its parent story is NOT in the current column. This prevents rendering child tasks as standalone cards when the story is in the same column.
-  const topLevelTasksInColumn = tasks.filter(t => {
-    if (t.type === 'Story') {
-      return true;
-    }
-    if (!t.storyId) {
-      return true; 
-    }
-    const parentStory = allTasks.find(story => story.id === t.storyId);
-    return parentStory?.status !== column.id;
-  });
+  const topLevelTasksInColumn = useMemo(() => {
+    const taskIdsInColumn = new Set(tasks.map(t => t.id));
+
+    return tasks.filter(t => {
+      // Stories are always top-level in any column they appear in.
+      if (t.type === 'Story') {
+        return true;
+      }
+      
+      // If a task has no parent story, it's a top-level item.
+      if (!t.storyId) {
+        return true;
+      }
+      
+      // If a task has a parent story, it's only top-level if its parent
+      // is NOT also in the current set of tasks for this column.
+      const parentStory = allTasks.find(story => story.id === t.storyId);
+      if (!parentStory) {
+        return true; // Orphaned task, treat as top-level.
+      }
+
+      return !taskIdsInColumn.has(parentStory.id);
+    });
+  }, [tasks, allTasks]);
 
 
   return (

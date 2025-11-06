@@ -87,23 +87,23 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showOverdue, setShowOverdue] = useState(true);
+  const { allUsers } = useAuth();
   const allTasks = useStore((state) => state.tasks);
   const { sprints } = useSprintStore();
-  const { allUsers } = useAuth();
+  const [sprintFilter, setSprintFilter] = useState<string>('active');
 
-  const { activeSprint } = useMemo(() => {
+  const { activeSprint, upcomingSprints } = useMemo(() => {
     const projectSprints = sprints.filter(s => s.projectId === project.id);
     const active = projectSprints.find(s => s.status === 'active');
-    return { activeSprint: active };
+    const upcoming = projectSprints.filter(s => s.status === 'upcoming');
+    return { activeSprint: active, upcomingSprints: upcoming };
   }, [sprints, project.id]);
 
-  const tasksToDisplay = useMemo(() => {
-    if (activeSprint) {
-      return allTasks.filter(t => t.sprintId === activeSprint.id);
-    }
-    // If no active sprint, show tasks from backlog for this project
-    return allTasks.filter(t => t.projectId === project.id && !t.sprintId);
-  }, [allTasks, project.id, activeSprint]);
+  useEffect(() => {
+    // If an active sprint exists, default the filter to it, otherwise default to backlog
+    setSprintFilter(activeSprint ? activeSprint.id : 'backlog');
+  }, [activeSprint]);
+
 
   const projectMembers = useMemo(() => {
     return allUsers.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));
@@ -119,6 +119,14 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
       setHighlightedStatus(null);
     }, 1500);
   };
+
+  const tasksToDisplay = useMemo(() => {
+    let tasksForProject = allTasks.filter(t => t.projectId === project.id);
+    if (sprintFilter === 'backlog') {
+        return tasksForProject.filter(t => !t.sprintId);
+    }
+    return tasksForProject.filter(t => t.sprintId === sprintFilter);
+  }, [allTasks, project.id, sprintFilter]);
 
   const filteredTasks = tasksToDisplay.filter(task => {
     const isOverdueTask = task.deadline ? isPast(new Date(task.deadline)) : false;
