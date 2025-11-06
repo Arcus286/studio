@@ -32,19 +32,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
+  // This state will be exposed to consumers of the hook
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+
   // Initialize users from localStorage or initial data
   useEffect(() => {
     try {
       const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
       if (storedUsers) {
-        setUsers(JSON.parse(storedUsers));
+        const parsedUsers = JSON.parse(storedUsers);
+        setUsers(parsedUsers);
+        setAllUsers(parsedUsers); // Initialize allUsers as well
       } else {
         setUsers(initialUsers);
+        setAllUsers(initialUsers); // Initialize allUsers as well
         localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
       }
     } catch (error) {
       console.error("Failed to initialize users from localStorage", error);
       setUsers(initialUsers);
+      setAllUsers(initialUsers);
     }
   }, []);
 
@@ -78,6 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const updateUsersState = (newUsers: User[]) => {
       setUsers(newUsers);
+      setAllUsers(newUsers); // Keep allUsers in sync
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
   }
 
@@ -147,7 +155,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = {
     isAuthenticated: !!user,
     user,
-    allUsers: users,
+    allUsers: allUsers,
     login,
     logout,
     isLoading,
