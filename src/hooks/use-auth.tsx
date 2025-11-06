@@ -32,26 +32,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // This state will be exposed to consumers of the hook
-  const [allUsers, setAllUsers] = useState<User[]>([]);
-
   // Initialize users from localStorage or initial data
   useEffect(() => {
     try {
       const storedUsers = localStorage.getItem(USERS_STORAGE_KEY);
       if (storedUsers) {
-        const parsedUsers = JSON.parse(storedUsers);
-        setUsers(parsedUsers);
-        setAllUsers(parsedUsers); // Initialize allUsers as well
+        setUsers(JSON.parse(storedUsers));
       } else {
         setUsers(initialUsers);
-        setAllUsers(initialUsers); // Initialize allUsers as well
         localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(initialUsers));
       }
     } catch (error) {
       console.error("Failed to initialize users from localStorage", error);
       setUsers(initialUsers);
-      setAllUsers(initialUsers);
     }
   }, []);
 
@@ -69,8 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(freshUser);
         } else {
           // If user is no longer valid (e.g. deleted or not active), log them out
-          localStorage.removeItem(CURRENT_USER_STORAGE_KEY);
-          setUser(null);
+          logout();
         }
       }
     } catch (error) {
@@ -81,11 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // We are done loading once we have checked for a user.
       setIsLoading(false);
     }
-  }, [users]); // This effect now correctly depends on the `users` state
+  }, [users]);
   
   const updateUsersState = (newUsers: User[]) => {
       setUsers(newUsers);
-      setAllUsers(newUsers); // Keep allUsers in sync
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
   }
 
@@ -133,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const approveUser = (userId: string) => {
-    const newUsers = users.map(u => u.id === userId ? { ...u, status: 'active' } : u);
+    const newUsers = users.map(u => u.id === userId ? { ...u, status: 'active' as 'active' } : u);
     updateUsersState(newUsers);
   };
 
@@ -148,14 +139,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const updateUser = (userId: string, data: Partial<User>) => {
-    const newUsers = users.map(u => u.id === userId ? { ...u, ...data } : u);
-    updateUsersState(newUsers);
+    setUsers(currentUsers => {
+        const newUsers = currentUsers.map(u => u.id === userId ? { ...u, ...data } : u);
+        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
+        return newUsers;
+    });
   };
 
   const value = {
     isAuthenticated: !!user,
     user,
-    allUsers: allUsers,
+    allUsers: users,
     login,
     logout,
     isLoading,
