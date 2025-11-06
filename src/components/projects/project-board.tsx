@@ -91,21 +91,19 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   const { sprints } = useSprintStore();
   const { allUsers } = useAuth();
 
-  const { activeSprint, upcomingSprints } = useMemo(() => {
+  const { activeSprint } = useMemo(() => {
     const projectSprints = sprints.filter(s => s.projectId === project.id);
     const active = projectSprints.find(s => s.status === 'active');
-    const upcoming = projectSprints.filter(s => s.status === 'upcoming');
-    return { activeSprint: active, upcomingSprints: upcoming };
+    return { activeSprint: active };
   }, [sprints, project.id]);
-  
-  const [sprintFilter, setSprintFilter] = useState<string>(activeSprint?.id || 'backlog');
 
   const tasksToDisplay = useMemo(() => {
-    if (sprintFilter === 'backlog') {
-      return allTasks.filter(t => t.projectId === project.id && !t.sprintId);
+    if (activeSprint) {
+      return allTasks.filter(t => t.sprintId === activeSprint.id);
     }
-    return allTasks.filter(t => t.sprintId === sprintFilter);
-  }, [allTasks, project.id, sprintFilter]);
+    // If no active sprint, show tasks from backlog for this project
+    return allTasks.filter(t => t.projectId === project.id && !t.sprintId);
+  }, [allTasks, project.id, activeSprint]);
 
   const projectMembers = useMemo(() => {
     return allUsers.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));
@@ -147,7 +145,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
     <>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-2">
-            <DashboardAnalytics tasks={tasksToDisplay} onCardClick={handleAnalyticsClick} />
+            <DashboardAnalytics onCardClick={handleAnalyticsClick} />
         </div>
         <div className="lg:col-span-1">
              {activeSprint ? (
@@ -211,20 +209,6 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
             <div className="flex items-center space-x-2">
                 <Checkbox id="show-overdue" checked={showOverdue} onCheckedChange={(checked) => setShowOverdue(Boolean(checked))} />
                 <Label htmlFor="show-overdue" className="text-sm font-medium">Show Overdue</Label>
-            </div>
-            <div className='w-full sm:w-auto sm:min-w-[200px]'>
-              <Select value={sprintFilter} onValueChange={setSprintFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by sprint..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="backlog">Backlog</SelectItem>
-                  {activeSprint && <SelectItem value={activeSprint.id}>{activeSprint.name} (Active)</SelectItem>}
-                  {upcomingSprints.map(s => (
-                    <SelectItem key={s.id} value={s.id}>{s.name} (Upcoming)</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
             <div className="relative w-full sm:w-auto sm:min-w-[250px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
