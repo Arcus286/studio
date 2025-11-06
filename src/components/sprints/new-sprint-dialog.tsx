@@ -62,9 +62,7 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
   });
 
   const onSubmit = (data: SprintFormValues) => {
-    const newSprintId = `SPRINT-${Date.now()}`;
     addSprint({
-        id: newSprintId,
         projectId: projectId,
         name: data.name,
         goal: data.goal,

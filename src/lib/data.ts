@@ -18,8 +18,8 @@ export const KANBAN_COLUMNS: KanbanColumnData[] = [
 
 export const SPRINTS: Sprint[] = [
     {
-        id: 'SPRINT-1',
-        projectId: 'PROJ-1',
+        id: 'SPRINT-001',
+        projectId: 'PROJ-001',
         name: 'Sprint 1 - Authentication & Board',
         startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -27,8 +27,8 @@ export const SPRINTS: Sprint[] = [
         goal: 'To deliver the core user authentication flow and a functional Kanban board.',
     },
     {
-        id: 'SPRINT-2',
-        projectId: 'PROJ-1',
+        id: 'SPRINT-002',
+        projectId: 'PROJ-001',
         name: 'Sprint 2 - Sprint Management',
         startDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
         endDate: new Date(Date.now() + 22 * 24 * 60 * 60 * 1000).toISOString(),
@@ -36,8 +36,8 @@ export const SPRINTS: Sprint[] = [
         goal: 'To build out the sprint planning and backlog management features.',
     },
      {
-        id: 'SPRINT-3',
-        projectId: 'PROJ-2',
+        id: 'SPRINT-003',
+        projectId: 'PROJ-002',
         name: 'Sprint 1 - Mobile Architecture',
         startDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
         endDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -55,8 +55,8 @@ const COMMENTS: Comment[] = [
 
 export const TASKS: Task[] = [
      {
-        id: 'TASK-0',
-        projectId: 'PROJ-1',
+        id: 'STORY-001',
+        projectId: 'PROJ-001',
         title: 'User Authentication Feature',
         description: 'Implement the full user authentication flow, including login, signup, and password reset.',
         status: 'in-progress',
@@ -68,11 +68,11 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Story',
-        sprintId: 'SPRINT-1'
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-1',
-        projectId: 'PROJ-1',
+        id: 'TASK-001',
+        projectId: 'PROJ-001',
         title: 'Design login and signup pages',
         description: 'Create high-fidelity mockups for the user authentication flow, including login, signup, and forgot password pages.',
         status: 'done',
@@ -85,13 +85,13 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Task',
         deadline: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-        storyId: 'TASK-0',
-        sprintId: 'SPRINT-1',
+        storyId: 'STORY-001',
+        sprintId: 'SPRINT-001',
         comments: COMMENTS,
     },
     {
-        id: 'TASK-2',
-        projectId: 'PROJ-1',
+        id: 'TASK-002',
+        projectId: 'PROJ-001',
         title: 'Develop user authentication API endpoints',
         description: 'Build the necessary API endpoints for user registration, login, and session management.',
         status: 'done',
@@ -104,12 +104,12 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Task',
         deadline: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-        storyId: 'TASK-0',
-        sprintId: 'SPRINT-1'
+        storyId: 'STORY-001',
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-3',
-        projectId: 'PROJ-1',
+        id: 'TASK-003',
+        projectId: 'PROJ-001',
         title: 'Implement frontend for authentication',
         description: 'Connect the frontend forms for login, signup, and password reset to the backend APIs.',
         status: 'in-review',
@@ -122,12 +122,12 @@ export const TASKS: Task[] = [
         priority: 'Medium',
         type: 'Task',
         deadline: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-        storyId: 'TASK-0',
-        sprintId: 'SPRINT-1'
+        storyId: 'STORY-001',
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-4',
-        projectId: 'PROJ-1',
+        id: 'TASK-004',
+        projectId: 'PROJ-001',
         title: 'Design the main Kanban board UI',
         description: 'Create wireframes and final designs for the main task board, including columns and task cards.',
         status: 'in-progress',
@@ -140,11 +140,11 @@ export const TASKS: Task[] = [
         priority: 'Medium',
         type: 'Task',
         deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-        sprintId: 'SPRINT-1'
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-5',
-        projectId: 'PROJ-1',
+        id: 'TASK-005',
+        projectId: 'PROJ-001',
         title: 'Set up database schema for tasks and users',
         description: 'Define and implement the database schema for storing user and task information, including roles and relationships.',
         status: 'in-progress',
@@ -157,11 +157,11 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Task',
         deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // Overdue
-        sprintId: 'SPRINT-1'
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-6',
-        projectId: 'PROJ-1',
+        id: 'BUG-001',
+        projectId: 'PROJ-001',
         title: 'Build the Kanban board drag-and-drop functionality',
         description: 'Implement the client-side logic for dragging and dropping tasks between columns on the Kanban board.',
         status: 'to-do',
@@ -174,11 +174,11 @@ export const TASKS: Task[] = [
         priority: 'High',
         type: 'Bug',
         deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
-        sprintId: 'SPRINT-1'
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-7',
-        projectId: 'PROJ-1',
+        id: 'TASK-006',
+        projectId: 'PROJ-001',
         title: 'Develop API for task state management',
         description: 'Create backend endpoints to handle creating, updating, and deleting tasks, and changing their status.',
         status: 'to-do',
@@ -192,8 +192,8 @@ export const TASKS: Task[] = [
         type: 'Task',
     },
      {
-        id: 'TASK-8',
-        projectId: 'PROJ-1',
+        id: 'TASK-007',
+        projectId: 'PROJ-001',
         title: 'Create Admin panel for user role management',
         description: 'Build a UI for administrators to view all users and assign or change their roles.',
         status: 'to-do',
@@ -207,8 +207,8 @@ export const TASKS: Task[] = [
         type: 'Task',
     },
     {
-        id: 'TASK-9',
-        projectId: 'PROJ-2',
+        id: 'TASK-008',
+        projectId: 'PROJ-002',
         title: 'Plan mobile app architecture',
         description: 'Outline the overall architecture for the native mobile apps, including technology stack and component breakdown.',
         status: 'done',
@@ -220,11 +220,11 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'High',
         type: 'Task',
-        sprintId: 'SPRINT-3',
+        sprintId: 'SPRINT-003',
     },
     {
-        id: 'TASK-10',
-        projectId: 'PROJ-2',
+        id: 'TASK-009',
+        projectId: 'PROJ-002',
         title: 'Design mobile splash screen',
         description: 'Create the initial splash screen and loading indicators for the mobile app.',
         status: 'done',
@@ -236,11 +236,11 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
         type: 'Task',
-        sprintId: 'SPRINT-3',
+        sprintId: 'SPRINT-003',
     },
      {
-        id: 'TASK-11',
-        projectId: 'PROJ-1',
+        id: 'STORY-002',
+        projectId: 'PROJ-001',
         title: 'User role management feature',
         description: 'Implement functionality for admins to manage user roles and permissions.',
         status: 'in-review',
@@ -252,11 +252,11 @@ export const TASKS: Task[] = [
         updatedAt: new Date().toISOString(),
         priority: 'High',
         type: 'Story',
-        sprintId: 'SPRINT-1'
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-12',
-        projectId: 'PROJ-1',
+        id: 'TASK-010',
+        projectId: 'PROJ-001',
         title: 'Design admin dashboard for roles',
         description: 'Create mockups for the user management interface in the admin dashboard.',
         status: 'done',
@@ -268,12 +268,12 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
         type: 'Task',
-        storyId: 'TASK-11',
-        sprintId: 'SPRINT-1'
+        storyId: 'STORY-002',
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-13',
-        projectId: 'PROJ-1',
+        id: 'TASK-011',
+        projectId: 'PROJ-001',
         title: 'API for updating user roles',
         description: 'Build the backend endpoint for administrators to update user roles and permissions.',
         status: 'in-progress',
@@ -285,12 +285,12 @@ export const TASKS: Task[] = [
         updatedAt: new Date().toISOString(),
         priority: 'High',
         type: 'Task',
-        storyId: 'TASK-11',
-        sprintId: 'SPRINT-1'
+        storyId: 'STORY-002',
+        sprintId: 'SPRINT-001'
     },
     {
-        id: 'TASK-14',
-        projectId: 'PROJ-1',
+        id: 'TASK-012',
+        projectId: 'PROJ-001',
         title: 'Frontend for admin role management',
         description: 'Implement the UI for the admin dashboard to allow role changes.',
         status: 'to-do',
@@ -302,13 +302,13 @@ export const TASKS: Task[] = [
         updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
         priority: 'Medium',
         type: 'Task',
-        storyId: 'TASK-11',
-        sprintId: 'SPRINT-2', // For next sprint
-        dependsOn: ['TASK-13']
+        storyId: 'STORY-002',
+        sprintId: 'SPRINT-002', // For next sprint
+        dependsOn: ['TASK-011']
     },
     {
-        id: 'TASK-15',
-        projectId: 'PROJ-1',
+        id: 'BUG-002',
+        projectId: 'PROJ-001',
         title: 'Login button unresponsive on Safari',
         description: 'The main login button is not firing the click event on Safari browsers, blocking user sign-in.',
         status: 'to-do',
@@ -322,8 +322,8 @@ export const TASKS: Task[] = [
         type: 'Bug'
     },
     {
-        id: 'TASK-16',
-        projectId: 'PROJ-1',
+        id: 'BUG-003',
+        projectId: 'PROJ-001',
         title: 'Fix mobile layout for dashboard',
         description: 'The dashboard analytics cards are overflowing on small mobile screens.',
         status: 'in-progress',
@@ -340,7 +340,7 @@ export const TASKS: Task[] = [
 
 export const PROJECTS: Project[] = [
     {
-        id: 'PROJ-1',
+        id: 'PROJ-001',
         name: 'AgileBridge Platform',
         key: 'ABP',
         description: 'Development of the main AgileBridge project management platform.',
@@ -350,10 +350,10 @@ export const PROJECTS: Project[] = [
         createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 8,
         members: [{id: '1'}, {id: '2'}, {id: '3'}, {id: '4'}, {id: '5'}],
-        sprints: SPRINTS.filter(s => s.projectId === 'PROJ-1'),
+        sprints: SPRINTS.filter(s => s.projectId === 'PROJ-001'),
     },
     {
-        id: 'PROJ-2',
+        id: 'PROJ-002',
         name: 'Mobile App Initiative',
         key: 'MAI',
         description: 'A new initiative to create a native mobile application for iOS and Android.',
@@ -363,10 +363,10 @@ export const PROJECTS: Project[] = [
         createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
         issues: 3,
         members: [{id: '2'}, {id: '3'}, {id: '4'}],
-        sprints: SPRINTS.filter(s => s.projectId === 'PROJ-2'),
+        sprints: SPRINTS.filter(s => s.projectId === 'PROJ-002'),
     },
     {
-        id: 'PROJ-3',
+        id: 'PROJ-003',
         name: 'Website Redesign',
         key: 'WR',
         description: 'A complete overhaul of the public-facing marketing website.',
@@ -387,7 +387,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Design login page" moved to In Progress.',
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         read: false,
-        taskId: 'TASK-1',
+        taskId: 'TASK-001',
     },
     {
         id: '2',
@@ -395,7 +395,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Develop user auth API" moved to In Review.',
         createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         read: false,
-        taskId: 'TASK-2',
+        taskId: 'TASK-002',
     },
     {
         id: '3',
@@ -403,7 +403,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'New task "Implement frontend auth" assigned to a user.',
         createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
         read: false,
-        taskId: 'TASK-3',
+        taskId: 'TASK-003',
     },
     {
         id: '4',
@@ -411,7 +411,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Design Kanban board" due soon.',
         createdAt: new Date(Date.now() - 9 * 60 * 60 * 1000).toISOString(),
         read: true,
-        taskId: 'TASK-4',
+        taskId: 'TASK-004',
     },
     {
         id: '5',
@@ -419,7 +419,7 @@ export const NOTIFICATIONS: Notification[] = [
         message: 'Task "Setup database schema" is overdue.',
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         read: true,
-        taskId: 'TASK-5',
+        taskId: 'TASK-005',
     },
 ];
 

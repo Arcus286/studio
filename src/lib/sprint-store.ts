@@ -7,7 +7,7 @@ import { useStore } from './store'; // Import the task store
 
 interface SprintStore {
   sprints: Sprint[];
-  addSprint: (sprint: Omit<Sprint, 'status'>) => void;
+  addSprint: (sprint: Omit<Sprint, 'id' | 'status'>) => void;
   startSprint: (sprintId: string, projectId: string) => void;
   completeSprint: (sprintId: string, projectId: string) => void;
   setSprints: (sprints: Sprint[]) => void;
@@ -20,8 +20,15 @@ export const useSprintStore = create<SprintStore>()(
       setSprints: (sprints) => set({ sprints }),
       addSprint: (sprint) =>
         set((state) => {
+           const maxId = state.sprints.reduce((max, s) => {
+              const num = parseInt(s.id.split('-')[1], 10);
+              return num > max ? num : max;
+          }, 0);
+          const newId = `SPRINT-${String(maxId + 1).padStart(3, '0')}`;
+
           const newSprint: Sprint = {
             ...sprint,
+            id: newId,
             status: 'upcoming',
           };
           return { sprints: [...state.sprints, newSprint] };

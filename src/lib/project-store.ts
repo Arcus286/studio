@@ -18,9 +18,15 @@ export const useProjectStore = create<ProjectStore>()(
       setProjects: (projects) => set({ projects }),
       addProject: (projectData) =>
         set((state) => {
+          const maxId = state.projects.reduce((max, p) => {
+              const num = parseInt(p.id.split('-')[1], 10);
+              return num > max ? num : max;
+          }, 0);
+          const newId = `PROJ-${String(maxId + 1).padStart(3, '0')}`;
+          
           const newProject: Project = {
             ...projectData,
-            id: `PROJ-${state.projects.length + 1}`,
+            id: newId,
             status: 'active',
             completion: 0,
             createdAt: new Date().toISOString(),
