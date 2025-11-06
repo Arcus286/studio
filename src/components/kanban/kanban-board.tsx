@@ -31,7 +31,18 @@ export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
     const draggedTask = tasks.find(t => t.id === draggableId);
     if (!draggedTask) return;
 
-    setReassignTask({ task: draggedTask, newStatus: destColId });
+    if (destColId === 'done') {
+      // If moving to 'done', update status directly without popup
+      updateTask(draggedTask.id, { status: 'done' });
+      const destColumn = columns.find(c => c.id === 'done');
+      toast({
+          title: `Task "${draggedTask.title}" moved`,
+          description: `Status updated to ${destColumn?.title || 'Done'}.`,
+      });
+    } else {
+      // For any other status change, show the re-assign dialog
+      setReassignTask({ task: draggedTask, newStatus: destColId });
+    }
   };
   
   const handleReassign = (taskId: string, newStatus: TaskStatus, newUserId: string | undefined, timeSpent?: number) => {
