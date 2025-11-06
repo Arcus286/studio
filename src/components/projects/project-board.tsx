@@ -92,9 +92,12 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   }, [sprints, project.id]);
 
   const sprintTasks = useMemo(() => {
-    if (!activeSprint) return [];
+    if (!activeSprint) {
+        // If no active sprint, show all tasks for the project that are not in any sprint
+        return allTasks.filter(t => t.projectId === project.id && !t.sprintId);
+    }
     return allTasks.filter(t => t.sprintId === activeSprint.id);
-  }, [allTasks, activeSprint]);
+  }, [allTasks, activeSprint, project.id]);
 
   const projectMembers = useMemo(() => {
     return allUsers.filter(user => project.members.some(m => m.id === user.id)).sort((a, b) => a.username.localeCompare(b.username));

@@ -8,9 +8,9 @@ import { useAuth } from '@/hooks/use-auth';
 import { differenceInDays, isPast } from 'date-fns';
 import { useProjectStore } from '@/lib/project-store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import { useStore } from '@/lib/store';
 
 type DashboardAnalyticsProps = {
-  tasks: Task[];
   onCardClick?: (status: TaskStatus | 'all') => void;
 };
 
@@ -31,14 +31,15 @@ function TooltipList({ data }: { data: Record<string, number> }) {
   );
 }
 
-export function DashboardAnalytics({ tasks, onCardClick = () => {} }: DashboardAnalyticsProps) {
+export function DashboardAnalytics({ onCardClick = () => {} }: DashboardAnalyticsProps) {
   const { user } = useAuth();
   const { projects } = useProjectStore();
+  const allTasks = useStore((state) => state.tasks);
 
   const userFilteredTasks =
     user?.userType === 'Admin' || user?.userType === 'Manager'
-      ? tasks
-      : tasks.filter((task) => task.assignedUserId === user?.id);
+      ? allTasks
+      : allTasks.filter((task) => task.assignedUserId === user?.id);
 
   const totalTasks = userFilteredTasks.length;
   const doneTasks = userFilteredTasks.filter((t) => t.status === 'done').length;

@@ -8,7 +8,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 interface TaskStore {
   tasks: Task[];
   columns: KanbanColumnData[];
-  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'>) => void;
+  addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent' | 'comments' | 'dependsOn'>) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
   deleteTask: (taskId: string) => void;
