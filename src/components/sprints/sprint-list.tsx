@@ -28,6 +28,7 @@ import { Separator } from '../ui/separator';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
 import type { Task, TaskType } from '@/lib/types';
+import { ScrollArea } from '../ui/scroll-area';
 
 
 interface SprintListProps {
@@ -126,6 +127,7 @@ export function SprintList({ projectId }: SprintListProps) {
       {projectSprints.map(sprint => {
         const sprintTasks = tasks.filter(t => t.sprintId === sprint.id);
         const doneTasks = sprintTasks.filter(t => t.status === 'done').length;
+        const unfinishedTasks = sprintTasks.filter(t => t.status !== 'done');
         
         const isCompleted = sprint.status === 'completed';
         const completion = isCompleted ? sprint.completionPercentage ?? 0 : (sprintTasks.length > 0 ? (doneTasks / sprintTasks.length) * 100 : 0);
@@ -225,11 +227,32 @@ export function SprintList({ projectId }: SprintListProps) {
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you sure you want to complete this sprint?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                       This will mark the sprint as completed. Any unfinished tasks will be moved back to the backlog. This action cannot be undone.
-                                    </AlertDialogDescription>
+                                    <AlertDialogTitle>Complete Sprint: {sprint.name}?</AlertDialogTitle>
+                                    {unfinishedTasks.length > 0 ? (
+                                        <AlertDialogDescription>
+                                            There are {unfinishedTasks.length} unfinished issue(s) in this sprint. They will be moved back to the backlog.
+                                        </AlertDialogDescription>
+                                    ) : (
+                                        <AlertDialogDescription>
+                                            All issues in this sprint are complete. Are you sure you want to mark this sprint as completed?
+                                        </AlertDialogDescription>
+                                    )}
                                 </AlertDialogHeader>
+                                {unfinishedTasks.length > 0 && (
+                                    <div className='py-4'>
+                                        <h4 className="text-sm font-semibold mb-2">Unfinished Issues:</h4>
+                                        <ScrollArea className="h-40 border rounded-md p-2">
+                                            <div className="space-y-2">
+                                                {unfinishedTasks.map(task => (
+                                                    <div key={task.id} className="flex items-center justify-between text-sm p-1">
+                                                        <span className='truncate pr-2'>{task.title}</span>
+                                                        <Badge variant="outline">{task.id}</Badge>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </ScrollArea>
+                                    </div>
+                                )}
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                                     <AlertDialogAction onClick={() => completeSprint(sprint.id, sprint.projectId)}>
