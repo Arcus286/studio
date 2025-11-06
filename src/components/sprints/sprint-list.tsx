@@ -37,7 +37,16 @@ export function SprintList({ projectId }: SprintListProps) {
   const projectSprints = useMemo(() => {
     return sprints
       .filter(s => s.projectId === projectId)
-      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+      .sort((a, b) => {
+        if (a.status === 'active' && b.status !== 'active') {
+          return -1; // Active sprint comes first
+        }
+        if (b.status === 'active' && a.status !== 'active') {
+          return 1; // Active sprint comes first
+        }
+        // Otherwise, sort by start date descending
+        return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+      });
   }, [sprints, projectId]);
   
   const activeSprintExists = useMemo(() => projectSprints.some(s => s.status === 'active'), [projectSprints]);
