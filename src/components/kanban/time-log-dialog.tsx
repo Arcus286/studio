@@ -36,7 +36,7 @@ export function TimeLogDialog({ isOpen, onClose, onConfirm, task }: TimeLogDialo
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="break-words">Log Time for "{task.title}"</AlertDialogTitle>
+          <AlertDialogTitle className="break-all">Log Time for "{task.title}"</AlertDialogTitle>
           <AlertDialogDescription>
             How many hours have you spent on this task so far?
           </AlertDialogDescription>
