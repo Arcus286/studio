@@ -29,7 +29,7 @@ export default function SignupPage() {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
-    const { addUser } = useAuth();
+    const { addUser, allUsers } = useAuth();
 
 
     const passwordChecks = useMemo(() => {
@@ -47,6 +47,20 @@ export default function SignupPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
+        const trimmedUsername = username.trim();
+        const forbiddenUsernames = ['admin', 'manager'];
+        if (forbiddenUsernames.includes(trimmedUsername.toLowerCase())) {
+            toast({ variant: 'destructive', title: 'Invalid Username', description: `The username "${trimmedUsername}" is not allowed.` });
+            return;
+        }
+
+        const usernameExists = allUsers.some(u => u.username.toLowerCase() === trimmedUsername.toLowerCase());
+        if(usernameExists) {
+            toast({ variant: 'destructive', title: 'Username Taken', description: 'This username is already in use. Please choose another.' });
+            return;
+        }
+
 
         if (!role) {
             toast({ variant: 'destructive', title: 'Error', description: 'Please select a role.' });
