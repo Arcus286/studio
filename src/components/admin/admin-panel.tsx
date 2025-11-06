@@ -41,7 +41,7 @@ const defaultBuckets: KanbanColumnData[] = [
     { id: 'closed', title: 'Closed', color: 'border-gray-500' },
 ];
 
-export function AdminPanel() {
+export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
   const { allUsers, approveUser, rejectUser, updateUser, deleteUser } = useAuth();
   const { columns, setColumns } = useStore();
   const [selectedBuckets, setSelectedBuckets] = useState<string[]>([]);
@@ -73,6 +73,7 @@ export function AdminPanel() {
         title: "Users Updated",
         description: `All user changes have been saved.`,
     });
+    onSaveChanges();
   };
   
   const handleDeleteUser = (userId: string) => {
