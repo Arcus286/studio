@@ -4,9 +4,9 @@ import { DragDropContext, OnDragEndResponder } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanColumn } from './kanban-column';
 import { useState, useMemo } from 'react';
-import { TimeLogDialog } from './time-log-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useStore } from '@/lib/store';
+import { ReassignTaskDialog } from './reassign-task-dialog';
 
 type KanbanBoardProps = {
   tasks: Task[];
@@ -15,7 +15,7 @@ type KanbanBoardProps = {
 
 export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
   const { toast } = useToast();
-  const [timeLogTask, setTimeLogTask] = useState<Task | null>(null);
+  const [reassignTask, setReassignTask] = useState<{task: Task, newStatus: TaskStatus} | null>(null);
   const { updateTask, columns } = useStore();
 
   const onDragEnd: OnDragEndResponder = (result) => {
@@ -31,32 +31,20 @@ export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
     const draggedTask = tasks.find(t => t.id === draggableId);
     if (!draggedTask) return;
 
-    // Time logging logic
-    if (sourceColId === 'to-do' && destColId === 'in-progress') {
-      setTimeLogTask(draggedTask);
-      // The actual update will happen in handleTimeLog
-      return;
-    }
-
-    updateTask(draggedTask.id, { status: destColId });
-    
-    const destColumn = columns.find(c => c.id === destColId);
-    toast({
-        title: `Task "${draggedTask.title}" moved`,
-        description: `Status updated to ${destColumn?.title || destColId}.`,
-    });
+    setReassignTask({ task: draggedTask, newStatus: destColId });
   };
   
-  const handleTimeLog = (hours: number) => {
-    if (timeLogTask) {
-        updateTask(timeLogTask.id, { status: 'in-progress', timeSpent: hours });
-        const destColumn = columns.find(c => c.id === 'in-progress');
+  const handleReassign = (taskId: string, newStatus: TaskStatus, newUserId: string | undefined) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        updateTask(taskId, { status: newStatus, assignedUserId: newUserId });
+        const destColumn = columns.find(c => c.id === newStatus);
         toast({
-            title: `Task "${timeLogTask.title}" moved`,
-            description: `Status updated to ${destColumn?.title || 'in-progress'}.`,
+            title: `Task "${task.title}" moved`,
+            description: `Status updated to ${destColumn?.title || newStatus}.`,
         });
     }
-    setTimeLogTask(null);
+    setReassignTask(null);
   };
 
   const tasksByColumn = useMemo(() => {
@@ -85,11 +73,12 @@ export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
                 />
             ))}
         </div>
-        <TimeLogDialog 
-            isOpen={!!timeLogTask} 
-            onClose={() => setTimeLogTask(null)}
-            onConfirm={handleTimeLog}
-            task={timeLogTask}
+        <ReassignTaskDialog
+            isOpen={!!reassignTask}
+            onClose={() => setReassignTask(null)}
+            onConfirm={handleReassign}
+            task={reassignTask?.task}
+            newStatus={reassignTask?.newStatus}
         />
     </DragDropContext>
   );
