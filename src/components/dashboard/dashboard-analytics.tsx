@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { Task, TaskStatus } from '@/lib/types';
+import type { Task, TaskStatus, Project } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/use-auth';
@@ -9,9 +9,11 @@ import { differenceInDays, isPast } from 'date-fns';
 import { useProjectStore } from '@/lib/project-store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { useStore } from '@/lib/store';
+import { useMemo } from 'react';
 
 type DashboardAnalyticsProps = {
   onCardClick?: (status: TaskStatus | 'all') => void;
+  project?: Project;
 };
 
 function TooltipList({ data }: { data: Record<string, number> }) {
@@ -31,37 +33,45 @@ function TooltipList({ data }: { data: Record<string, number> }) {
   );
 }
 
-export function DashboardAnalytics({ onCardClick = () => {} }: DashboardAnalyticsProps) {
+export function DashboardAnalytics({ onCardClick = () => {}, project }: DashboardAnalyticsProps) {
   const { user } = useAuth();
   const { projects } = useProjectStore();
   const allTasks = useStore((state) => state.tasks);
 
-  const userFilteredTasks =
-    user?.userType === 'Admin' || user?.userType === 'Manager'
-      ? allTasks
-      : allTasks.filter((task) => task.assignedUserId === user?.id);
+  const tasksForAnalytics = useMemo(() => {
+    const userFilteredTasks =
+      user?.userType === 'Admin' || user?.userType === 'Manager'
+        ? allTasks
+        : allTasks.filter((task) => task.assignedUserId === user?.id);
 
-  const totalTasks = userFilteredTasks.length;
-  const doneTasks = userFilteredTasks.filter((t) => t.status === 'done').length;
-  const inProgressTasks = userFilteredTasks.filter(
+    if (project) {
+      return userFilteredTasks.filter(task => task.projectId === project.id);
+    }
+    return userFilteredTasks;
+  }, [allTasks, user, project]);
+
+
+  const totalTasks = tasksForAnalytics.length;
+  const doneTasks = tasksForAnalytics.filter((t) => t.status === 'done').length;
+  const inProgressTasks = tasksForAnalytics.filter(
     (t) => t.status === 'in-progress'
   ).length;
-  const todoTasks = userFilteredTasks.filter((t) => t.status === 'to-do').length;
+  const todoTasks = tasksForAnalytics.filter((t) => t.status === 'to-do').length;
   
   const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
-  const tasksAddedLastWeek = userFilteredTasks.filter(
+  const tasksAddedLastWeek = tasksForAnalytics.filter(
     (task) => differenceInDays(new Date(), new Date(task.createdAt)) <= 7
   ).length;
 
   const createBreakdown = (status?: TaskStatus) => {
     const tasksToConsider = status
-      ? userFilteredTasks.filter(t => t.status === status)
-      : userFilteredTasks;
+      ? tasksForAnalytics.filter(t => t.status === status)
+      : tasksForAnalytics;
 
     return tasksToConsider.reduce((acc, task) => {
-      const project = projects.find(p => p.id === task.projectId);
-      const projectName = project?.name || 'Unknown Project';
+      const p = projects.find(p => p.id === task.projectId);
+      const projectName = p?.name || 'Unknown Project';
       acc[projectName] = (acc[projectName] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
@@ -91,12 +101,14 @@ export function DashboardAnalytics({ onCardClick = () => {} }: DashboardAnalytic
               </CardContent>
             </Card>
           </TooltipTrigger>
-          <TooltipContent>
-            <div className="p-2">
-              <h4 className="font-semibold mb-2 text-center">Issues per Project</h4>
-              <TooltipList data={issuesByProject} />
-            </div>
-          </TooltipContent>
+          {!project && (
+            <TooltipContent>
+              <div className="p-2">
+                <h4 className="font-semibold mb-2 text-center">Issues per Project</h4>
+                <TooltipList data={issuesByProject} />
+              </div>
+            </TooltipContent>
+          )}
         </Tooltip>
 
         <Tooltip>
@@ -112,12 +124,14 @@ export function DashboardAnalytics({ onCardClick = () => {} }: DashboardAnalytic
               </CardContent>
             </Card>
           </TooltipTrigger>
-          <TooltipContent>
-            <div className="p-2">
-                <h4 className="font-semibold mb-2 text-center">"To Do" per Project</h4>
-                <TooltipList data={issuesByProjectToDo} />
-            </div>
-          </TooltipContent>
+           {!project && (
+            <TooltipContent>
+              <div className="p-2">
+                  <h4 className="font-semibold mb-2 text-center">"To Do" per Project</h4>
+                  <TooltipList data={issuesByProjectToDo} />
+              </div>
+            </TooltipContent>
+           )}
         </Tooltip>
         
         <Tooltip>
@@ -133,12 +147,14 @@ export function DashboardAnalytics({ onCardClick = () => {} }: DashboardAnalytic
               </CardContent>
             </Card>
           </TooltipTrigger>
-          <TooltipContent>
-              <div className="p-2">
-                <h4 className="font-semibold mb-2 text-center">"In Progress" per Project</h4>
-                <TooltipList data={issuesByProjectInProgress} />
-            </div>
-          </TooltipContent>
+           {!project && (
+            <TooltipContent>
+                <div className="p-2">
+                  <h4 className="font-semibold mb-2 text-center">"In Progress" per Project</h4>
+                  <TooltipList data={issuesByProjectInProgress} />
+              </div>
+            </TooltipContent>
+           )}
         </Tooltip>
 
         <Tooltip>
@@ -154,12 +170,14 @@ export function DashboardAnalytics({ onCardClick = () => {} }: DashboardAnalytic
               </CardContent>
             </Card>
           </TooltipTrigger>
-          <TooltipContent>
-            <div className="p-2">
-                <h4 className="font-semibold mb-2 text-center">"Completed" per Project</h4>
-                <TooltipList data={issuesByProjectDone} />
-            </div>
-          </TooltipContent>
+           {!project && (
+            <TooltipContent>
+              <div className="p-2">
+                  <h4 className="font-semibold mb-2 text-center">"Completed" per Project</h4>
+                  <TooltipList data={issuesByProjectDone} />
+              </div>
+            </TooltipContent>
+           )}
         </Tooltip>
 
       </TooltipProvider>
