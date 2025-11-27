@@ -21,9 +21,11 @@ import { AdminDialog } from '../admin/admin-dialog';
 
 type HeaderProps = {
   showSearch?: boolean;
+  searchTerm?: string;
+  onSearchTermChange?: (term: string) => void;
 };
 
-export function Header({ showSearch = true }: HeaderProps) {
+export function Header({ showSearch = true, searchTerm, onSearchTermChange }: HeaderProps) {
   const { user, logout } = useAuth();
   const isAdmin = user?.userType === 'Admin';
   const isManager = isAdmin || user?.userType === 'Manager';
@@ -33,13 +35,15 @@ export function Header({ showSearch = true }: HeaderProps) {
     <>
       <div className="w-full flex-1">
         {showSearch && (
-          <form>
+          <form onSubmit={(e) => e.preventDefault()}>
             <div className="relative">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search tasks..."
                 className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
+                value={searchTerm}
+                onChange={(e) => onSearchTermChange?.(e.target.value)}
               />
             </div>
           </form>

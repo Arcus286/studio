@@ -34,6 +34,7 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Header } from '../layout/header';
 
 
 interface ProjectBoardProps {
