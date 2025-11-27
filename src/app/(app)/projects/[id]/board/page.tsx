@@ -13,15 +13,18 @@ import {
 } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
+import { useSearchParams } from 'next/navigation';
 
 export default function ProjectBoardPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = React.use(params);
+  const { id } = params;
   const { projects } = useProjectStore();
   const project = projects.find((p) => p.id === id);
+  const searchParams = useSearchParams();
+  const highlightedTaskId = searchParams.get('highlight');
 
   if (!project) {
     // This can happen on initial load while the store is hydrating
@@ -48,7 +51,7 @@ export default function ProjectBoardPage({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <ProjectBoard project={project} />
+      <ProjectBoard project={project} highlightedTaskId={highlightedTaskId} />
     </div>
   );
 }

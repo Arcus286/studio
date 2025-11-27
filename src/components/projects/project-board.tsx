@@ -36,11 +36,11 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Header } from '../layout/header';
-import { useSearchParams } from 'next/navigation';
 
 
 interface ProjectBoardProps {
   project: Project;
+  highlightedTaskId?: string | null;
 }
 
 const generateColor = (seed: string) => {
@@ -86,7 +86,7 @@ function AllMembersDialog({ members, children }: { members: User[], children: Re
   );
 }
 
-function ProjectBoardContent({ project }: ProjectBoardProps) {
+export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTaskId }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showOverdue, setShowOverdue] = useState(true);
@@ -94,9 +94,7 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   const allTasks = useStore((state) => state.tasks);
   const { sprints } = useSprintStore();
   const [sprintFilter, setSprintFilter] = useState<string>('active');
-  const searchParams = useSearchParams();
-  const highlightedTaskId = searchParams.get('highlight');
-  const [isHighlighting, setIsHighlighting] = useState(true);
+  const [highlightedTaskId, setHighlightedTaskId] = useState(initialHighlightedTaskId);
 
 
   const { activeSprint, upcomingSprints } = useMemo(() => {
@@ -112,12 +110,12 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   }, [activeSprint]);
 
   useEffect(() => {
-    if (highlightedTaskId) {
-      setIsHighlighting(true);
-      const timer = setTimeout(() => setIsHighlighting(false), 2000); // Highlight for 2 seconds
+    if (initialHighlightedTaskId) {
+      setHighlightedTaskId(initialHighlightedTaskId);
+      const timer = setTimeout(() => setHighlightedTaskId(null), 2000); // Highlight for 2 seconds
       return () => clearTimeout(timer);
     }
-  }, [highlightedTaskId]);
+  }, [initialHighlightedTaskId]);
 
 
   const projectMembers = useMemo(() => {
@@ -238,17 +236,8 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
       <KanbanBoard 
         tasks={filteredTasks} 
         highlightedStatus={highlightedStatus}
-        highlightedTaskId={isHighlighting ? highlightedTaskId : null}
+        highlightedTaskId={highlightedTaskId}
       />
     </>
   );
-}
-
-
-export function ProjectBoard({ project }: ProjectBoardProps) {
-  return (
-    <React.Suspense fallback={<div>Loading board...</div>}>
-      <ProjectBoardContent project={project} />
-    </React.Suspense>
-  )
 }
