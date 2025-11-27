@@ -1,6 +1,7 @@
 
 'use client';
 
+import * as React from 'react';
 import { KanbanBoard } from '@/components/kanban/kanban-board';
 import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
 import { useState, useMemo, useEffect } from 'react';
