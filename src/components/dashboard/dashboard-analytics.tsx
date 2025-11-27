@@ -39,14 +39,20 @@ export function DashboardAnalytics({ onCardClick = () => {}, project }: Dashboar
   const allTasks = useStore((state) => state.tasks);
 
   const tasksForAnalytics = useMemo(() => {
-    const userFilteredTasks =
-      user?.userType === 'Admin' || user?.userType === 'Manager'
-        ? allTasks
-        : allTasks.filter((task) => task.assignedUserId === user?.id);
+    let userFilteredTasks;
 
+    // First filter by project if a project is provided
     if (project) {
-      return userFilteredTasks.filter(task => task.projectId === project.id);
+        userFilteredTasks = allTasks.filter(task => task.projectId === project.id);
+    } else {
+        userFilteredTasks = allTasks;
     }
+    
+    // Then, filter by user permissions
+    if (user?.userType === 'User') {
+        userFilteredTasks = userFilteredTasks.filter(task => task.assignedUserId === user?.id);
+    }
+    
     return userFilteredTasks;
   }, [allTasks, user, project]);
 

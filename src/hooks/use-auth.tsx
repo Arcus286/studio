@@ -50,14 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Effect to manage the currently logged-in user
   useEffect(() => {
-    // Only run this effect if the users array has been populated
-    if (users.length === 0) return;
-
     try {
-      const storedUser = localStorage.getItem(CURRENT_USER_STORAGE_KEY);
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
-        const freshUser = users.find(u => u.id === parsedUser.id);
+      const storedUserItem = localStorage.getItem(CURRENT_USER_STORAGE_KEY);
+      if (storedUserItem) {
+        const storedUser = JSON.parse(storedUserItem);
+        // Find the fresh user data from the main users list to ensure it's up-to-date
+        const freshUser = users.find(u => u.id === storedUser.id);
         if (freshUser && freshUser.status === 'active') {
           setUser(freshUser);
         } else {
@@ -73,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // We are done loading once we have checked for a user.
       setIsLoading(false);
     }
-  }, [users]);
+  }, [users]); // This effect now correctly depends on the 'users' state
   
   const updateUsersState = (newUsers: User[]) => {
       setUsers(newUsers);
@@ -138,12 +136,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const updateUser = (userId: string, data: Partial<User>) => {
-    setUsers(currentUsers => {
-        const newUsers = currentUsers.map(u => u.id === userId ? { ...u, ...data } : u);
-        localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(newUsers));
-        return newUsers;
-    });
+    const newUsers = users.map(u => (u.id === userId ? { ...u, ...data } : u));
+    updateUsersState(newUsers);
+  
+    // Also update the current user in state and localStorage if they are being edited
+    if (user && user.id === userId) {
+      const updatedCurrentUser = { ...user, ...data };
+      setUser(updatedCurrentUser);
+      localStorage.setItem(CURRENT_USER_STORAGE_KEY, JSON.stringify(updatedCurrentUser));
+    }
   };
+
 
   const value = {
     isAuthenticated: !!user,
