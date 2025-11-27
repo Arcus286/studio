@@ -103,7 +103,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   const { sprints } = useSprintStore();
   const { projects } = useProjectStore();
 
-  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
+  const isManagerOrAdmin = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
   const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -197,7 +197,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                       </div>
                       <div>
                           <DialogTitle className="text-xl">
-                            {isManager ? (
+                            {isManagerOrAdmin ? (
                                 <FormField
                                     control={form.control}
                                     name="title"
@@ -226,22 +226,18 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                     <div className="col-span-7 border-r p-6 overflow-y-auto space-y-6">
                         <div>
                             <h3 className="text-sm font-medium text-muted-foreground mb-2">Description</h3>
-                            {isManager ? (
-                                <FormField
-                                    control={form.control}
-                                    name="description"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormControl>
-                                                <Textarea {...field} className="text-sm" />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            ) : (
-                                <p className="text-sm text-foreground">{task.description}</p>
-                            )}
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Textarea {...field} className="text-sm" />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
                         
                         <Separator />
@@ -253,7 +249,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Users className="h-4 w-4" /> Assigned To</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a user" />
@@ -274,7 +270,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><GripVertical className="h-4 w-4" /> Status</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a status" />
@@ -295,7 +291,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><ArrowUp className="h-4 w-4" /> Priority</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                        <Select onValueChange={field.onChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select priority" />
@@ -316,7 +312,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Pencil className="h-4 w-4" /> Task Type</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select type" />
@@ -338,7 +334,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><CalendarClock className="h-4 w-4" /> Deadline</FormLabel>
                                         <FormControl>
-                                            <DatePicker value={field.value} onSelect={field.onChange} disabled={!isManager} />
+                                            <DatePicker value={field.value} onSelect={field.onChange} disabled={!isManagerOrAdmin} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -352,7 +348,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Flame className="h-4 w-4" /> Sprint</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value ?? 'none'} disabled={!isManager}>
+                                            <Select onValueChange={field.onChange} value={field.value ?? 'none'} disabled={!isManagerOrAdmin}>
                                                 <FormControl><SelectTrigger><SelectValue placeholder="Assign to sprint" /></SelectTrigger></FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="none">Backlog</SelectItem>
@@ -368,7 +364,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Layers className="h-4 w-4" /> Parent Story</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManager}>
+                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin}>
                                                 <FormControl><SelectTrigger><SelectValue placeholder="Link to story" /></SelectTrigger></FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="none">None</SelectItem>
@@ -384,7 +380,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Link2 className="h-4 w-4" /> Dependencies</FormLabel>
-                                            <Select onValueChange={(value) => field.onChange(value === 'none' ? [] : [value])} value={field.value?.[0] || 'none'} disabled={!isManager}>
+                                            <Select onValueChange={(value) => field.onChange(value === 'none' ? [] : [value])} value={field.value?.[0] || 'none'} disabled={!isManagerOrAdmin}>
                                                 <FormControl><SelectTrigger><SelectValue placeholder="Blocks which task?" /></SelectTrigger></FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="none">None</SelectItem>
@@ -406,7 +402,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Clock className="h-4 w-4" /> Time Spent (hours)</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} readOnly={!isManager}/>
+                                            <Input type="number" {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -418,7 +414,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Clock className="h-4 w-4" /> Time Estimated (hours)</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} readOnly={!isManager}/>
+                                            <Input type="number" {...field} readOnly={!isManagerOrAdmin}/>
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -469,14 +465,13 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                     <span>Created on {format(parseISO(task.createdAt), "MMM d, yyyy")}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    {isManager && (
-                    <>
+                    <Button variant="ghost" type="button" onClick={() => onOpenChange(false)}>Cancel</Button>
+                     {isManagerOrAdmin && (
                         <Button variant="destructive" type="button" onClick={handleDelete}>
                             <Trash2 className="mr-2 h-4 w-4" /> Delete
                         </Button>
-                        <Button type="submit">Save Changes</Button>
-                    </>
                     )}
+                    <Button type="submit">Save Changes</Button>
                 </div>
             </DialogFooter>
         </form>

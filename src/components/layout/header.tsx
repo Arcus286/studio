@@ -57,7 +57,7 @@ export function Header({ showSearch = true }: HeaderProps) {
       <Notifications />
       <ThemeToggle />
 
-      {isAdmin && (
+      {isManager && (
         <AdminDialog>
             <Button variant="ghost" size="icon">
                 <Users className="h-5 w-5" />
@@ -78,7 +78,7 @@ export function Header({ showSearch = true }: HeaderProps) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {isAdmin && (
+          {isManager && (
             <AdminDialog>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   Admin Panel

@@ -28,9 +28,11 @@ import { Input } from '../ui/input';
 import { useToast } from '@/hooks/use-toast';
 
 export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
-  const { allUsers, approveUser, rejectUser, updateUser, deleteUser } = useAuth();
+  const { user: currentUser, allUsers, approveUser, rejectUser, updateUser, deleteUser } = useAuth();
   const [editableUsers, setEditableUsers] = useState<User[]>([]);
   const { toast } = useToast();
+
+  const isAdmin = currentUser?.userType === 'Admin';
 
   useEffect(() => {
     setEditableUsers(allUsers.filter(u => u.status !== 'pending'));
@@ -78,7 +80,7 @@ export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
 
   return (
     <div className="space-y-8">
-        {pendingUsers.length > 0 && (
+        {isAdmin && pendingUsers.length > 0 && (
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -139,10 +141,10 @@ export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
                 {editableUsers.map((user) => (
                     <TableRow key={user.id}>
                         <TableCell>
-                            <Input value={user.username} onChange={(e) => handleFieldChange(user.id, 'username', e.target.value)} />
+                            <Input value={user.username} onChange={(e) => handleFieldChange(user.id, 'username', e.target.value)} disabled={!isAdmin && user.userType === 'Admin'} />
                         </TableCell>
                         <TableCell>
-                             <Input value={user.email} onChange={(e) => handleFieldChange(user.id, 'email', e.target.value)} />
+                             <Input value={user.email} onChange={(e) => handleFieldChange(user.id, 'email', e.target.value)} disabled={!isAdmin && user.userType === 'Admin'}/>
                         </TableCell>
                         <TableCell>
                             <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>{user.status}</Badge>
@@ -151,7 +153,7 @@ export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
                             <Select 
                                 value={user.userType}
                                 onValueChange={(newUserType) => handleFieldChange(user.id, 'userType', newUserType)}
-                                disabled={user.userType === 'Admin'}
+                                disabled={!isAdmin || user.id === currentUser?.id}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select user type" />
@@ -169,6 +171,7 @@ export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
                             <Select 
                                 value={user.role}
                                 onValueChange={(newRole) => handleFieldChange(user.id, 'role', newRole)}
+                                disabled={!isAdmin && user.userType === 'Admin'}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select role" />
@@ -183,7 +186,7 @@ export function AdminPanel({ onSaveChanges }: { onSaveChanges: () => void }) {
                             </Select>
                         </TableCell>
                         <TableCell className="text-right">
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDeleteUser(user.id)}>
+                             <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDeleteUser(user.id)} disabled={user.userType === 'Admin'}>
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </TableCell>
