@@ -54,6 +54,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import type { Project } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
 
 function DeleteProjectDialog({ project, onSelect }: { project: Project; onSelect: (e: Event) => void }) {
