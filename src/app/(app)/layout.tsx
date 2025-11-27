@@ -1,4 +1,3 @@
-
 'use client';
 import { Header } from '@/components/layout/header';
 import {
@@ -27,6 +26,7 @@ import {
   Flame,
   MoreHorizontal,
   Pencil,
+  Trash2,
 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
@@ -39,7 +39,69 @@ import { Button } from '@/components/ui/button';
 import { NewProjectDialog } from '@/components/projects/new-project-dialog';
 import { useProjectStore } from '@/lib/project-store';
 import { EditProjectDialog } from '@/components/projects/edit-project-dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { useStore } from '@/lib/store';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import type { Project } from '@/lib/types';
+
+
+function DeleteProjectDialog({ project, onSelect }: { project: Project; onSelect: (e: Event) => void }) {
+  const { deleteProject } = useProjectStore();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const handleDelete = () => {
+    deleteProject(project.id);
+    toast({
+      title: 'Project Deleted',
+      description: `The project "${project.name}" has been permanently deleted.`,
+    });
+    router.push('/projects');
+  };
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <DropdownMenuItem
+          className="text-destructive"
+          onSelect={onSelect}
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete
+        </DropdownMenuItem>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete the
+            <span className="font-bold"> {project.name}</span> project and all associated tasks.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-destructive hover:bg-destructive/90"
+            onClick={handleDelete}
+          >
+            Delete Project
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 
 
 function AppLayoutContent({ children }: { children: React.ReactNode }) {
@@ -144,6 +206,11 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                                           Edit
                                       </DropdownMenuItem>
                                   </EditProjectDialog>
+                                  <DropdownMenuSeparator />
+                                  <DeleteProjectDialog 
+                                      project={project}
+                                      onSelect={(e) => e.preventDefault()} 
+                                  />
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             )}

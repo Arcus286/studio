@@ -3,12 +3,14 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Project } from './types';
 import { PROJECTS as initialProjects } from './data';
+import { useStore } from './store';
 
 interface ProjectStore {
   projects: Project[];
   setProjects: (projects: Project[]) => void;
   addProject: (projectData: Omit<Project, 'id' | 'status' | 'completion' | 'createdAt' | 'issues' | 'sprints'>) => void;
   updateProject: (projectId: string, updatedData: Partial<Project>) => void;
+  deleteProject: (projectId: string) => void;
 }
 
 export const useProjectStore = create<ProjectStore>()(
@@ -41,6 +43,17 @@ export const useProjectStore = create<ProjectStore>()(
             p.id === projectId ? { ...p, ...updatedData } : p
           ),
         })),
+      deleteProject: (projectId) => {
+        // First, update the task store to remove associated tasks
+        const { tasks, setTasks } = useStore.getState();
+        const updatedTasks = tasks.filter(task => task.projectId !== projectId);
+        setTasks(updatedTasks);
+        
+        // Then, update the project store
+        set((state) => ({
+            projects: state.projects.filter((p) => p.id !== projectId),
+        }));
+      }
     }),
     {
       name: 'project-storage',
