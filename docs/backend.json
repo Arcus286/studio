@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Task": {
@@ -41,6 +42,55 @@
         "createdAt",
         "updatedAt"
       ]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "A comment on an issue.",
+      "type": "object",
+      "properties": {
+        "issueId": {
+          "type": "string",
+          "description": "The ID of the issue this comment belongs to."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "The ID of the user who wrote the comment."
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the comment."
+        },
+        "parentCommentId": {
+          "type": "string",
+          "description": "The ID of the parent comment, for threaded replies."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the comment was created."
+        },
+        "isDeleted": {
+          "type": "boolean",
+          "description": "Flag for soft-deleting comments."
+        }
+      },
+      "required": ["issueId", "authorId", "content", "createdAt", "isDeleted"]
+    },
+    "CommentVote": {
+      "title": "Comment Vote",
+      "description": "Represents a user's upvote on a comment.",
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "string",
+          "description": "The ID of the comment that was voted on."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who cast the vote."
+        }
+      },
+      "required": ["commentId", "userId"]
     }
   },
   "auth": {
@@ -66,8 +116,40 @@
             }
           ]
         }
+      },
+      {
+        "path": "/comments/{commentId}",
+        "definition": {
+          "entityName": "Comment",
+          "schema": {
+            "$ref": "#/backend/entities/Comment"
+          },
+          "description": "Stores comments for issues.",
+          "params": [
+            {
+              "name": "commentId",
+              "description": "The unique identifier for the comment."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/commentVotes/{voteId}",
+        "definition": {
+          "entityName": "CommentVote",
+          "schema": {
+            "$ref": "#/backend/entities/CommentVote"
+          },
+          "description": "Stores upvotes for comments, ensuring one vote per user per comment.",
+          "params": [
+            {
+              "name": "voteId",
+              "description": "The unique identifier for the vote, often a composite of userId and commentId."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The Firestore structure is designed to be simple and scalable. Since only task management functionality is requested, a single collection `tasks` is used, with each task document containing all necessary information. No subcollections are used in this simplified design. Access is open to all authenticated users, suitable for a basic task tracking app. For enhanced security in a real-world application, access control lists and more complex role-based authorization would be added. Tasks are placed under a single collection without any parent-child relationship."
+    "reasoning": "The Firestore structure is designed to be simple and scalable. Tasks, comments, and comment votes are stored in separate top-level collections. This allows for efficient querying of comments for an issue and votes for a comment without deeply nested data structures. This model supports the requested features while keeping the data hierarchy flat and easy to manage."
   }
 }
