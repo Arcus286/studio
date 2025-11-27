@@ -117,7 +117,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const userWithDefaults: User = {
         ...newUser,
         id: String(Date.now()), // Use a more unique ID
-        userType: 'User',
         status: 'pending', // Default status
     };
     updateUsersState([...users, userWithDefaults]);

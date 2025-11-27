@@ -1,6 +1,6 @@
 
 export type UserType = 'Admin' | 'Manager' | 'User';
-export type Role = 'Frontend' | 'Backend' | 'Developer' | 'PM' | 'Admin' | 'None';
+export type Role = 'Admin' | 'Manager' | 'User';
 export type SpecializedRole = 'Frontend' | 'Backend' | 'Developer' | 'PM' | 'Admin';
 
 

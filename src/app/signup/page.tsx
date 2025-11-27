@@ -13,16 +13,15 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { Role } from '@/lib/types';
-
-const availableRoles: Role[] = ['Frontend', 'Backend', 'Developer'];
+import type { UserType, Role } from '@/lib/types';
+import { USER_TYPES } from '@/lib/data';
 
 export default function SignupPage() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [role, setRole] = useState<Role | ''>('');
+    const [role, setRole] = useState<UserType | ''>('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [signupSuccess, setSignupSuccess] = useState(false);
@@ -50,7 +49,7 @@ export default function SignupPage() {
         
         const trimmedUsername = username.trim();
         const forbiddenUsernames = ['admin', 'manager'];
-        if (forbiddenUsernames.includes(trimmedUsername.toLowerCase())) {
+        if (forbiddenUsernames.includes(trimmedUsername.toLowerCase()) && role !== 'Admin' && role !== 'Manager') {
             toast({ variant: 'destructive', title: 'Invalid Username', description: `The username "${trimmedUsername}" is not allowed.` });
             return;
         }
@@ -78,7 +77,7 @@ export default function SignupPage() {
         }
 
         try {
-            addUser({ username, email, password, role });
+            addUser({ username, email, password, role: role, userType: role });
             setSignupSuccess(true);
         } catch (error) {
             toast({ variant: 'destructive', title: 'Error', description: (error as Error).message });
@@ -147,12 +146,12 @@ export default function SignupPage() {
                         </div>
                          <div className="grid gap-2">
                             <Label htmlFor="role">Choose your role</Label>
-                            <Select onValueChange={(value: Role) => setRole(value)} value={role}>
+                            <Select onValueChange={(value: UserType) => setRole(value)} value={role}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select a role" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {availableRoles.map(r => (
+                                    {USER_TYPES.map(r => (
                                         <SelectItem key={r} value={r}>{r}</SelectItem>
                                     ))}
                                 </SelectContent>
