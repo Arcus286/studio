@@ -1,3 +1,4 @@
+
 'use client';
 import { Header } from '@/components/layout/header';
 import {
@@ -32,7 +33,7 @@ import { useAuth } from '@/hooks/use-auth';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '../loading';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -52,7 +53,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useToast } from '@/hooks/use-toast';
 import type { Project } from '@/lib/types';
 
 
@@ -114,6 +114,14 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
 
   const isProjectPage = pathname.startsWith('/projects/');
   const projectId = isProjectPage ? pathname.split('/')[2] : null;
+
+  const filteredProjects = useMemo(() => {
+    if (!user) return [];
+    if (user.userType === 'Admin') {
+        return projects;
+    }
+    return projects.filter(p => p.members.some(m => m.id === user.id));
+  }, [projects, user]);
 
   return (
     <SidebarProvider>
@@ -178,7 +186,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               
               <CollapsibleContent>
                 <div className="ml-4 space-y-1 mt-1">
-                  {projects.map(project => (
+                  {filteredProjects.map(project => (
                       <SidebarMenuItem key={project.id}>
                         <div className="flex items-center w-full group">
                            <SidebarMenuButton
