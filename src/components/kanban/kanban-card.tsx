@@ -19,6 +19,7 @@ import { useSprintStore } from '@/lib/sprint-store';
 type KanbanCardProps = {
   task: Task;
   isDragging: boolean;
+  isHighlighted?: boolean;
 };
 
 const PriorityIcon = ({ priority }: { priority: 'Low' | 'Medium' | 'High' }) => {
@@ -113,7 +114,7 @@ const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (e: React.M
     )
 }
 
-export function KanbanCard({ task, isDragging }: KanbanCardProps) {
+export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps) {
   const [detailTask, setDetailTask] = useState<Task | null>(null);
   const { allUsers } = useAuth();
   const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
@@ -152,7 +153,8 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
             <Card
                 className={cn(
                 'transition-all bg-muted/20 border-l-4 border-green-500',
-                isDragging && 'shadow-2xl scale-105 ring-2 ring-primary'
+                isDragging && 'shadow-2xl scale-105 ring-2 ring-primary',
+                isHighlighted && 'animate-flash'
                 )}
             >
                 <CardContent className="p-3 space-y-2">
@@ -186,7 +188,8 @@ export function KanbanCard({ task, isDragging }: KanbanCardProps) {
           'transition-all bg-card/80 backdrop-blur-sm cursor-pointer',
           'hover:shadow-xl hover:ring-2 hover:ring-primary/50 hover:-translate-y-1',
           isDragging && 'shadow-2xl scale-105 ring-2 ring-primary',
-          isBlocked && 'opacity-70'
+          isBlocked && 'opacity-70',
+          isHighlighted && 'animate-flash'
         )}
         onClick={handleCardClick}
       >

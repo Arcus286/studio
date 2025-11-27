@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Bell, Search, Users, Plus } from 'lucide-react';
+import { Bell, Search, Users, Plus, KanbanSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,37 +18,83 @@ import { Notifications } from './notifications';
 import { ThemeToggle } from './theme-toggle';
 import { NewTaskDialog } from '../tasks/new-task-dialog';
 import { AdminDialog } from '../admin/admin-dialog';
+import { useState, useEffect } from 'react';
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
+import { useStore } from '@/lib/store';
+import { useRouter } from 'next/navigation';
 
 type HeaderProps = {
   showSearch?: boolean;
-  searchTerm?: string;
-  onSearchTermChange?: (term: string) => void;
 };
 
-export function Header({ showSearch = true, searchTerm, onSearchTermChange }: HeaderProps) {
+export function Header({ showSearch = true }: HeaderProps) {
   const { user, logout } = useAuth();
   const isAdmin = user?.userType === 'Admin';
   const isManager = isAdmin || user?.userType === 'Manager';
+  const [open, setOpen] = useState(false);
+  const tasks = useStore((state) => state.tasks);
+  const router = useRouter();
+  
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpen((open) => !open)
+      }
+    }
+    document.addEventListener("keydown", down)
+    return () => document.removeEventListener("keydown", down)
+  }, [])
+
+  const handleSelect = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        router.push(`/projects/${task.projectId}/board?highlight=${task.id}`);
+        setOpen(false);
+    }
+  }
 
 
   return (
     <>
       <div className="w-full flex-1">
         {showSearch && (
-          <form onSubmit={(e) => e.preventDefault()}>
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search tasks..."
-                className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-                value={searchTerm}
-                onChange={(e) => onSearchTermChange?.(e.target.value)}
-              />
-            </div>
-          </form>
+         <Button
+            variant="outline"
+            className="relative w-full justify-start text-sm text-muted-foreground md:w-2/3 lg:w-1/3"
+            onClick={() => setOpen(true)}
+          >
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 " />
+            <span className="ml-6">Search tasks...</span>
+            <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+              <span className="text-xs">⌘</span>K
+            </kbd>
+          </Button>
         )}
       </div>
+
+       <CommandDialog open={open} onOpenChange={setOpen}>
+          <CommandInput placeholder="Type a command or search..." />
+          <CommandList>
+            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandGroup heading="Tasks">
+              {tasks.map(task => (
+                <CommandItem
+                  key={task.id}
+                  value={`${task.id} ${task.title}`}
+                  onSelect={() => handleSelect(task.id)}
+                  className="flex justify-between"
+                >
+                  <div className='flex items-center gap-2'>
+                    <KanbanSquare className="h-4 w-4" />
+                    <span>{task.title}</span>
+                  </div>
+                  <span className='text-xs text-muted-foreground'>{task.id}</span>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </CommandDialog>
 
        {isManager && (
         <NewTaskDialog>

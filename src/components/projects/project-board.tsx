@@ -35,6 +35,7 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Header } from '../layout/header';
+import { useSearchParams } from 'next/navigation';
 
 
 interface ProjectBoardProps {
@@ -92,6 +93,10 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
   const allTasks = useStore((state) => state.tasks);
   const { sprints } = useSprintStore();
   const [sprintFilter, setSprintFilter] = useState<string>('active');
+  const searchParams = useSearchParams();
+  const highlightedTaskId = searchParams.get('highlight');
+  const [isHighlighting, setIsHighlighting] = useState(true);
+
 
   const { activeSprint, upcomingSprints } = useMemo(() => {
     const projectSprints = sprints.filter(s => s.projectId === project.id);
@@ -104,6 +109,14 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
     // If an active sprint exists, default the filter to it, otherwise default to backlog
     setSprintFilter(activeSprint ? activeSprint.id : 'backlog');
   }, [activeSprint]);
+
+  useEffect(() => {
+    if (highlightedTaskId) {
+      setIsHighlighting(true);
+      const timer = setTimeout(() => setIsHighlighting(false), 2000); // Highlight for 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [highlightedTaskId]);
 
 
   const projectMembers = useMemo(() => {
@@ -219,33 +232,22 @@ function ProjectBoardContent({ project }: ProjectBoardProps) {
                 <Checkbox id="show-overdue" checked={showOverdue} onCheckedChange={(checked) => setShowOverdue(Boolean(checked))} />
                 <Label htmlFor="show-overdue" className="text-sm font-medium">Show Overdue</Label>
             </div>
-            <div className="relative w-full sm:w-auto sm:min-w-[250px]">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                    placeholder={`Search tasks...`}
-                    className="pl-10"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
         </div>
       </div>
-      <KanbanBoard tasks={filteredTasks} highlightedStatus={highlightedStatus} />
+      <KanbanBoard 
+        tasks={filteredTasks} 
+        highlightedStatus={highlightedStatus}
+        highlightedTaskId={isHighlighting ? highlightedTaskId : null}
+      />
     </>
   );
 }
 
 
 export function ProjectBoard({ project }: ProjectBoardProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  if (!isClient) {
-    return null;
-  }
-
-  return <ProjectBoardContent project={project} />;
+  return (
+    <React.Suspense fallback={<div>Loading board...</div>}>
+      <ProjectBoardContent project={project} />
+    </React.Suspense>
+  )
 }

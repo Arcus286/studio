@@ -12,6 +12,7 @@ type KanbanColumnProps = {
   column: KanbanColumnData;
   tasks: Task[];
   highlightedStatus?: TaskStatus | 'all' | null;
+  highlightedTaskId?: string | null;
 };
 
 const titleColors: Record<string, string> = {
@@ -26,7 +27,7 @@ const titleColors: Record<string, string> = {
 };
 
 
-export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnProps) {
+export function KanbanColumn({ column, tasks, highlightedStatus, highlightedTaskId }: KanbanColumnProps) {
   const { user } = useAuth();
   const allTasks = useStore(state => state.tasks);
   
@@ -98,6 +99,7 @@ export function KanbanColumn({ column, tasks, highlightedStatus }: KanbanColumnP
                     <KanbanCard 
                       task={task} 
                       isDragging={snapshot.isDragging}
+                      isHighlighted={highlightedTaskId === task.id}
                     />
                   </div>
                 )}

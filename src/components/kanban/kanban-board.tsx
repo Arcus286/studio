@@ -11,9 +11,10 @@ import { ReassignTaskDialog } from './reassign-task-dialog';
 type KanbanBoardProps = {
   tasks: Task[];
   highlightedStatus?: TaskStatus | 'all' | null;
+  highlightedTaskId?: string | null;
 };
 
-export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
+export function KanbanBoard({ tasks, highlightedStatus, highlightedTaskId }: KanbanBoardProps) {
   const { toast } = useToast();
   const [reassignTask, setReassignTask] = useState<{task: Task, newStatus: TaskStatus} | null>(null);
   const { updateTask, columns } = useStore();
@@ -81,6 +82,7 @@ export function KanbanBoard({ tasks, highlightedStatus }: KanbanBoardProps) {
                   column={column} 
                   tasks={tasksByColumn[column.id] || []} 
                   highlightedStatus={highlightedStatus} 
+                  highlightedTaskId={highlightedTaskId}
                 />
             ))}
         </div>
