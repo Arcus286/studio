@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         hostname: 'i.pravatar.cc',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'csgtddmiwdzcbrskyloe.supabase.co',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
