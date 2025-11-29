@@ -64,11 +64,7 @@ export function Header({ showSearch = true }: HeaderProps) {
             className="relative w-full justify-start text-sm text-muted-foreground md:w-2/3 lg:w-1/3"
             onClick={() => setOpen(true)}
           >
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 " />
-            <span className="ml-6">Search tasks...</span>
-            <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-              <span className="text-xs">⌘</span>K
-            </kbd>
+            <span>Search tasks...</span>
           </Button>
         )}
       </div>
