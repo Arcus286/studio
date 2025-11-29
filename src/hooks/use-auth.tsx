@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -6,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import type { User, UserType, Role } from '@/lib/types';
 import { USERS as initialUsers } from '@/lib/data';
 import Loading from '@/app/loading';
+import { useStore } from '@/lib/store';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -31,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const { addNotification } = useStore();
 
   // Initialize users from localStorage or initial data
   useEffect(() => {
@@ -118,6 +121,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         status: 'pending', // Default status
     };
     updateUsersState([...users, userWithDefaults]);
+
+    // Create a notification for the admin
+    addNotification({
+        title: 'New User Approval',
+        message: `User "${newUser.username}" has signed up and is waiting for approval.`,
+        userId: userWithDefaults.id, // Associate notification with the new user
+    });
   };
 
   const approveUser = (userId: string) => {

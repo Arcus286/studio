@@ -1,4 +1,5 @@
 
+
 export type UserType = 'Admin' | 'Manager' | 'User';
 export type Role = 'Admin' | 'Manager' | 'User';
 export type SpecializedRole = 'Frontend' | 'Backend' | 'Developer' | 'PM' | 'Admin';
@@ -96,4 +97,5 @@ export type Notification = {
     createdAt: string;
     read: boolean;
     taskId?: string;
+    userId?: string; // For user-related notifications
 };

@@ -1,13 +1,14 @@
 
 
 import { create } from 'zustand';
-import type { Task, Role, KanbanColumnData } from './types';
-import { TASKS as initialTasks, KANBAN_COLUMNS as initialColumns } from './data';
+import type { Task, Role, KanbanColumnData, Notification } from './types';
+import { TASKS as initialTasks, KANBAN_COLUMNS as initialColumns, NOTIFICATIONS as initialNotifications } from './data';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface TaskStore {
   tasks: Task[];
   columns: KanbanColumnData[];
+  notifications: Notification[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent' | 'comments' | 'dependsOn'>) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
@@ -15,6 +16,10 @@ interface TaskStore {
   addComment: (taskId: string, comment: Omit<Task['comments'][0], 'id' | 'createdAt'>) => void;
   setTasks: (tasks: Task[]) => void;
   setColumns: (columns: KanbanColumnData[]) => void;
+  addNotification: (notification: Omit<Notification, 'id' | 'createdAt' | 'read'>) => void;
+  setNotifications: (notifications: Notification[]) => void;
+  markNotificationAsRead: (notificationId: string) => void;
+  markAllNotificationsAsRead: () => void;
 }
 
 export const useStore = create<TaskStore>()(
@@ -22,8 +27,10 @@ export const useStore = create<TaskStore>()(
     (set) => ({
       tasks: initialTasks,
       columns: initialColumns,
+      notifications: initialNotifications,
       setTasks: (tasks) => set({ tasks }),
       setColumns: (columns) => set({ columns }),
+      setNotifications: (notifications) => set({ notifications }),
       addTask: (task) =>
         set((state) => {
           const maxId = state.tasks.reduce((max, t) => {
@@ -95,6 +102,26 @@ export const useStore = create<TaskStore>()(
                 return task;
             }),
         })),
+        addNotification: (notification) =>
+        set((state) => {
+            const newNotification: Notification = {
+                ...notification,
+                id: `N-${Date.now()}`,
+                createdAt: new Date().toISOString(),
+                read: false,
+            };
+            return { notifications: [newNotification, ...state.notifications] };
+        }),
+        markNotificationAsRead: (notificationId) =>
+            set((state) => ({
+                notifications: state.notifications.map((n) =>
+                    n.id === notificationId ? { ...n, read: true } : n
+                ),
+            })),
+        markAllNotificationsAsRead: () =>
+            set((state) => ({
+                notifications: state.notifications.map((n) => ({ ...n, read: true })),
+            })),
     }),
     {
       name: 'task-storage', // name of the item in the storage (must be unique)
