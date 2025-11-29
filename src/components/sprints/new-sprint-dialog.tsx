@@ -88,6 +88,8 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
 
     if (data.isFutureSprint) {
         tasks.forEach(task => {
+            // A story itself should only be moved if its own deadline is past.
+            // Child tasks should be evaluated independently.
             if (task.deadline && isPast(new Date(task.deadline))) {
                 assignTaskToSprint(task.id, undefined); // Move to backlog
             }
