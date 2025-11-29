@@ -25,6 +25,7 @@ export default function ProjectBoardPage({
   const project = projects.find((p) => p.id === id);
   const searchParams = useSearchParams();
   const highlightedTaskId = searchParams.get('highlight');
+  const openTaskId = searchParams.get('openTask');
 
   if (!project) {
     // This can happen on initial load while the store is hydrating
@@ -51,7 +52,11 @@ export default function ProjectBoardPage({
         </BreadcrumbList>
       </Breadcrumb>
 
-      <ProjectBoard project={project} highlightedTaskId={highlightedTaskId} />
+      <ProjectBoard 
+        project={project} 
+        highlightedTaskId={highlightedTaskId}
+        openTaskId={openTaskId} 
+      />
     </div>
   );
 }

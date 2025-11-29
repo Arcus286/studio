@@ -49,7 +49,7 @@ export function Header({ showSearch = true }: HeaderProps) {
   const handleSelect = (taskId: string) => {
     const task = tasks.find(t => t.id === taskId);
     if (task) {
-        router.push(`/projects/${task.projectId}/board?highlight=${task.id}`);
+        router.push(`/projects/${task.projectId}/board?openTask=${task.id}`);
         setOpen(false);
     }
   }

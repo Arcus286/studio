@@ -36,11 +36,13 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Header } from '../layout/header';
+import { TaskDetailDialog } from '../kanban/task-detail-dialog';
 
 
 interface ProjectBoardProps {
   project: Project;
   highlightedTaskId?: string | null;
+  openTaskId?: string | null;
 }
 
 const generateColor = (seed: string) => {
@@ -86,7 +88,7 @@ function AllMembersDialog({ members, children }: { members: User[], children: Re
   );
 }
 
-export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTaskId }: ProjectBoardProps) {
+export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTaskId, openTaskId }: ProjectBoardProps) {
   const [highlightedStatus, setHighlightedStatus] = useState<TaskStatus | 'all' | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showOverdue, setShowOverdue] = useState(true);
@@ -95,6 +97,7 @@ export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTas
   const { sprints } = useSprintStore();
   const [sprintFilter, setSprintFilter] = useState<string>('active');
   const [highlightedTaskId, setHighlightedTaskId] = useState(initialHighlightedTaskId);
+  const [detailTask, setDetailTask] = useState<Task | null>(null);
 
 
   const { activeSprint, upcomingSprints } = useMemo(() => {
@@ -116,6 +119,15 @@ export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTas
       return () => clearTimeout(timer);
     }
   }, [initialHighlightedTaskId]);
+
+  useEffect(() => {
+    if (openTaskId) {
+      const taskToOpen = allTasks.find(t => t.id === openTaskId);
+      if (taskToOpen) {
+        setDetailTask(taskToOpen);
+      }
+    }
+  }, [openTaskId, allTasks]);
 
 
   const projectMembers = useMemo(() => {
@@ -161,6 +173,13 @@ export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTas
       (sprint && sprint.name.toLowerCase().includes(term)) ||
       (story && story.title.toLowerCase().includes(term));
   });
+  
+  const handleDetailOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
+        setDetailTask(null);
+    }
+  };
+
 
   return (
     <>
@@ -238,6 +257,13 @@ export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTas
         highlightedStatus={highlightedStatus}
         highlightedTaskId={highlightedTaskId}
       />
+      {detailTask && (
+        <TaskDetailDialog 
+            isOpen={!!detailTask} 
+            onOpenChange={handleDetailOpenChange} 
+            task={detailTask} 
+        />
+      )}
     </>
   );
 }
