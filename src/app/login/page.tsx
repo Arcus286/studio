@@ -15,16 +15,19 @@ export default function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoggingIn(true);
+    setIsLoading(true);
     try {
+      // Simulate a slight delay for better UX (optional)
+      await new Promise(resolve => setTimeout(resolve, 500));
       login(usernameOrEmail, password);
     } catch (error) {
+      setIsLoading(false);
       toast({
         variant: 'destructive',
         title: 'Login Failed',
@@ -32,12 +35,21 @@ export default function LoginPage() {
       });
     } finally {
         // A small delay to allow navigation to start before resetting the button
-        setTimeout(() => setIsLoggingIn(false), 500);
+        setTimeout(() => setIsLoading(false), 500);
     }
   };
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-background px-4">
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <p className="text-white font-medium">Signing you in...</p>
+          </div>
+        </div>
+      )}
+      
       <Link href="/" className="absolute top-4 left-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
         <ArrowLeft className="h-4 w-4" />
         Back to Home
@@ -74,7 +86,7 @@ export default function LoginPage() {
                 required
                 value={usernameOrEmail}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
-                disabled={isLoggingIn}
+                disabled={isLoading}
               />
             </div>
             <div className="grid gap-2">
@@ -94,7 +106,7 @@ export default function LoginPage() {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        disabled={isLoggingIn}
+                        disabled={isLoading}
                     />
                     <Button
                         type="button"
@@ -102,14 +114,21 @@ export default function LoginPage() {
                         size="icon"
                         className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground"
                         onClick={() => setShowPassword(!showPassword)}
+                        disabled={isLoading}
                     >
                         {showPassword ? <EyeOff /> : <Eye />}
                     </Button>
                 </div>
             </div>
-            <Button type="submit" className="w-full mt-2" disabled={isLoggingIn}>
-              {isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isLoggingIn ? 'Signing in...' : 'Sign in'}
+            <Button type="submit" className="w-full mt-2" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign in'
+              )}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
