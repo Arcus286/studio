@@ -50,7 +50,7 @@ const generateColor = (seed: string) => {
     hash = seed.charCodeAt(i) + ((hash << 5) - hash);
   }
   const h = hash % 360;
-  return `hsl(${h}, 50%, 70%)`;
+  return `hsl(${h}, 70%, 80%)`;
 };
 
 
@@ -224,7 +224,7 @@ export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTas
               <Tooltip key={member.id}>
                 <TooltipTrigger>
                   <Avatar>
-                    <AvatarFallback style={{ backgroundColor: generateColor(member.username) }}>
+                    <AvatarFallback style={{ backgroundColor: generateColor(member.username) }} className="text-white">
                       {member.username.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

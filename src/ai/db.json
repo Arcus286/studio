@@ -19,6 +19,25 @@
       "timeSpent": 0,
       "comments": [],
       "dependsOn": []
+    },
+    {
+      "projectId": "PROJ-004",
+      "title": "dfsfs",
+      "description": "fegg",
+      "status": "to-do",
+      "type": "Story",
+      "priority": "Medium",
+      "effort": "Medium",
+      "assignedUserId": "3",
+      "deadline": "2025-12-18T18:30:00.000Z",
+      "sprintId": "",
+      "estimatedHours": 8,
+      "id": "STORY-002",
+      "createdAt": "2025-12-02T14:21:07.345Z",
+      "updatedAt": "2025-12-02T14:21:07.345Z",
+      "timeSpent": 0,
+      "comments": [],
+      "dependsOn": []
     }
   ],
   "projects": [
@@ -85,6 +104,26 @@
       "createdAt": "2025-12-02T12:01:16.780Z",
       "issues": 0,
       "sprints": []
+    },
+    {
+      "name": "fafsfasfa",
+      "key": "FAFS",
+      "color": "hsl(var(--primary))",
+      "description": "dfadfdaa",
+      "members": [
+        {
+          "id": "3"
+        }
+      ],
+      "buckets": [
+        "closed"
+      ],
+      "id": "PROJ-004",
+      "status": "active",
+      "completion": 0,
+      "createdAt": "2025-12-02T12:09:05.401Z",
+      "issues": 0,
+      "sprints": []
     }
   ],
   "sprints": [
@@ -120,6 +159,11 @@
       "id": "done",
       "title": "Done",
       "color": "border-green-500"
+    },
+    {
+      "id": "closed",
+      "title": "Closed",
+      "color": "border-gray-500"
     }
   ]
 }
