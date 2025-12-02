@@ -1,8 +1,106 @@
+
 {
-  "tasks": [],
-  "projects": [],
-  "sprints": [],
+  "tasks": [
+    {
+      "projectId": "PROJ-001",
+      "title": "dsd",
+      "description": "sfdf",
+      "status": "to-do",
+      "type": "Bug",
+      "priority": "Medium",
+      "effort": "Medium",
+      "assignedUserId": "1764225808718",
+      "deadline": "2026-01-26T18:30:00.000Z",
+      "storyId": "",
+      "sprintId": "SPRINT-001",
+      "estimatedHours": 8,
+      "id": "BUG-001",
+      "createdAt": "2025-12-02T11:54:52.067Z",
+      "updatedAt": "2025-12-02T11:54:52.067Z",
+      "timeSpent": 0,
+      "comments": [],
+      "dependsOn": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "Abbas",
+      "key": "ABBA",
+      "color": "hsl(var(--primary))",
+      "description": "asda",
+      "members": [
+        {
+          "id": "1764225808718"
+        }
+      ],
+      "buckets": [
+        "ready-for-deployment"
+      ],
+      "id": "PROJ-001",
+      "status": "active",
+      "completion": 0,
+      "createdAt": "2025-12-02T11:52:38.893Z",
+      "issues": 0,
+      "sprints": []
+    },
+    {
+      "name": "sdfdsf",
+      "key": "SDFD",
+      "color": "hsl(var(--chart-5))",
+      "description": "dfd",
+      "members": [
+        {
+          "id": "3"
+        },
+        {
+          "id": "4"
+        },
+        {
+          "id": "1764225808718"
+        }
+      ],
+      "buckets": [],
+      "id": "PROJ-002",
+      "status": "active",
+      "completion": 0,
+      "createdAt": "2025-12-02T11:55:20.645Z",
+      "issues": 0,
+      "sprints": []
+    }
+  ],
+  "sprints": [
+    {
+      "projectId": "PROJ-001",
+      "name": "Abbas",
+      "goal": "edxx",
+      "startDate": "2026-01-12T18:30:00.000Z",
+      "endDate": "2026-01-26T18:30:00.000Z",
+      "id": "SPRINT-001",
+      "status": "upcoming"
+    }
+  ],
   "notifications": [],
   "users": [],
-  "columns": []
+  "columns": [
+    {
+      "id": "to-do",
+      "title": "To Do",
+      "color": "border-blue-500"
+    },
+    {
+      "id": "in-progress",
+      "title": "In Progress",
+      "color": "border-yellow-500"
+    },
+    {
+      "id": "in-review",
+      "title": "In Review",
+      "color": "border-purple-500"
+    },
+    {
+      "id": "done",
+      "title": "Done",
+      "color": "border-green-500"
+    }
+  ]
 }

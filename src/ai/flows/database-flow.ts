@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A simulated database flow using a JSON file.
@@ -11,6 +12,14 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const DB_PATH = path.join(process.cwd(), 'src', 'ai', 'db.json');
+
+const KANBAN_COLUMNS_DEFAULT = [
+    { id: 'to-do', title: 'To Do', color: 'border-blue-500' },
+    { id: 'in-progress', title: 'In Progress', color: 'border-yellow-500' },
+    { id: 'in-review', title: 'In Review', color: 'border-purple-500' },
+    { id: 'done', title: 'Done', color: 'border-green-500' },
+];
+
 
 // Define a schema for the entire database for validation.
 const DbSchema = z.object({
@@ -42,7 +51,7 @@ async function readDb(): Promise<Db> {
   } catch (error) {
     // If the file doesn't exist or is invalid, return a default structure.
     console.error("Error reading db.json, returning default. Error:", error);
-    return { tasks: [], projects: [], sprints: [], notifications: [], users: [], columns: [] };
+    return { tasks: [], projects: [], sprints: [], notifications: [], users: [], columns: KANBAN_COLUMNS_DEFAULT };
   }
 }
 
