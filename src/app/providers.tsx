@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/hooks/use-auth';
+import { SharedStateProvider } from '@/hooks/use-shared-state';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
     return (
@@ -12,7 +13,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange
         >
             <AuthProvider>
-                {children}
+                <SharedStateProvider>
+                    {children}
+                </SharedStateProvider>
             </AuthProvider>
         </ThemeProvider>
     )
