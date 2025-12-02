@@ -146,6 +146,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const updateUser = (userId: string, data: Partial<User>) => {
+    if (data.username) {
+        const usernameExists = users.some(u => u.username.toLowerCase() === data.username?.toLowerCase() && u.id !== userId);
+        if (usernameExists) {
+            throw new Error('This username is already taken. Please choose another.');
+        }
+    }
+    
     const newUsers = users.map(u => (u.id === userId ? { ...u, ...data } : u));
     updateUsersState(newUsers);
   

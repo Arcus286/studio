@@ -27,6 +27,7 @@ import {
 import { Edit } from 'lucide-react';
 
 const profileSchema = z.object({
+  username: z.string().min(1, 'Username is required.'),
   designation: z.string().optional(),
   phoneNumber: z.string().optional(),
   bio: z.string().optional(),
@@ -42,6 +43,7 @@ export function EditProfileForm() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
+      username: user?.username || '',
       designation: user?.designation || '',
       phoneNumber: user?.phoneNumber || '',
       bio: user?.bio || '',
@@ -51,11 +53,19 @@ export function EditProfileForm() {
 
   const onSubmit = (data: ProfileFormValues) => {
     if (!user) return;
-    updateUser(user.id, data);
-    toast({
-      title: 'Profile Updated',
-      description: 'Your personal details have been saved successfully.',
-    });
+    try {
+      updateUser(user.id, data);
+      toast({
+        title: 'Profile Updated',
+        description: 'Your personal details have been saved successfully.',
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Update Failed',
+        description: (error as Error).message,
+      });
+    }
   };
 
   return (
@@ -69,6 +79,19 @@ export function EditProfileForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+             <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="avatarUrl"
