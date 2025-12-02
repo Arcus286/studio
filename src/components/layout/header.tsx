@@ -130,7 +130,14 @@ export function Header({ showSearch = true }: HeaderProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{user?.username}</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                {user?.role}
+              </p>
+            </div>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {isManager && (
             <AdminDialog>
