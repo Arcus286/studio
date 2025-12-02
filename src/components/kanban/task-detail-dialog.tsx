@@ -111,7 +111,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   const isProjectManager = projectMember?.role === 'Manager';
   const isAdmin = user?.userType === 'Admin';
   const isManagerOrAdmin = isProjectManager || isAdmin;
-
+  const isAssignee = task?.assignedUserId === user?.id;
   
   const form = useForm<TaskDetailFormValues>({
       resolver: zodResolver(taskDetailSchema),
@@ -270,7 +270,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><GripVertical className="h-4 w-4" /> Status</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin && !isAssignee}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select a status" />
@@ -364,7 +364,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Layers className="h-4 w-4" /> Parent Story</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin}>
+                                            <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin && !isAssignee}>
                                                 <FormControl><SelectTrigger><SelectValue placeholder="Link to story" /></SelectTrigger></FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="none">None</SelectItem>
@@ -380,7 +380,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Link2 className="h-4 w-4" /> Dependencies</FormLabel>
-                                            <Select onValueChange={(value) => field.onChange(value === 'none' ? [] : [value])} value={field.value?.[0] || 'none'} disabled={!isManagerOrAdmin}>
+                                            <Select onValueChange={(value) => field.onChange(value === 'none' ? [] : [value])} value={field.value?.[0] || 'none'} disabled={!isManagerOrAdmin && !isAssignee}>
                                                 <FormControl><SelectTrigger><SelectValue placeholder="Blocks which task?" /></SelectTrigger></FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="none">None</SelectItem>
@@ -402,7 +402,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><Clock className="h-4 w-4" /> Time Spent (hours)</FormLabel>
                                         <FormControl>
-                                            <Input type="number" {...field} />
+                                            <Input type="number" {...field} readOnly={!isManagerOrAdmin && !isAssignee} />
                                         </FormControl>
                                     </FormItem>
                                 )}
