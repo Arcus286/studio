@@ -1,22 +1,21 @@
-
 {
   "tasks": [
     {
       "projectId": "PROJ-001",
-      "title": "dsd",
-      "description": "sfdf",
-      "status": "to-do",
-      "type": "Bug",
+      "title": "sad",
+      "description": "fdsfdsfsdf",
+      "status": "in-progress",
+      "type": "Task",
       "priority": "Medium",
       "effort": "Medium",
       "assignedUserId": "1764225808718",
-      "deadline": "2026-01-26T18:30:00.000Z",
+      "deadline": "2025-12-30T18:30:00.000Z",
       "storyId": "",
-      "sprintId": "SPRINT-001",
+      "sprintId": "",
       "estimatedHours": 8,
-      "id": "BUG-001",
-      "createdAt": "2025-12-02T11:54:52.067Z",
-      "updatedAt": "2025-12-02T11:54:52.067Z",
+      "id": "TASK-001",
+      "createdAt": "2025-12-02T12:05:52.780Z",
+      "updatedAt": "2025-12-02T12:06:04.285Z",
       "timeSpent": 0,
       "comments": [],
       "dependsOn": []
@@ -64,6 +63,26 @@
       "status": "active",
       "completion": 0,
       "createdAt": "2025-12-02T11:55:20.645Z",
+      "issues": 0,
+      "sprints": []
+    },
+    {
+      "name": "asasf",
+      "key": "ASAS",
+      "color": "hsl(var(--primary))",
+      "description": "sdasf",
+      "members": [
+        {
+          "id": "3"
+        }
+      ],
+      "buckets": [
+        "closed"
+      ],
+      "id": "PROJ-003",
+      "status": "active",
+      "completion": 0,
+      "createdAt": "2025-12-02T12:01:16.780Z",
       "issues": 0,
       "sprints": []
     }

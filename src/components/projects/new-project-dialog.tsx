@@ -29,12 +29,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Palette, Plus, Trash2, KanbanSquare, Settings } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { USERS } from '@/lib/data';
 import { Checkbox } from '../ui/checkbox';
 import { useAuth } from '@/hooks/use-auth';
 import { useSharedState } from '@/hooks/use-shared-state';
 
-const optionalBuckets = [
+const optionalBucketsData = [
     { id: 'under-development', title: 'Under Development' },
     { id: 'blocked', title: 'Blocked' },
     { id: 'under-testing', title: 'Under Testing' },
@@ -99,7 +98,6 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
   }, [watchName, form]);
 
   const onSubmit = (data: ProjectFormValues) => {
-    // This is a mock submission. In a real app, you'd send this to a server.
     addProject({
       ...data,
       description: data.description || '',
@@ -243,7 +241,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                 <div className='p-4 border rounded-md bg-muted/50'>
                     <p className='text-sm text-muted-foreground mb-4'>The board will be created with these standard columns. You cannot remove them.</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-                        {columns.map(col => (
+                        {columns.slice(0, 4).map(col => (
                             <div key={col.id} className="flex items-center gap-2 p-2 rounded-md bg-background border">
                                 <div className={`w-2 h-2 rounded-full border-2 ${col.color}`} />
                                 <span className='text-sm font-medium'>{col.title}</span>
@@ -264,7 +262,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                             <p className="text-sm text-muted-foreground">Select any additional columns you need for your workflow.</p>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            {optionalBuckets.map((item) => (
+                            {optionalBucketsData.map((item) => (
                                 <FormField
                                 key={item.id}
                                 control={form.control}

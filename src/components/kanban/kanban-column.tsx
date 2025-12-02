@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanCard } from './kanban-card';

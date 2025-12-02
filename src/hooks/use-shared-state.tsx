@@ -23,7 +23,7 @@ interface SharedStateContextType extends SharedState {
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   addComment: (taskId: string, comment: Omit<Comment, 'id' | 'createdAt'>) => void;
-  addProject: (projectData: Omit<Project, 'id' | 'status' | 'completion' | 'createdAt' | 'issues' | 'sprints'>) => void;
+  addProject: (projectData: Omit<Project, 'id' | 'status' | 'completion' | 'createdAt' | 'issues' | 'sprints'> & { buckets?: string[] }) => void;
   updateProject: (projectId: string, updatedData: Partial<Project>) => void;
   deleteProject: (projectId: string) => void;
   addSprint: (sprint: Omit<Sprint, 'id' | 'status'>) => void;
@@ -35,6 +35,14 @@ interface SharedStateContextType extends SharedState {
 }
 
 const SharedStateContext = createContext<SharedStateContextType | null>(null);
+
+const optionalBuckets: KanbanColumnData[] = [
+    { id: 'under-development', title: 'Under Development', color: 'border-cyan-500' },
+    { id: 'blocked', title: 'Blocked', color: 'border-red-500' },
+    { id: 'under-testing', title: 'Under Testing', color: 'border-orange-500' },
+    { id: 'ready-for-deployment', title: 'Ready for Deployment', color: 'border-green-500' },
+    { id: 'closed', title: 'Closed', color: 'border-gray-500' },
+];
 
 export function SharedStateProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SharedState>({
@@ -71,7 +79,7 @@ export function SharedStateProvider({ children }: { children: ReactNode }) {
       await setDbValue({ key, value });
   };
   
-  const addProject = async (projectData: Omit<Project, 'id' | 'status' | 'completion' | 'createdAt' | 'issues' | 'sprints'>) => {
+  const addProject = async (projectData: Omit<Project, 'id' | 'status' | 'completion' | 'createdAt' | 'issues' | 'sprints'> & { buckets?: string[] }) => {
     const maxId = state.projects.reduce((max, p) => {
         const num = parseInt(p.id.split('-')[1], 10);
         return num > max ? num : max;
@@ -89,6 +97,12 @@ export function SharedStateProvider({ children }: { children: ReactNode }) {
     };
     const newProjects = [...state.projects, newProject];
     await updateAndPersist('projects', newProjects);
+    
+    if (projectData.buckets && projectData.buckets.length > 0) {
+      const newColumns = optionalBuckets.filter(b => projectData.buckets?.includes(b.id));
+      const allColumns = [...state.columns, ...newColumns.filter(nc => !state.columns.some(sc => sc.id === nc.id))];
+      await updateAndPersist('columns', allColumns);
+    }
   };
   
   const updateProject = async (projectId: string, updatedData: Partial<Project>) => {
