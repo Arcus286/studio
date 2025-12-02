@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { Eye, EyeOff, ArrowLeft, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 
@@ -14,11 +15,13 @@ export default function LoginPage() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const { login } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoggingIn(true);
     try {
       login(usernameOrEmail, password);
     } catch (error) {
@@ -27,6 +30,9 @@ export default function LoginPage() {
         title: 'Login Failed',
         description: (error as Error).message,
       });
+    } finally {
+        // A small delay to allow navigation to start before resetting the button
+        setTimeout(() => setIsLoggingIn(false), 500);
     }
   };
 
@@ -68,6 +74,7 @@ export default function LoginPage() {
                 required
                 value={usernameOrEmail}
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
+                disabled={isLoggingIn}
               />
             </div>
             <div className="grid gap-2">
@@ -87,6 +94,7 @@ export default function LoginPage() {
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        disabled={isLoggingIn}
                     />
                     <Button
                         type="button"
@@ -99,8 +107,9 @@ export default function LoginPage() {
                     </Button>
                 </div>
             </div>
-            <Button type="submit" className="w-full mt-2">
-              Sign in
+            <Button type="submit" className="w-full mt-2" disabled={isLoggingIn}>
+              {isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isLoggingIn ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
           <div className="mt-4 text-center text-sm">
