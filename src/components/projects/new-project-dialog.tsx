@@ -48,6 +48,7 @@ const projectSchema = z.object({
   description: z.string().optional(),
   members: z.array(z.object({
     id: z.string().min(1, 'Please select a user'),
+    role: z.enum(['Manager', 'User']),
   })).min(1, 'At least one team member is required'),
   buckets: z.array(z.string()).optional(),
 });
@@ -80,7 +81,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
       key: '',
       color: colorThemes[0],
       description: '',
-      members: [{ id: '' }],
+      members: [{ id: '', role: 'User' }],
       buckets: [],
     },
   });
@@ -215,8 +216,30 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                                     </FormControl>
                                     <SelectContent>
                                     {availableUsers.map(user => (
-                                        <SelectItem key={user.id} value={user.id}>{user.username} ({user.role})</SelectItem>
+                                        <SelectItem key={user.id} value={user.id} disabled={form.getValues('members').some(m => m.id === user.id && m.id !== form.getValues(`members.${index}.id`))}>
+                                            {user.username}
+                                        </SelectItem>
                                     ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name={`members.${index}.role`}
+                            render={({ field }) => (
+                                <FormItem className="w-[150px]">
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Role" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Manager">Manager</SelectItem>
+                                        <SelectItem value="User">User</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -228,7 +251,7 @@ export function NewProjectDialog({ children }: { children: React.ReactNode }) {
                         </Button>
                     </div>
                 ))}
-                 <Button type="button" variant="outline" size="sm" onClick={() => append({ id: '' })}>
+                 <Button type="button" variant="outline" size="sm" onClick={() => append({ id: '', role: 'User' })}>
                     <Plus className="mr-2 h-4 w-4" /> Add Member
                 </Button>
                 </div>

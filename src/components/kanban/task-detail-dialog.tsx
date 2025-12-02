@@ -98,13 +98,20 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   const { user, allUsers } = useAuth();
   const { deleteTask, columns, addComment, tasks, updateTask, sprints, projects } = useSharedState();
 
-  const isManagerOrAdmin = user?.userType === 'Manager' || user?.userType === 'Admin';
+  
   const { toast } = useToast();
   const [newComment, setNewComment] = useState('');
   const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // This ensures we always have the latest task data from the store
   const task = useMemo(() => tasks.find(t => t.id === initialTask.id), [tasks, initialTask.id]);
+  const project = useMemo(() => projects.find(p => p.id === task?.projectId), [projects, task]);
+  const projectMember = useMemo(() => project?.members.find(m => m.id === user?.id), [project, user]);
+
+  const isProjectManager = projectMember?.role === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
+  const isManagerOrAdmin = isProjectManager || isAdmin;
+
   
   const form = useForm<TaskDetailFormValues>({
       resolver: zodResolver(taskDetailSchema),
@@ -120,7 +127,6 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     }
   }, [task, form]);
   
-  const project = projects.find(p => p.id === task?.projectId);
   const projectSprints = sprints.filter(s => s.projectId === task?.projectId);
   const projectStories = tasks.filter(t => t.projectId === task?.projectId && t.type === 'Story');
   const availableDependencies = tasks.filter(t => t.projectId === task?.projectId && t.id !== task?.id && t.type !== 'Story');
@@ -169,7 +175,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     setNewComment('');
   }
   
-  if (!task) {
+  if (!task || !project) {
     return null;
   }
   
@@ -226,7 +232,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Textarea {...field} className="text-sm" />
+                                            <Textarea {...field} className="text-sm" readOnly={!isManagerOrAdmin} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -285,7 +291,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="flex items-center gap-2 text-sm font-medium text-muted-foreground"><ArrowUp className="h-4 w-4" /> Priority</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
+                                        <Select onValueChange={field.onChange} value={field.value} disabled={!isManagerOrAdmin}>
                                             <FormControl>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select priority" />

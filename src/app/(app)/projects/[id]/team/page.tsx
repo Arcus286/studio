@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import type { User } from '@/lib/types';
+import type { User, ProjectMember } from '@/lib/types';
 import { useSharedState } from '@/hooks/use-shared-state';
 
 function AddMemberDialog({ project, children }: { project: any, children: React.ReactNode }) {
@@ -48,7 +48,7 @@ function AddMemberDialog({ project, children }: { project: any, children: React.
             return;
         }
 
-        const newMembers = [...project.members, { id: selectedUserId }];
+        const newMembers: ProjectMember[] = [...project.members, { id: selectedUserId, role: 'User' }];
         updateProject(project.id, { members: newMembers });
 
         toast({ title: 'Member Added', description: 'The new member has been added to the project.' });
@@ -92,18 +92,26 @@ export default function ProjectTeamPage({ params }: { params: Promise<{ id: stri
     const { toast } = useToast();
     const project = projects.find(p => p.id === id);
 
-    const isManager = currentUser?.userType === 'Manager' || currentUser?.userType === 'Admin';
+    const projectMember = project?.members.find(m => m.id === currentUser?.id);
+    const isProjectManager = projectMember?.role === 'Manager';
+    const isAdmin = currentUser?.userType === 'Admin';
+    const isManagerOrAdmin = isProjectManager || isAdmin;
 
     if (!project) {
         return <div>Loading project...</div>;
     }
     
-    const teamMembers = allUsers.filter(user => project.members.some(m => m.id === user.id));
+    const teamMembers = allUsers
+        .map(user => {
+            const memberInfo = project.members.find(m => m.id === user.id);
+            return memberInfo ? { ...user, projectRole: memberInfo.role } : null;
+        })
+        .filter((user): user is User & { projectRole: 'Manager' | 'User' } => user !== null);
 
     const handleRemoveMember = (userId: string) => {
-        const memberToRemove = allUsers.find(u => u.id === userId);
-        if (memberToRemove?.userType === 'Manager') {
-            const managerCount = teamMembers.filter(m => m.userType === 'Manager').length;
+        const memberToRemove = teamMembers.find(u => u.id === userId);
+        if (memberToRemove?.projectRole === 'Manager') {
+            const managerCount = teamMembers.filter(m => m.projectRole === 'Manager').length;
             if (managerCount <= 1) {
                 toast({
                     variant: 'destructive',
@@ -121,6 +129,11 @@ export default function ProjectTeamPage({ params }: { params: Promise<{ id: stri
             description: 'The member has been removed from the project.',
         });
     };
+
+    const handleRoleChange = (userId: string, newRole: 'Manager' | 'User') => {
+        const newMembers = project.members.map(m => m.id === userId ? { ...m, role: newRole } : m);
+        updateProject(project.id, { members: newMembers });
+    }
 
     return (
         <div className="space-y-6">
@@ -145,7 +158,7 @@ export default function ProjectTeamPage({ params }: { params: Promise<{ id: stri
             <Card>
                 <div className="p-4 border-b flex justify-between items-center">
                     <h2 className="text-xl font-semibold">Team Members for {project.name}</h2>
-                    {isManager && (
+                    {isManagerOrAdmin && (
                         <AddMemberDialog project={project}>
                             <Button>
                                 <Plus className="mr-2 h-4 w-4" />
@@ -159,8 +172,8 @@ export default function ProjectTeamPage({ params }: { params: Promise<{ id: stri
                     <TableRow>
                         <TableHead>User</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>User Type</TableHead>
-                        {isManager && <TableHead className="text-right">Actions</TableHead>}
+                        <TableHead>Project Role</TableHead>
+                        {isManagerOrAdmin && <TableHead className="text-right">Actions</TableHead>}
                     </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -171,9 +184,21 @@ export default function ProjectTeamPage({ params }: { params: Promise<{ id: stri
                         </TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                            {user.userType}
+                            {isManagerOrAdmin ? (
+                                <Select value={user.projectRole} onValueChange={(value: 'Manager' | 'User') => handleRoleChange(user.id, value)}>
+                                    <SelectTrigger className="w-[120px]">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Manager">Manager</SelectItem>
+                                        <SelectItem value="User">User</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            ) : (
+                                user.projectRole
+                            )}
                         </TableCell>
-                        {isManager && (
+                        {isManagerOrAdmin && (
                             <TableCell className="text-right">
                                 {user.userType !== 'Admin' && (
                                      <Button variant="ghost" size="icon" onClick={() => handleRemoveMember(user.id)}>

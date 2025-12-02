@@ -93,9 +93,14 @@ function SprintIssues({ tasks }: { tasks: Task[] }) {
 
 export function SprintList({ projectId }: SprintListProps) {
   const { user } = useAuth();
-  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
-  const { sprints, startSprint, completeSprint, tasks } = useSharedState();
+  const { sprints, startSprint, completeSprint, tasks, projects } = useSharedState();
   const [openSprint, setOpenSprint] = useState<string | null>(null);
+
+  const project = projects.find(p => p.id === projectId);
+  const projectMember = project?.members.find(m => m.id === user?.id);
+  const isProjectManager = projectMember?.role === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
+  const canManageSprints = isProjectManager || isAdmin;
 
   const projectSprints = useMemo(() => {
     const sprintsForProject = sprints.filter(s => s.projectId === projectId);
@@ -190,8 +195,8 @@ export function SprintList({ projectId }: SprintListProps) {
                     </div>
                 </CollapsibleContent>
               
-              <CardFooter className={cn("flex items-center", isManager ? "justify-between" : "justify-end")}>
-                {isManager && (
+              <CardFooter className={cn("flex items-center", canManageSprints ? "justify-between" : "justify-end")}>
+                {canManageSprints && (
                     <div className="flex gap-2">
                       {sprint.status === 'upcoming' && (
                           <AlertDialog>

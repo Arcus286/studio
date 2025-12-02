@@ -5,23 +5,28 @@ import type { Project } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Folder, Calendar, CheckCircle, Users, Pencil } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import { USERS } from '@/lib/data';
+import { useAuth } from '@/hooks/use-auth';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { useAuth } from '@/hooks/use-auth';
 import { EditProjectDialog } from './edit-project-dialog';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type ProjectCardProps = {
   project: Project;
 };
 
 export function ProjectCard({ project }: ProjectCardProps) {
-  const { user } = useAuth();
-  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
-  const projectMembers = USERS.filter(user => project.members.some(m => m.id === user.id));
+  const { user, allUsers } = useAuth();
+
+  const projectMember = project.members.find(m => m.id === user?.id);
+  const isProjectManager = projectMember?.role === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
+  const isManagerOrAdmin = isProjectManager || isAdmin;
+
+  const projectMembers = allUsers.filter(user => project.members.some(m => m.id === user.id));
 
   return (
     <Card className="hover:shadow-lg transition-shadow flex flex-col">
@@ -75,20 +80,23 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                 <TooltipProvider>
-                    {projectMembers.map(member => (
-                    <Tooltip key={member.id}>
-                        <TooltipTrigger>
-                             <Badge variant="outline">{member.username}</Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>{member.userType}</p>
-                        </TooltipContent>
-                    </Tooltip>
-                    ))}
+                    {projectMembers.map(member => {
+                        const projectRole = project.members.find(m => m.id === member.id)?.role;
+                        return (
+                            <Tooltip key={member.id}>
+                                <TooltipTrigger>
+                                    <Badge variant="outline">{member.username}</Badge>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{projectRole}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )
+                    })}
                 </TooltipProvider>
                 </div>
             </div>
-            {isManager && (
+            {isManagerOrAdmin && (
                 <div className="flex justify-end">
                     <EditProjectDialog project={project}>
                         <Button variant="outline" size="sm">

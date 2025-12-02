@@ -109,19 +109,26 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
   const { projects } = useSharedState();
-  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
+  const isGlobalManager = user?.userType === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
 
 
   const isProjectPage = pathname.startsWith('/projects/');
   const projectId = isProjectPage ? pathname.split('/')[2] : null;
+  const currentProject = projectId ? projects.find(p => p.id === projectId) : null;
+  const projectMember = currentProject?.members.find(m => m.id === user?.id);
+  const isProjectManager = projectMember?.role === 'Manager';
+
+  const canManageCurrentProject = isAdmin || isProjectManager;
+  const canCreateProjects = isAdmin || isGlobalManager;
 
   const filteredProjects = useMemo(() => {
     if (!user) return [];
-    if (user.userType === 'Admin') {
+    if (isAdmin) {
         return projects;
     }
     return projects.filter(p => p.members.some(m => m.id === user.id));
-  }, [projects, user]);
+  }, [projects, user, isAdmin]);
 
   return (
     <SidebarProvider>
@@ -169,7 +176,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                       Projects
                     </Link>
                   </SidebarMenuButton>
-                  {isManager && (
+                  {canCreateProjects && (
                     <NewProjectDialog>
                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
                             <Plus className="h-4 w-4" />
@@ -186,7 +193,10 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
               
               <CollapsibleContent>
                 <div className="ml-4 space-y-1 mt-1">
-                  {filteredProjects.map(project => (
+                  {filteredProjects.map(project => {
+                      const currentUserIsProjectManager = project.members.find(m => m.id === user?.id)?.role === 'Manager';
+                      const canManageProject = isAdmin || currentUserIsProjectManager;
+                      return (
                       <SidebarMenuItem key={project.id}>
                         <div className="flex items-center w-full group">
                            <SidebarMenuButton
@@ -200,7 +210,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                                 {project.name}
                               </Link>
                             </SidebarMenuButton>
-                            {isManager && (
+                            {canManageProject && (
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                    <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -224,7 +234,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
                             )}
                         </div>
                       </SidebarMenuItem>
-                  ))}
+                  )})}
                 </div>
               </CollapsibleContent>
             </Collapsible>
@@ -233,7 +243,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
             {isProjectPage && projectId && (
               <div className="ml-4 mt-2">
                 <SidebarGroupLabel>Project Tools</SidebarGroupLabel>
-                 {isManager && (
+                 {canManageCurrentProject && (
                    <>
                     <SidebarMenuItem>
                       <SidebarMenuButton

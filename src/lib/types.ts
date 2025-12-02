@@ -61,6 +61,7 @@ export type Task = {
 
 export type ProjectMember = {
     id: string;
+    role: 'Manager' | 'User';
 }
 
 export type Sprint = {
@@ -86,7 +87,7 @@ export type Project = {
     completion: number;
     createdAt: string;
     issues: number;
-    members: ProjectMember[]; // array of user ids
+    members: ProjectMember[]; // array of user ids and their roles
     sprints: Sprint[];
 };
 

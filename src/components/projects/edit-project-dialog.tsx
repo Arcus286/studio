@@ -40,6 +40,7 @@ const projectSchema = z.object({
   description: z.string().optional(),
   members: z.array(z.object({
     id: z.string().min(1, 'Please select a user'),
+    role: z.enum(['Manager', 'User']),
   })).min(1, 'At least one team member is required'),
 });
 
@@ -69,7 +70,7 @@ export function EditProjectDialog({ project, children }: { project: Project; chi
       key: project.key,
       color: project.color,
       description: project.description,
-      members: project.members.map(m => ({ id: m.id })),
+      members: project.members,
     },
   });
   
@@ -192,10 +193,32 @@ export function EditProjectDialog({ project, children }: { project: Project; chi
                                         </FormControl>
                                         <SelectContent>
                                         {availableUsers.map(user => (
-                                            <SelectItem key={user.id} value={user.id}>{user.username} ({user.role})</SelectItem>
+                                             <SelectItem key={user.id} value={user.id} disabled={form.getValues('members').some(m => m.id === user.id && m.id !== form.getValues(`members.${index}.id`))}>
+                                                {user.username}
+                                            </SelectItem>
                                         ))}
                                         </SelectContent>
                                     </Select>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name={`members.${index}.role`}
+                            render={({ field }) => (
+                                <FormItem className="w-[150px]">
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Role" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Manager">Manager</SelectItem>
+                                        <SelectItem value="User">User</SelectItem>
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                                 </FormItem>
                             )}
@@ -205,7 +228,7 @@ export function EditProjectDialog({ project, children }: { project: Project; chi
                         </Button>
                     </div>
                 ))}
-                 <Button type="button" variant="outline" size="sm" onClick={() => append({ id: '' })}>
+                 <Button type="button" variant="outline" size="sm" onClick={() => append({ id: '', role: 'User' })}>
                     <Plus className="mr-2 h-4 w-4" /> Add Member
                 </Button>
                 </div>

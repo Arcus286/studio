@@ -11,7 +11,7 @@ import { useMemo } from "react";
 export default function ProjectsPage() {
     const { user } = useAuth();
     const { projects } = useSharedState();
-    const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
+    const canCreateProjects = user?.userType === 'Manager' || user?.userType === 'Admin';
 
     const filteredProjects = useMemo(() => {
         if (!user) return [];
@@ -28,7 +28,7 @@ export default function ProjectsPage() {
                     <h1 className="text-3xl font-bold">Projects</h1>
                     <p className="text-muted-foreground">Manage and organize your projects.</p>
                 </div>
-                {isManager && (
+                {canCreateProjects && (
                     <NewProjectDialog>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />

@@ -30,18 +30,20 @@ type HeaderProps = {
 export function Header({ showSearch = true }: HeaderProps) {
   const { user, logout } = useAuth();
   const isAdmin = user?.userType === 'Admin';
-  const isManager = isAdmin || user?.userType === 'Manager';
+  const isGlobalManager = user?.userType === 'Manager';
+  const canAddTask = isAdmin || isGlobalManager;
+
   const [open, setOpen] = useState(false);
   const { tasks: allTasks } = useSharedState();
   const router = useRouter();
   
   const tasks = useMemo(() => {
     if (!user) return [];
-    if (isManager) {
+    if (isAdmin || isGlobalManager) {
       return allTasks;
     }
     return allTasks.filter(task => task.assignedUserId === user.id);
-  }, [allTasks, user, isManager]);
+  }, [allTasks, user, isAdmin, isGlobalManager]);
   
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -100,7 +102,7 @@ export function Header({ showSearch = true }: HeaderProps) {
           </CommandList>
         </CommandDialog>
 
-       {isManager && (
+       {canAddTask && (
         <NewTaskDialog>
             <Button variant="outline">
                 <Plus className="mr-2 h-4 w-4" />
@@ -111,7 +113,7 @@ export function Header({ showSearch = true }: HeaderProps) {
       <Notifications />
       <ThemeToggle />
 
-      {isManager && (
+      {isAdmin && (
         <AdminDialog>
             <Button variant="ghost" size="icon">
                 <Users className="h-5 w-5" />
@@ -134,12 +136,12 @@ export function Header({ showSearch = true }: HeaderProps) {
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{user?.username}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                {user?.role}
+                {user?.userType}
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {isManager && (
+          {isAdmin && (
             <AdminDialog>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                   Admin Panel

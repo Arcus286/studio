@@ -20,6 +20,11 @@ export default function ProjectBacklogPage({ params }: { params: Promise<{ id: s
   const { projects, sprints } = useSharedState();
   const project = projects.find(p => p.id === id);
 
+  const projectMember = project?.members.find(m => m.id === user?.id);
+  const isProjectManager = projectMember?.role === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
+  const canManageProject = isProjectManager || isAdmin;
+
   const { activeSprint, upcomingSprints } = useMemo(() => {
     if (!project) return { activeSprint: null, upcomingSprints: [] };
     const projectSprints = sprints.filter(s => s.projectId === project.id);
@@ -31,13 +36,13 @@ export default function ProjectBacklogPage({ params }: { params: Promise<{ id: s
   const [sprintFilter, setSprintFilter] = useState<string>('backlog');
 
   useEffect(() => {
-    if (!isLoading && user?.userType !== 'Admin' && user?.userType !== 'Manager') {
+    if (!isLoading && !canManageProject) {
       router.replace('/dashboard');
     }
-  }, [user, isLoading, router]);
+  }, [user, isLoading, router, canManageProject]);
 
 
-  if (isLoading || !user || (user.userType !== 'Admin' && user.userType !== 'Manager')) {
+  if (isLoading || !user || !canManageProject) {
     return <Loading />;
   }
 

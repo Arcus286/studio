@@ -30,7 +30,7 @@ const titleColors: Record<string, string> = {
 
 export function KanbanColumn({ column, tasks, highlightedStatus, highlightedTaskId }: KanbanColumnProps) {
   const { user } = useAuth();
-  const { tasks: allTasks } = useSharedState();
+  const { tasks: allTasks, projects } = useSharedState();
   
   const topLevelTasksInColumn = useMemo(() => {
     const taskIdsInColumn = new Set(tasks.map(t => t.id));
@@ -82,15 +82,19 @@ export function KanbanColumn({ column, tasks, highlightedStatus, highlightedTask
             )}
           >
             {topLevelTasksInColumn.map((task, index) => {
+              const project = projects.find(p => p.id === task.projectId);
+              const projectMember = project?.members.find(m => m.id === user?.id);
+
               const blockingTasks = (task.dependsOn || [])
                 .map(depId => allTasks.find(t => t.id === depId))
                 .filter(t => t && t.status !== 'done');
               const isBlocked = blockingTasks.length > 0;
               
-              const isManagerOrAdmin = user?.userType === 'Manager' || user?.userType === 'Admin';
+              const isProjectManager = projectMember?.role === 'Manager';
+              const isAdmin = user?.userType === 'Admin';
               const isAssignee = task.assignedUserId === user?.id;
 
-              const isDraggable = !isBlocked && (isManagerOrAdmin || isAssignee);
+              const isDraggable = !isBlocked && (isAdmin || isProjectManager || isAssignee);
               
               return (
               <Draggable key={task.id} draggableId={task.id} index={index} isDragDisabled={!isDraggable}>

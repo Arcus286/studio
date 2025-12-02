@@ -21,15 +21,19 @@ export default function ProjectSprintsPage({ params }: { params: Promise<{ id: s
   const project = projects.find(p => p.id === id);
   const { user, isLoading } = useAuth();
   const router = useRouter();
-  const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
   
+  const projectMember = project?.members.find(m => m.id === user?.id);
+  const isProjectManager = projectMember?.role === 'Manager';
+  const isAdmin = user?.userType === 'Admin';
+  const canManageProject = isProjectManager || isAdmin;
+
   useEffect(() => {
-    if (!isLoading && !isManager) {
+    if (!isLoading && !canManageProject) {
       router.replace('/dashboard');
     }
-  }, [user, isLoading, isManager, router]);
+  }, [user, isLoading, canManageProject, router]);
 
-  if (isLoading || !user || !isManager) {
+  if (isLoading || !user || !canManageProject) {
     return <Loading />;
   }
 
@@ -57,7 +61,7 @@ export default function ProjectSprintsPage({ params }: { params: Promise<{ id: s
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        {isManager && (
+        {canManageProject && (
           <NewSprintDialog projectId={project.id}>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
