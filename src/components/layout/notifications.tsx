@@ -1,5 +1,4 @@
 
-
 'use client';
 import {
   DropdownMenu,
@@ -12,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Bell, AlertTriangle, UserPlus } from 'lucide-react';
 import { Badge } from '../ui/badge';
-import { useStore } from '@/lib/store';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -21,6 +19,7 @@ import { TaskDetailDialog } from '../kanban/task-detail-dialog';
 import type { Task, Notification } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
 import { AdminDialog } from '../admin/admin-dialog';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 const getIcon = (notification: Notification) => {
   if (notification.userId) {
@@ -34,7 +33,7 @@ const getIcon = (notification: Notification) => {
 
 export function Notifications() {
   const { user } = useAuth();
-  const { notifications, tasks, markNotificationAsRead, markAllNotificationsAsRead } = useStore();
+  const { notifications, tasks, markNotificationAsRead, markAllNotificationsAsRead } = useSharedState();
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
 

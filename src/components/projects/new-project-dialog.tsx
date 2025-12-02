@@ -31,9 +31,8 @@ import { Users, Palette, Plus, Trash2, KanbanSquare, Settings } from 'lucide-rea
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { USERS } from '@/lib/data';
 import { Checkbox } from '../ui/checkbox';
-import { useStore } from '@/lib/store';
-import { useProjectStore } from '@/lib/project-store';
 import { useAuth } from '@/hooks/use-auth';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 const optionalBuckets = [
     { id: 'under-development', title: 'Under Development' },
@@ -69,8 +68,7 @@ const colorThemes = [
 export function NewProjectDialog({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
-  const { columns } = useStore();
-  const { addProject } = useProjectStore();
+  const { columns, addProject } = useSharedState();
   const { allUsers } = useAuth();
 
 

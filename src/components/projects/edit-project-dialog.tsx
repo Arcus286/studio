@@ -29,9 +29,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Palette, Plus, Trash2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useProjectStore } from '@/lib/project-store';
 import type { Project } from '@/lib/types';
 import { useAuth } from '@/hooks/use-auth';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 const projectSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
@@ -57,7 +57,7 @@ const colorThemes = [
 export function EditProjectDialog({ project, children }: { project: Project; children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
-  const { updateProject } = useProjectStore();
+  const { updateProject } = useSharedState();
   const { allUsers } = useAuth();
 
   const availableUsers = allUsers.filter(u => u.status === 'active' && u.userType !== 'Admin');

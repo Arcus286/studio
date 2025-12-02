@@ -16,8 +16,8 @@ import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
 import { useAuth } from '@/hooks/use-auth';
-import { useProjectStore } from '@/lib/project-store';
 import { Input } from '../ui/input';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type ReassignTaskDialogProps = {
   isOpen: boolean;
@@ -31,7 +31,7 @@ export function ReassignTaskDialog({ isOpen, onClose, onConfirm, task, newStatus
   const [assignedUserId, setAssignedUserId] = useState<string | undefined>(undefined);
   const [timeSpent, setTimeSpent] = useState<number>(0);
   const { allUsers } = useAuth();
-  const { projects } = useProjectStore();
+  const { projects } = useSharedState();
 
   useEffect(() => {
     if (task) {

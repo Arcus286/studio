@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState } from 'react';
@@ -25,12 +24,10 @@ import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { DatePicker } from '../ui/date-picker';
-import { useStore } from '@/lib/store';
 import type { Task, Sprint } from '@/lib/types';
-import { useSprintStore } from '@/lib/sprint-store';
 import { add, differenceInMilliseconds } from 'date-fns';
-import { useProjectStore } from '@/lib/project-store';
 import { useAuth } from '@/hooks/use-auth';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 
 const taskSchema = z.object({
@@ -55,9 +52,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const currentProjectId = pathname.startsWith('/projects/') ? pathname.split('/')[2] : '';
-  const { addTask, tasks, columns } = useStore();
-  const { sprints } = useSprintStore();
-  const { projects } = useProjectStore();
+  const { addTask, tasks, columns, sprints, projects } = useSharedState();
   const { allUsers } = useAuth();
 
 
@@ -100,7 +95,7 @@ export function NewTaskDialog({ children }: { children: React.ReactNode }) {
     const effortToHoursMap = { Low: 4, Medium: 8, High: 16 };
     const estimatedHours = data.effort ? effortToHoursMap[data.effort as keyof typeof effortToHoursMap] : data.estimatedHours || 0;
 
-    const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent'> = {
+    const taskData = {
       ...data,
       estimatedHours,
       effort: data.effort as Task['effort'],

@@ -2,24 +2,22 @@
 'use client';
 
 import * as React from 'react';
-import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { Backlog } from '@/components/sprints/backlog';
-import { useSprintStore } from '@/lib/sprint-store';
 import { useMemo, useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import Loading from '@/app/loading';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 export default function ProjectBacklogPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
-  const { projects } = useProjectStore();
-  const { sprints } = useSprintStore();
+  const { projects, sprints } = useSharedState();
   const project = projects.find(p => p.id === id);
 
   const { activeSprint, upcomingSprints } = useMemo(() => {

@@ -1,12 +1,11 @@
 
-
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanCard } from './kanban-card';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
-import { useStore } from '@/lib/store';
 import { useMemo } from 'react';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type KanbanColumnProps = {
   column: KanbanColumnData;
@@ -29,7 +28,7 @@ const titleColors: Record<string, string> = {
 
 export function KanbanColumn({ column, tasks, highlightedStatus, highlightedTaskId }: KanbanColumnProps) {
   const { user } = useAuth();
-  const allTasks = useStore(state => state.tasks);
+  const { tasks: allTasks } = useSharedState();
   
   const topLevelTasksInColumn = useMemo(() => {
     const taskIdsInColumn = new Set(tasks.map(t => t.id));

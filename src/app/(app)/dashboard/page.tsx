@@ -3,11 +3,11 @@
 
 import { DashboardAnalytics } from '@/components/dashboard/dashboard-analytics';
 import { RecentActivity } from '@/components/dashboard/recent-activity';
-import { useStore } from '@/lib/store';
+import { useSharedState } from '@/hooks/use-shared-state';
 import { useAuth } from '@/hooks/use-auth';
 
 export default function DashboardPage() {
-  const tasks = useStore((state) => state.tasks);
+  const { tasks } = useSharedState();
   const { user } = useAuth();
 
   return (

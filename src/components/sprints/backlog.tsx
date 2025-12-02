@@ -1,13 +1,13 @@
 
 'use client';
 import { useMemo } from 'react';
-import { useStore } from '@/lib/store';
 import type { Project, Task } from '@/lib/types';
 import { KanbanCard } from '../kanban/kanban-card';
 import { ScrollArea } from '../ui/scroll-area';
 import { ClipboardList, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '../ui/card';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 interface BacklogProps {
   project: Project;
@@ -15,7 +15,7 @@ interface BacklogProps {
 }
 
 export function Backlog({ project, sprintFilter }: BacklogProps) {
-  const { tasks } = useStore();
+  const { tasks } = useSharedState();
 
   const filteredTasks = useMemo(() => {
     if (sprintFilter === 'backlog') {

@@ -1,14 +1,12 @@
 
 'use client';
 
-import { useSprintStore } from '@/lib/sprint-store';
 import { useMemo, useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Flame, CheckCircle, Play, Calendar, Flag, ChevronDown, CircleDot, Bug, Layers } from 'lucide-react';
 import { format, formatDistance } from 'date-fns';
-import { useStore } from '@/lib/store';
 import { Progress } from '../ui/progress';
 import { useAuth } from '@/hooks/use-auth';
 import {
@@ -29,6 +27,7 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
 import type { Task, TaskType } from '@/lib/types';
 import { ScrollArea } from '../ui/scroll-area';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 
 interface SprintListProps {
@@ -48,7 +47,7 @@ const TaskTypeIcon = ({ type }: { type: TaskType }) => {
 
 function SprintIssues({ tasks }: { tasks: Task[] }) {
     const { allUsers } = useAuth();
-    const { columns } = useStore();
+    const { columns } = useSharedState();
     
     if (tasks.length === 0) {
         return <p className="text-sm text-muted-foreground px-3 py-2">No issues in this sprint.</p>
@@ -95,8 +94,7 @@ function SprintIssues({ tasks }: { tasks: Task[] }) {
 export function SprintList({ projectId }: SprintListProps) {
   const { user } = useAuth();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
-  const { sprints, startSprint, completeSprint } = useSprintStore();
-  const { tasks } = useStore();
+  const { sprints, startSprint, completeSprint, tasks } = useSharedState();
   const [openSprint, setOpenSprint] = useState<string | null>(null);
 
   const projectSprints = useMemo(() => {

@@ -6,10 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/hooks/use-auth';
 import { differenceInDays, isPast } from 'date-fns';
-import { useProjectStore } from '@/lib/project-store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
-import { useStore } from '@/lib/store';
 import { useMemo } from 'react';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type DashboardAnalyticsProps = {
   onCardClick?: (status: TaskStatus | 'all') => void;
@@ -35,8 +34,7 @@ function TooltipList({ data }: { data: Record<string, number> }) {
 
 export function DashboardAnalytics({ onCardClick = () => {}, project }: DashboardAnalyticsProps) {
   const { user } = useAuth();
-  const { projects } = useProjectStore();
-  const allTasks = useStore((state) => state.tasks);
+  const { projects, tasks: allTasks } = useSharedState();
 
   const tasksForAnalytics = useMemo(() => {
     let userFilteredTasks;

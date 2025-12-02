@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { Project } from './types';
 import { PROJECTS as initialProjects } from './data';
-import { useStore } from './store';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 interface ProjectStore {
   projects: Project[];
@@ -45,9 +45,9 @@ export const useProjectStore = create<ProjectStore>()(
         })),
       deleteProject: (projectId) => {
         // First, update the task store to remove associated tasks
-        const { tasks, setTasks } = useStore.getState();
+        const { tasks, updateTasks } = useSharedState.getState();
         const updatedTasks = tasks.filter(task => task.projectId !== projectId);
-        setTasks(updatedTasks);
+        updateTasks(updatedTasks);
         
         // Then, update the project store
         set((state) => ({

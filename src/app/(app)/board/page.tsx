@@ -3,12 +3,12 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useProjectStore } from '@/lib/project-store';
 import Loading from '@/app/loading';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 export default function BoardRedirectPage() {
   const router = useRouter();
-  const { projects } = useProjectStore();
+  const { projects } = useSharedState();
 
   useEffect(() => {
     if (projects.length > 0) {

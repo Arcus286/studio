@@ -1,7 +1,6 @@
 
 'use client';
 import * as React from 'react';
-import { useProjectStore } from '@/lib/project-store';
 import {
   Table,
   TableBody,
@@ -28,12 +27,13 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import type { User } from '@/lib/types';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 function AddMemberDialog({ project, children }: { project: any, children: React.ReactNode }) {
     const [isOpen, setIsOpen] = React.useState(false);
     const [selectedUserId, setSelectedUserId] = React.useState<string>('');
     const { allUsers } = useAuth();
-    const { updateProject } = useProjectStore();
+    const { updateProject } = useSharedState();
     const { toast } = useToast();
 
     const availableUsers = allUsers.filter(u => 
@@ -87,7 +87,7 @@ function AddMemberDialog({ project, children }: { project: any, children: React.
 
 export default function ProjectTeamPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = React.use(params);
-    const { projects, updateProject } = useProjectStore();
+    const { projects, updateProject } = useSharedState();
     const { user: currentUser, allUsers } = useAuth();
     const { toast } = useToast();
     const project = projects.find(p => p.id === id);

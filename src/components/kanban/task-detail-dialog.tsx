@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -26,15 +25,13 @@ import { Separator } from '@/components/ui/separator';
 import { CalendarDays, Users, Bug, CalendarClock, Trash2, Send, ArrowUp, ArrowDown, Layers, Flame, Link2, Clock, Pencil, GripVertical } from 'lucide-react';
 import { CircleDot } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useStore } from '@/lib/store';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Textarea } from '../ui/textarea';
 import { ScrollArea } from '../ui/scroll-area';
-import { useSprintStore } from '@/lib/sprint-store';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { PRIORITIES, TASK_TYPES } from '@/lib/data';
 import { DatePicker } from '../ui/date-picker';
-import { useProjectStore } from '@/lib/project-store';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 
 const taskDetailSchema = z.object({
@@ -99,9 +96,7 @@ function CommentItem({ comment }: { comment: Comment }) {
 
 export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: TaskDetailDialogProps) {
   const { user, allUsers } = useAuth();
-  const { deleteTask, columns, addComment, tasks, updateTask, assignTaskToSprint } = useStore();
-  const { sprints } = useSprintStore();
-  const { projects } = useProjectStore();
+  const { deleteTask, columns, addComment, tasks, updateTask, sprints, projects } = useSharedState();
 
   const isManagerOrAdmin = user?.userType === 'Manager' || user?.userType === 'Admin';
   const { toast } = useToast();
@@ -109,7 +104,7 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
   const [commentSortOrder, setCommentSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // This ensures we always have the latest task data from the store
-  const task = useStore(state => state.tasks.find(t => t.id === initialTask.id));
+  const task = useMemo(() => tasks.find(t => t.id === initialTask.id), [tasks, initialTask.id]);
   
   const form = useForm<TaskDetailFormValues>({
       resolver: zodResolver(taskDetailSchema),
@@ -144,7 +139,6 @@ export function TaskDetailDialog({ isOpen, onOpenChange, task: initialTask }: Ta
     if (!task) return;
     
     const sprintId = data.sprintId === 'none' ? undefined : data.sprintId;
-    assignTaskToSprint(task.id, sprintId);
     
     updateTask(task.id, {
         ...data,

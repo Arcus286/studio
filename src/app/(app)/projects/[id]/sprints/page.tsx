@@ -1,7 +1,6 @@
 
 'use client';
 import * as React from 'react';
-import { useProjectStore } from '@/lib/project-store';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import { SprintList } from '@/components/sprints/sprint-list';
@@ -13,11 +12,12 @@ import type { Project } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import Loading from '@/app/loading';
 import { useEffect } from 'react';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 
 export default function ProjectSprintsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = React.use(params);
-  const { projects } = useProjectStore();
+  const { projects } = useSharedState();
   const project = projects.find(p => p.id === id);
   const { user, isLoading } = useAuth();
   const router = useRouter();

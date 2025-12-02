@@ -9,10 +9,10 @@ import { formatDistanceToNow, isWithinInterval, subDays } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Bug, CircleDot } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useStore } from '@/lib/store';
 import { USERS } from '@/lib/data';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type RecentActivityProps = {
   tasks: Task[];
@@ -32,7 +32,7 @@ const TaskTypeIcon = ({ type }: { type: TaskTypeLabel }) => {
 
 export function RecentActivity({ tasks }: RecentActivityProps) {
   const { user, allUsers } = useAuth();
-  const { columns } = useStore();
+  const { columns } = useSharedState();
   const [filter, setFilter] = useState<FilterType>('all');
 
   const recentTasks = useMemo(() => {

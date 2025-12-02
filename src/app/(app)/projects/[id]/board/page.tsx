@@ -2,7 +2,6 @@
 'use client';
 
 import * as React from 'react';
-import { useProjectStore } from '@/lib/project-store';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,6 +13,7 @@ import {
 import Link from 'next/link';
 import { ProjectBoard } from '@/components/projects/project-board';
 import { useSearchParams } from 'next/navigation';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 export default function ProjectBoardPage({
   params,
@@ -21,7 +21,7 @@ export default function ProjectBoardPage({
   params: { id: string };
 }) {
   const { id } = params;
-  const { projects } = useProjectStore();
+  const { projects } = useSharedState();
   const project = projects.find((p) => p.id === id);
   const searchParams = useSearchParams();
   const highlightedTaskId = searchParams.get('highlight');

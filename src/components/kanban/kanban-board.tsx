@@ -5,8 +5,8 @@ import type { Task, TaskStatus, KanbanColumnData } from '@/lib/types';
 import { KanbanColumn } from './kanban-column';
 import { useState, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { useStore } from '@/lib/store';
 import { ReassignTaskDialog } from './reassign-task-dialog';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type KanbanBoardProps = {
   tasks: Task[];
@@ -17,7 +17,7 @@ type KanbanBoardProps = {
 export function KanbanBoard({ tasks, highlightedStatus, highlightedTaskId }: KanbanBoardProps) {
   const { toast } = useToast();
   const [reassignTask, setReassignTask] = useState<{task: Task, newStatus: TaskStatus} | null>(null);
-  const { updateTask, columns } = useStore();
+  const { updateTask, columns } = useSharedState();
 
   const onDragEnd: OnDragEndResponder = (result) => {
     const { source, destination, draggableId } = result;

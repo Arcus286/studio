@@ -20,8 +20,8 @@ import { NewTaskDialog } from '../tasks/new-task-dialog';
 import { AdminDialog } from '../admin/admin-dialog';
 import { useState, useEffect, useMemo } from 'react';
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '../ui/command';
-import { useStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type HeaderProps = {
   showSearch?: boolean;
@@ -32,7 +32,7 @@ export function Header({ showSearch = true }: HeaderProps) {
   const isAdmin = user?.userType === 'Admin';
   const isManager = isAdmin || user?.userType === 'Manager';
   const [open, setOpen] = useState(false);
-  const allTasks = useStore((state) => state.tasks);
+  const { tasks: allTasks } = useSharedState();
   const router = useRouter();
   
   const tasks = useMemo(() => {

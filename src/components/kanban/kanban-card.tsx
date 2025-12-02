@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState } from 'react';
@@ -11,10 +10,9 @@ import { TaskDetailDialog } from './task-detail-dialog';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/use-auth';
 import { format, isPast, differenceInDays } from 'date-fns';
-import { useStore } from '@/lib/store';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 import { Avatar, AvatarFallback } from '../ui/avatar';
-import { useSprintStore } from '@/lib/sprint-store';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 type KanbanCardProps = {
   task: Task;
@@ -76,7 +74,7 @@ const DeadlineDisplay = ({ deadline, status }: { deadline: string, status: strin
 
 const ChildTask = ({ task, onTaskClick }: { task: Task; onTaskClick: (e: React.MouseEvent, task: Task) => void }) => {
     const { allUsers } = useAuth();
-    const { tasks } = useStore();
+    const { tasks } = useSharedState();
     const parentStory = tasks.find(t => t.id === task.storyId);
     
     if (!parentStory) {
@@ -118,8 +116,7 @@ export function KanbanCard({ task, isDragging, isHighlighted }: KanbanCardProps)
   const [detailTask, setDetailTask] = useState<Task | null>(null);
   const { allUsers } = useAuth();
   const assignedUser = allUsers.find(u => u.id === task.assignedUserId);
-  const { tasks: allTasks } = useStore();
-  const { sprints } = useSprintStore();
+  const { tasks: allTasks, sprints } = useSharedState();
   
   const childTasks = task.type === 'Story' 
     ? allTasks.filter(t => t.storyId === task.id) 

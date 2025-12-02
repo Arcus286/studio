@@ -20,7 +20,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { PlusCircle } from 'lucide-react';
-import { useSprintStore } from '@/lib/sprint-store';
 import {
   Popover,
   PopoverContent,
@@ -32,7 +31,7 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DateRange } from 'react-day-picker';
 import { Checkbox } from '../ui/checkbox';
-import { useStore } from '@/lib/store';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 const sprintSchema = z.object({
   name: z.string().min(1, 'Sprint name is required.'),
@@ -50,8 +49,7 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const { addSprint } = useSprintStore();
-  const { tasks, assignTaskToSprint } = useStore();
+  const { addSprint, tasks, updateTask } = useSharedState();
 
   const form = useForm<SprintFormValues>({
     resolver: zodResolver(sprintSchema),
@@ -91,7 +89,7 @@ export function NewSprintDialog({ children, projectId }: { children: React.React
             // A story itself should only be moved if its own deadline is past.
             // Child tasks should be evaluated independently.
             if (task.deadline && isPast(new Date(task.deadline))) {
-                assignTaskToSprint(task.id, undefined); // Move to backlog
+                updateTask(task.id, { sprintId: undefined }); // Move to backlog
             }
         });
         toast({

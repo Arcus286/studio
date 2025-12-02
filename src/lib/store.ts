@@ -1,5 +1,4 @@
 
-
 import { create } from 'zustand';
 import type { Task, Role, KanbanColumnData, Notification } from './types';
 import { TASKS as initialTasks, KANBAN_COLUMNS as initialColumns, NOTIFICATIONS as initialNotifications } from './data';
@@ -11,7 +10,6 @@ interface TaskStore {
   notifications: Notification[];
   addTask: (task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'timeSpent' | 'comments' | 'dependsOn'>) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
-  assignTaskToSprint: (taskId: string, sprintId: string | undefined) => void;
   deleteTask: (taskId: string) => void;
   addComment: (taskId: string, comment: Omit<Task['comments'][0], 'id' | 'createdAt'>) => void;
   setTasks: (tasks: Task[]) => void;
@@ -76,11 +74,6 @@ export const useStore = create<TaskStore>()(
             ),
           };
         }),
-      assignTaskToSprint: (taskId, sprintId) => set((state) => ({
-        tasks: state.tasks.map((task) =>
-            task.id === taskId ? { ...task, sprintId: sprintId, updatedAt: new Date().toISOString() } : task
-        ),
-      })),
       deleteTask: (taskId) =>
         set((state) => ({
           tasks: state.tasks.filter((task) => task.id !== taskId),

@@ -38,10 +38,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { NewProjectDialog } from '@/components/projects/new-project-dialog';
-import { useProjectStore } from '@/lib/project-store';
 import { EditProjectDialog } from '@/components/projects/edit-project-dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { useStore } from '@/lib/store';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -55,10 +53,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { Project } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 
 function DeleteProjectDialog({ project, onSelect }: { project: Project; onSelect: (e: Event) => void }) {
-  const { deleteProject } = useProjectStore();
+  const { deleteProject } = useSharedState();
   const { toast } = useToast();
   const router = useRouter();
 
@@ -109,7 +108,7 @@ function AppLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
   const pathname = usePathname();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
-  const { projects } = useProjectStore();
+  const { projects } = useSharedState();
   const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
 
 

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import type { Sprint } from './types';
 import { SPRINTS as initialSprints } from './data';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { useStore } from './store'; // Import the task store
+import { useSharedState } from '@/hooks/use-shared-state';
 
 interface SprintStore {
   sprints: Sprint[];
@@ -49,7 +49,7 @@ export const useSprintStore = create<SprintStore>()(
         });
       },
       completeSprint: (sprintId, projectId) => {
-        const { tasks, setTasks } = useStore.getState();
+        const { tasks, updateTasks } = useSharedState.getState();
         const sprintToComplete = get().sprints.find(s => s.id === sprintId);
 
         if (sprintToComplete) {
@@ -64,7 +64,7 @@ export const useSprintStore = create<SprintStore>()(
                 }
                 return task;
             });
-            setTasks(updatedTasks);
+            updateTasks(updatedTasks);
             
             set((state) => ({
               sprints: state.sprints.map((s) =>

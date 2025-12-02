@@ -5,12 +5,12 @@ import { Plus } from "lucide-react";
 import { ProjectList } from "@/components/projects/project-list";
 import { NewProjectDialog } from "@/components/projects/new-project-dialog";
 import { useAuth } from "@/hooks/use-auth";
-import { useProjectStore } from "@/lib/project-store";
+import { useSharedState } from "@/hooks/use-shared-state";
 import { useMemo } from "react";
 
 export default function ProjectsPage() {
     const { user } = useAuth();
-    const { projects } = useProjectStore();
+    const { projects } = useSharedState();
     const isManager = user?.userType === 'Manager' || user?.userType === 'Admin';
 
     const filteredProjects = useMemo(() => {

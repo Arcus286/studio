@@ -10,8 +10,6 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Search, Plus, Flame, Calendar, Info } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
-import { useStore } from '@/lib/store';
-import { useSprintStore } from '@/lib/sprint-store';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '../ui/tooltip';
 import { isPast, format, formatDistance } from 'date-fns';
@@ -37,6 +35,7 @@ import { Badge } from '../ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Header } from '../layout/header';
 import { TaskDetailDialog } from '../kanban/task-detail-dialog';
+import { useSharedState } from '@/hooks/use-shared-state';
 
 
 interface ProjectBoardProps {
@@ -93,8 +92,7 @@ export function ProjectBoard({ project, highlightedTaskId: initialHighlightedTas
   const [searchTerm, setSearchTerm] = useState('');
   const [showOverdue, setShowOverdue] = useState(true);
   const { allUsers } = useAuth();
-  const allTasks = useStore((state) => state.tasks);
-  const { sprints } = useSprintStore();
+  const { tasks: allTasks, sprints } = useSharedState();
   const [sprintFilter, setSprintFilter] = useState<string>('active');
   const [highlightedTaskId, setHighlightedTaskId] = useState(initialHighlightedTaskId);
   const [detailTask, setDetailTask] = useState<Task | null>(null);
